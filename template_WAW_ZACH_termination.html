@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" href="favicon.ico" type="image/x-icon">    
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
     <title>Wyświetlacz / Display</title>
     <link rel="stylesheet" href="template_WAW_ZACH_termination.css">
     <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
@@ -12,6 +12,186 @@
 </head>
 
 <body>
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            color: white;
+            font-size: 16px;
+            margin: 0;
+            padding: 0;
+        }
+
+        #display_box {
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        #display {
+            width: 700px;
+            height: fit-content;
+            background-color: #283c65;
+        }
+
+        #time_of_arrival {
+            font-weight: bolder;
+            font-size: 280%;
+            transform: translate(0%, -12%);
+        }
+
+        #train_number_box {
+            margin-top: 5px;
+            margin-right: 10%;
+        }
+
+        .row {
+            display: flex;
+            margin-top: 0px;
+            margin-bottom: 10px;
+            justify-content: space-between;
+            flex-wrap: wrap;
+        }
+
+        ul {
+            padding-left: 0px;
+            padding-right: 0px;
+        }
+
+        li {
+            list-style-type: none;
+        }
+
+        .label {
+            font-style: italic;
+        }
+
+        #time_of_arrival_box {
+            margin-top: 5px;
+            height: 65px;
+        }
+
+        #train_number {
+            position: absolute;
+            font-size: 190%;
+            transform: translate(-2%, -10%);
+        }
+
+        .row {
+            padding-left: 5px;
+            padding-right: 5px;
+        }
+
+        #starting_station {
+            font-size: 280%;
+            white-space: nowrap;
+            overflow: hidden;
+            font-weight: bolder;
+            transform: translate(0%, -0%);
+        }
+
+        #operator {
+            font-size: 160%;
+            white-space: nowrap;
+            overflow: hidden;
+            transform: translate(0%, -10%);
+        }
+
+        #row1,
+        #row3 {
+            margin-bottom: 0px;
+        }
+
+        #delay_box {
+            margin-top: 5px;
+            height: 65px;
+        }
+
+        #delay_background {
+            background-color: red;
+            display: flex;
+            width: fit-content;
+            height: 65%;
+            transform: translate(0%, 5%);
+        }
+
+        #row2 {
+            height: 75px;
+            margin-bottom: 0px;
+        }
+
+        #delay {
+            font-size: 290%;
+            font-weight: bolder;
+            transform: translate(0%, -15%);
+        }
+
+        #row3 {
+            background-color: maroon;
+            height: 177px;
+        }
+
+        #terminates_box {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            width: 100%;
+            transform: translateY(-5px);
+        }
+
+        #terminates_pl {
+            font-size: 500%;
+        }
+
+        #terminates_en {
+            font-size: 380%;
+        }
+
+        #info_bar_box {
+            width: 100%;
+            height: 38px;
+            margin: 0;
+            background-color: #2f353d;
+        }
+
+        #info_bar {
+            font-size: 160%;
+            width: 100%;
+            font-weight: bolder;
+            font-style: italic;
+        }
+
+        /* Scroll text */
+
+        .box_scroll {
+            display: flex;
+            overflow: visible;
+            white-space: nowrap;
+            align-items: center;
+        }
+
+        /* Rainbow background effect */
+
+        @keyframes rainbow {
+            0% {
+                background-position: 0% 82%
+            }
+
+            50% {
+                background-position: 100% 19%
+            }
+
+            100% {
+                background-position: 0% 82%
+            }
+        }
+
+        .rainbow {
+            background: linear-gradient(270deg, #f00, #ff0, #0f0, #0ff, #00f, #f0f, #f00);
+            background-size: 1400% 1400%;
+            animation: rainbow 10s ease infinite;
+        }
+    </style>
     <script>
         window.addEventListener('resize', scaleDisplay);
         document.addEventListener('DOMContentLoaded', function () {
@@ -166,7 +346,123 @@
             </ul>
         </li>
     </div>
-    <!-- The ids are used for replacing the template value -->
+    <script>
+        /*
+This helper function makes a group of elements animate along the x-axis in a seamless, responsive loop.
+
+Features:
+- Uses xPercent so that even if the widths change (like if the window gets resized), it should still work in most cases.
+- When each item animates to the left or right enough, it will loop back to the other side
+- Optionally pass in a config object with values like "speed" (default: 1, which travels at roughly 100 pixels per second), paused (boolean),  repeat, reversed, and paddingRight.
+- The returned timeline will have the following methods added to it:
+- next() - animates to the next element using a timeline.tweenTo() which it returns. You can pass in a vars object to control duration, easing, etc.
+- previous() - animates to the previous element using a timeline.tweenTo() which it returns. You can pass in a vars object to control duration, easing, etc.
+- toIndex() - pass in a zero-based index value of the element that it should animate to, and optionally pass in a vars object to control duration, easing, etc. Always goes in the shortest direction
+- current() - returns the current index (if an animation is in-progress, it reflects the final index)
+- times - an Array of the times on the timeline where each element hits the "starting" spot. There's also a label added accordingly, so "label1" is when the 2nd element reaches the start.
+*/
+        function horizontalLoop(items, config) {
+            items = gsap.utils.toArray(items);
+            config = config || {};
+            let tl = gsap.timeline({
+                repeat: config.repeat,
+                paused: config.paused,
+                defaults: { ease: "none" },
+                onReverseComplete: () => tl.totalTime(tl.rawTime() + tl.duration() * 100),
+            }),
+                length = items.length,
+                startX = items[0].offsetLeft,
+                times = [],
+                widths = [],
+                xPercents = [],
+                curIndex = 0,
+                pixelsPerSecond = (config.speed || 1) * 100,
+                snap = config.snap === false ? (v) => v : gsap.utils.snap(config.snap || 1), // some browsers shift by a pixel to accommodate flex layouts, so for example if width is 20% the first element's width might be 242px, and the next 243px, alternating back and forth. So we snap to 5 percentage points to make things look more natural
+                totalWidth,
+                curX,
+                distanceToStart,
+                distanceToLoop,
+                item,
+                i;
+            gsap.set(items, {
+                // convert "x" to "xPercent" to make things responsive, and populate the widths/xPercents Arrays to make lookups faster.
+                xPercent: (i, el) => {
+                    let w = (widths[i] = parseFloat(gsap.getProperty(el, "width", "px")));
+                    xPercents[i] = snap(
+                        (parseFloat(gsap.getProperty(el, "x", "px")) / w) * 100 +
+                        gsap.getProperty(el, "xPercent")
+                    );
+                    return xPercents[i];
+                },
+            });
+            gsap.set(items, { x: 0 });
+            totalWidth =
+                items[length - 1].offsetLeft +
+                (xPercents[length - 1] / 100) * widths[length - 1] -
+                startX +
+                items[length - 1].offsetWidth *
+                gsap.getProperty(items[length - 1], "scaleX") +
+                (parseFloat(config.paddingRight) || 0);
+            for (i = 0; i < length; i++) {
+                item = items[i];
+                curX = (xPercents[i] / 100) * widths[i];
+                distanceToStart = item.offsetLeft + curX - startX;
+                distanceToLoop =
+                    distanceToStart + widths[i] * gsap.getProperty(item, "scaleX");
+                tl.to(
+                    item,
+                    {
+                        xPercent: snap(((curX - distanceToLoop) / widths[i]) * 100),
+                        duration: distanceToLoop / pixelsPerSecond,
+                    },
+                    0
+                )
+                    .fromTo(
+                        item,
+                        {
+                            xPercent: snap(
+                                ((curX - distanceToLoop + totalWidth) / widths[i]) * 100
+                            ),
+                        },
+                        {
+                            xPercent: xPercents[i],
+                            duration:
+                                (curX - distanceToLoop + totalWidth - curX) / pixelsPerSecond,
+                            immediateRender: false,
+                        },
+                        distanceToLoop / pixelsPerSecond
+                    )
+                    .add("label" + i, distanceToStart / pixelsPerSecond);
+                times[i] = distanceToStart / pixelsPerSecond;
+            }
+            function toIndex(index, vars) {
+                vars = vars || {};
+                Math.abs(index - curIndex) > length / 2 &&
+                    (index += index > curIndex ? -length : length); // always go in the shortest direction
+                let newIndex = gsap.utils.wrap(0, length, index),
+                    time = times[newIndex];
+                if (time > tl.time() !== index > curIndex) {
+                    // if we're wrapping the timeline's playhead, make the proper adjustments
+                    vars.modifiers = { time: gsap.utils.wrap(0, tl.duration()) };
+                    time += tl.duration() * (index > curIndex ? 1 : -1);
+                }
+                curIndex = newIndex;
+                vars.overwrite = true;
+                return tl.tweenTo(time, vars);
+            }
+            tl.next = (vars) => toIndex(curIndex + 1, vars);
+            tl.previous = (vars) => toIndex(curIndex - 1, vars);
+            tl.current = () => curIndex;
+            tl.toIndex = (index, vars) => toIndex(index, vars);
+            tl.times = times;
+            tl.progress(1, true).progress(0, true); // pre-render for performance
+            if (config.reversed) {
+                tl.vars.onReverseComplete();
+                tl.reverse();
+            }
+            return tl;
+        }
+    </script>
 </body>
 
 </html>
