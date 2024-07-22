@@ -44,29 +44,23 @@ function getProcessedData(display_id) {
 function getDataFromAPI() {
     let saved = false;
 
-    if (window.localStorage.getItem("version") = window.versionID) {
+    if (window.localStorage.getItem("version") === window.versionID) {
         saved = true;
     }
 
-    getTimetablesAPI(saved);
+    getTimetablesAPI();
     getPlatformsAPI(saved);
 
     window.localStorage.setItem("version", window.versionID);
 }
 
-function getTimetablesAPI(saved = false) {
-    let savedData = window.localStorage.getItem("timetablesData");
-
-    if ((savedData) && (saved)) {
-        window.timetablesData = savedData;
-    } else {
-        fetch(window.timetablesAPI_URL)
-            .then(response => response.json())
-            .then(data => {
-                window.timetablesData = data;
-                window.localStorage.setItem("timetablesData", JSON.stringify(data));
-            });
-    }
+function getTimetablesAPI() {
+    fetch(window.timetablesAPI_URL)
+        .then(response => response.json())
+        .then(data => {
+            window.timetablesData = data;
+            window.sessionStorage.setItem("timetablesData", JSON.stringify(data));
+        });
 }
 
 function getPlatformsAPI(saved = false) {
