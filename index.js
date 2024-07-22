@@ -1,5 +1,8 @@
 window.timetablesAPI_URL = 'https://stacjownik.spythere.eu/api/getActiveTrainList';
+window.platformsAPI_URL = 'https://raw.githubusercontent.com/Ja-Tar/WTIP/main/platforms_info.json'
 window.timetablesData = [];
+window.platformsData = [];
+window.versionID = "0.0.1"
 
 function createIframe() {
     const track_display = document.getElementsByClassName('track_display');
@@ -37,15 +40,51 @@ function getProcessedData(display_id) {
     return json;
 }
 
-/* Testing
+
 function getDataFromAPI() {
-    fetch(window.timetablesAPI_URL)
-        .then(response => response.json())
-        .then(data => {
-            window.timetablesData = data;
-        });
+    let saved = false;
+
+    if (window.localStorage.getItem("version") = window.versionID) {
+        saved = true;
+    }
+
+    getTimetablesAPI(saved);
+    getPlatformsAPI(saved);
+
+    window.localStorage.setItem("version", window.versionID);
 }
 
+function getTimetablesAPI(saved = false) {
+    let savedData = window.localStorage.getItem("timetablesData");
+
+    if ((savedData) && (saved)) {
+        window.timetablesData = savedData;
+    } else {
+        fetch(window.timetablesAPI_URL)
+            .then(response => response.json())
+            .then(data => {
+                window.timetablesData = data;
+                window.localStorage.setItem("timetablesData", JSON.stringify(data));
+            });
+    }
+}
+
+function getPlatformsAPI(saved = false) {
+    let savedData = window.localStorage.getItem("platformsData");
+
+    if ((savedData) && (saved)) {
+        window.platformsData = savedData;
+    } else {
+        fetch(window.platformsAPI_URL)
+            .then(response => response.json())
+            .then(data => {
+                window.platformsData = data;
+                window.localStorage.setItem("platformsData", JSON.stringify(data));
+            });
+    }
+}
+
+/* Testing
 function updateDisplay() {
 
 }
@@ -58,3 +97,4 @@ setTimeout(() => {
 */
 
 createIframe();
+getDataFromAPI();
