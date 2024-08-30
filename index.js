@@ -3,8 +3,8 @@ window.sceneryAPI_URL = 'https://stacjownik.spythere.eu/api/getSceneries';
 window.platformsAPI_URL = 'https://raw.githubusercontent.com/Ja-Tar/WTIP/main/platforms_info.json'
 window.timetablesData = [];
 window.platformsData = [];
-window.pointData = [];
-window.versionID = "0.0.3"
+window.checkpointData = [];
+window.versionID = "0.0.4"
 
 function createIframe() {
     const track_display = document.getElementsByClassName('track_display');
@@ -44,6 +44,10 @@ function getProcessedData(display_id) {
 function getDataFromAPI() {
     let saved = false;
     let sceneryInput = document.getElementById("scenery");
+    let platformsLayout = document.getElementById("platforms_layout");
+    
+    sceneryInput.value = "";
+    platformsLayout.value = "";
 
     sceneryInput.setAttribute('list', 'scenery_list');
 
@@ -92,13 +96,19 @@ function updateTextScenery() {
         let station = sceneryInput.value;
         updatePointsSelect(station);
     });
+
+    let pointsSelect = document.getElementById("point");
+
+    pointsSelect.addEventListener("input", function () {
+        updatePlatformsText()
+    });
 }
 
 function updatePointsSelect(station) {
     let pointsSelect = document.getElementById("point");
 
     pointsSelect.innerHTML = "";
-    pointData = [];
+    checkpointData = [];
 
     for (let i = 0; i < window.platformsData.length; i++) {
         if (window.platformsData[i].station === station) {
@@ -107,7 +117,7 @@ function updatePointsSelect(station) {
                 option.value = window.platformsData[i].checkpoints[j].pname;
                 option.innerHTML = window.platformsData[i].checkpoints[j].pname;
                 pointsSelect.appendChild(option);
-                pointData.push(window.platformsData[i].checkpoints[j].platforms);
+                checkpointData.push(window.platformsData[i].checkpoints[j]);
             }
         }
     }
@@ -120,22 +130,32 @@ function updatePointsSelect(station) {
         option.innerHTML = "Nie wybrano";
         pointsSelect.appendChild(option);
     }
-
-    pointsSelect.addEventListener("input", function () {
-        updatePlatformsText()
-    });
 }
 
 function updatePlatformsText() {
-    let platformsLayout = document.getElementById("platforms_leyout");
+    let platformsLayout = document.getElementById("platforms_layout");
+    let point = document.getElementById("point").value;
+    let pointData = checkpointData.platforms;
 
     platformsLayout.value = "";
 
-    for (let i = 0; i < pointData.length; i++) {
-        let platforms = Object.keys(pointData[i])
-        for (let j = 0; j < platforms.length; j++) {
-            let platformname = platforms[j][0] + j;
-            let tracknr = pointData[i][platforms[j]];
+    if (checkpointData.length === 0) {
+        platformsLayout.disabled = false;
+        return;
+    }
+
+    platformsLayout.disabled = true;
+
+    for (let y = 0; y < checkpointData.length; y++) {
+        if (checkpointData[y].pname !== point) {
+            continue;
+        }
+
+        let _platforms = Object.keys(checkpointData[y].platforms);
+
+        for (let i = 0; i < _platforms.length; i++) {
+            let platformname = _platforms[i][0] + i;
+            let tracknr = checkpointData[y].platforms[_platforms[i]];
             platformsLayout.value += platformname + "-" + tracknr + "; ";
         }
     }
