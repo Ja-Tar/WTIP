@@ -1,4 +1,5 @@
 window.timetablesAPI_URL = 'https://stacjownik.spythere.eu/api/getActiveTrainList';
+window.sceneryAPI_URL = 'https://stacjownik.spythere.eu/api/getSceneries';
 window.platformsAPI_URL = 'https://raw.githubusercontent.com/Ja-Tar/WTIP/main/platforms_info.json'
 window.timetablesData = [];
 window.platformsData = [];
@@ -7,7 +8,6 @@ window.versionID = "0.0.1"
 function createIframe() {
     const track_display = document.getElementsByClassName('track_display');
 
-    // Set the source of the iframe to a Blob URL
     fetch('template_WAW_ZACH.html')
         .then(response => response.blob())
         .then(blob => {
@@ -48,34 +48,65 @@ function getDataFromAPI() {
         saved = true;
     }
 
-    getTimetablesAPI();
-    getPlatformsAPI(saved);
+    getSceneryAPI().then(() => {
+        updateSelectScenery();
+    });
+    //getTimetablesAPI();
+    //getPlatformsAPI(saved);
+    
 
     window.localStorage.setItem("version", window.versionID);
+
+    setTimeout(() => {
+        //getTimetablesAPI();
+        //getPlatformsAPI();
+        //getSceneryAPI();
+        //updateSelectScenery();
+    }, 60000);
 }
 
-function getTimetablesAPI() {
-    fetch(window.timetablesAPI_URL)
+function updateSelectScenery() {
+    let scenerySelect = document.getElementById("scenery");
+
+    scenerySelect.innerHTML = "";
+
+    for (let i = 0; i < window.sceneryData.length; i++) {
+        let option = document.createElement("option");
+        option.text = window.sceneryData[i].name;
+        option.value = window.sceneryData[i].id;
+        scenerySelect.add(option);
+    }
+}
+
+async function getTimetablesAPI() {
+    await fetch(window.timetablesAPI_URL)
         .then(response => response.json())
         .then(data => {
             window.timetablesData = data;
-            window.sessionStorage.setItem("timetablesData", JSON.stringify(data));
         });
 }
 
-function getPlatformsAPI(saved = false) {
+async function getPlatformsAPI(saved = false) {
     let savedData = window.localStorage.getItem("platformsData");
 
     if ((savedData) && (saved)) {
         window.platformsData = savedData;
     } else {
-        fetch(window.platformsAPI_URL)
+        await fetch(window.platformsAPI_URL)
             .then(response => response.json())
             .then(data => {
                 window.platformsData = data;
                 window.localStorage.setItem("platformsData", JSON.stringify(data));
             });
     }
+}
+
+async function getSceneryAPI() {
+    await fetch(window.sceneryAPI_URL)
+        .then(response => response.json())
+        .then(data => {
+            window.sceneryData = data;
+        });
 }
 
 /* Testing
