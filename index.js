@@ -40,7 +40,6 @@ function getProcessedData(display_id) {
     return json;
 }
 
-
 function getDataFromAPI() {
     let saved = false;
     let sceneryInput = document.getElementById("scenery");
@@ -52,11 +51,13 @@ function getDataFromAPI() {
     }
 
     getSceneryAPI().then(() => {
-        updateTextScenery();
+        getPlatformsAPI(saved).then(() => {
+            updateTextScenery();
+        });
     });
     //getTimetablesAPI();
-    //getPlatformsAPI(saved);
-    
+    getPlatformsAPI(saved);
+
 
     window.localStorage.setItem("version", window.versionID);
 
@@ -79,11 +80,31 @@ function updateTextScenery() {
     }
 
     sceneryList.innerHTML = "";
-    
+
     for (let i = 0; i < window.sceneryData.length; i++) {
         let option = document.createElement("option");
         option.value = window.sceneryData[i].name;
         sceneryList.appendChild(option);
+    }
+
+    sceneryInput.addEventListener("input", function () {
+        let station = sceneryInput.value;
+        updatePointsSelect(station);
+    });
+}
+
+function updatePointsSelect(station) {
+    let pointsSelect = document.getElementById("point");
+
+    pointsSelect.innerHTML = "";
+
+    for (let i = 0; i < window.platformsData.length; i++) {
+        console.log(window.platformsData[i].station);
+        if (window.platformsData[i].station === station) {
+            let option = document.createElement("option");
+            option.value = window.platformsData[i].platforms.pname;
+            pointsSelect.appendChild(option);
+        }
     }
 }
 
@@ -99,7 +120,7 @@ async function getPlatformsAPI(saved = false) {
     let savedData = window.localStorage.getItem("platformsData");
 
     if ((savedData) && (saved)) {
-        window.platformsData = savedData;
+        window.platformsData = JSON.parse(savedData);
     } else {
         await fetch(window.platformsAPI_URL)
             .then(response => response.json())

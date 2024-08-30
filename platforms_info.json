@@ -1,21 +1,31 @@
-{
-    "Hetmanice": {
-        "Hetmanice": {
-            "Peron 1":[1, 3],
-            "Peron 2":[2, 4]
-        }
+[
+    {
+        "station": "Hetmanice",
+        "platforms": [
+            {
+                "pname": "Hetmanice",
+                "Peron 1": [1, 3],
+                "Peron 2": [2, 4]
+            }
+        ]
     },
-    "Czermin": {
-        "Czermin Południe, po": {
-            "Peron 1":[1],
-            "Peron 2":[2]
-        },
-        "Czermin": { 
-            "Peron 1":[1, 3],
-            "Peron 2":[2, 4]
-        },
-        "Czermin Kolonia, po": {
-            "Peron 1":[1]
-        }
+    {
+        "station": "Czermin",
+        "platforms":[
+            {
+                "pname": "Czermin Południe, po",
+                "Peron 1":[1],
+                "Peron 2":[2]
+            },
+            {
+                "pname": "Czermin",
+                "Peron 1":[1, 3],
+                "Peron 2":[2, 4]
+            },
+            {
+                "pname": "Czermin Kolonia, po",
+                "Peron 1":[1]
+            }
+        ]
     }
-}
+]
