@@ -43,13 +43,16 @@ function getProcessedData(display_id) {
 
 function getDataFromAPI() {
     let saved = false;
+    let sceneryInput = document.getElementById("scenery");
+
+    sceneryInput.setAttribute('list', 'scenery_list');
 
     if (window.localStorage.getItem("version") === window.versionID) {
         saved = true;
     }
 
     getSceneryAPI().then(() => {
-        updateSelectScenery();
+        updateTextScenery();
     });
     //getTimetablesAPI();
     //getPlatformsAPI(saved);
@@ -61,20 +64,26 @@ function getDataFromAPI() {
         //getTimetablesAPI();
         //getPlatformsAPI();
         //getSceneryAPI();
-        //updateSelectScenery();
+        //updateTextScenery();
     }, 60000);
 }
 
-function updateSelectScenery() {
-    let scenerySelect = document.getElementById("scenery");
+function updateTextScenery() {
+    var sceneryInput = document.getElementById("scenery");
+    var sceneryList = document.getElementById("scenery_list");
 
-    scenerySelect.innerHTML = "";
+    if (!sceneryList) {
+        sceneryList = document.createElement("datalist");
+        sceneryList.id = "scenery_list";
+        sceneryInput.appendChild(sceneryList);
+    }
 
+    sceneryList.innerHTML = "";
+    
     for (let i = 0; i < window.sceneryData.length; i++) {
         let option = document.createElement("option");
-        option.text = window.sceneryData[i].name;
-        option.value = window.sceneryData[i].id;
-        scenerySelect.add(option);
+        option.value = window.sceneryData[i].name;
+        sceneryList.appendChild(option);
     }
 }
 
