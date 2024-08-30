@@ -4,7 +4,7 @@ window.platformsAPI_URL = 'https://raw.githubusercontent.com/Ja-Tar/WTIP/main/pl
 window.timetablesData = [];
 window.platformsData = [];
 window.checkpointData = [];
-window.versionID = "0.0.4"
+window.platformsVersionID = "0.0.5"
 
 function createIframe() {
     const track_display = document.getElementsByClassName('track_display');
@@ -51,7 +51,7 @@ function getDataFromAPI() {
 
     sceneryInput.setAttribute('list', 'scenery_list');
 
-    if (window.localStorage.getItem("version") === window.versionID) {
+    if (window.localStorage.getItem("version") === window.platformsVersionID) {
         saved = true;
     }
 
@@ -64,7 +64,7 @@ function getDataFromAPI() {
     getPlatformsAPI(saved);
 
 
-    window.localStorage.setItem("version", window.versionID);
+    window.localStorage.setItem("version", window.platformsVersionID);
 
     setTimeout(() => {
         //getTimetablesAPI();
