@@ -3,7 +3,7 @@ window.sceneryAPI_URL = 'https://stacjownik.spythere.eu/api/getSceneries';
 window.platformsAPI_URL = 'https://raw.githubusercontent.com/Ja-Tar/WTIP/main/platforms_info.json'
 window.timetablesData = [];
 window.platformsData = [];
-window.versionID = "0.0.1"
+window.versionID = "0.0.2"
 
 function createIframe() {
     const track_display = document.getElementsByClassName('track_display');
@@ -99,13 +99,32 @@ function updatePointsSelect(station) {
     pointsSelect.innerHTML = "";
 
     for (let i = 0; i < window.platformsData.length; i++) {
-        console.log(window.platformsData[i].station);
         if (window.platformsData[i].station === station) {
-            let option = document.createElement("option");
-            option.value = window.platformsData[i].platforms.pname;
-            pointsSelect.appendChild(option);
+            for (let j = 0; j < window.platformsData[i].platforms.length; j++) {
+                let option = document.createElement("option");
+                console.log(window.platformsData[i].platforms[j].pname);
+                option.value = window.platformsData[i].platforms[j].pname;
+                option.innerHTML = window.platformsData[i].platforms[j].pname;
+                pointsSelect.appendChild(option);
+            }
         }
     }
+
+    if (pointsSelect.length === 0) {
+        let option = document.createElement("option");
+        option.value = "none";
+        option.innerHTML = "Nie wybrano";
+        pointsSelect.appendChild(option);
+    }
+
+    pointsSelect.addEventListener("input", function () {
+        
+    });
+}
+
+function updatePlatformsText() {
+    let platformsLayout = document.getElementById("platforms_leyout");
+    
 }
 
 async function getTimetablesAPI() {
