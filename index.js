@@ -3,6 +3,7 @@ window.sceneryAPI_URL = 'https://stacjownik.spythere.eu/api/getSceneries';
 window.platformsAPI_URL = 'https://raw.githubusercontent.com/Ja-Tar/WTIP/main/platforms_info.json'
 window.timetablesData = [];
 window.platformsData = [];
+window.pointData = [];
 window.versionID = "0.0.2"
 
 function createIframe() {
@@ -97,15 +98,17 @@ function updatePointsSelect(station) {
     let pointsSelect = document.getElementById("point");
 
     pointsSelect.innerHTML = "";
+    pointData = [];
 
     for (let i = 0; i < window.platformsData.length; i++) {
         if (window.platformsData[i].station === station) {
             for (let j = 0; j < window.platformsData[i].platforms.length; j++) {
                 let option = document.createElement("option");
-                console.log(window.platformsData[i].platforms[j].pname);
-                option.value = window.platformsData[i].platforms[j].pname;
-                option.innerHTML = window.platformsData[i].platforms[j].pname;
+                console.log(window.platformsData[i].checkpoints[j].pname);
+                option.value = window.platformsData[i].checkpoints[j].pname;
+                option.innerHTML = window.platformsData[i].checkpoints[j].pname;
                 pointsSelect.appendChild(option);
+                pointData.push(window.platformsData[i].checkpoints[j].platforms);
             }
         }
     }
@@ -124,7 +127,12 @@ function updatePointsSelect(station) {
 
 function updatePlatformsText() {
     let platformsLayout = document.getElementById("platforms_leyout");
+    let pointsValue = document.getElementById("point").value;
+
+    platformsLayout.innerHTML = "";
+
     
+
 }
 
 async function getTimetablesAPI() {
