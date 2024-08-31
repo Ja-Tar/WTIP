@@ -17,6 +17,14 @@ document.getElementById("submit").addEventListener("click", function () {
     }
 });
 
+document.getElementById("language_switch").addEventListener("click", function () {
+    if (document.documentElement.lang === "pl") {
+        window.location.href = "index_en.html";
+    } else if (document.documentElement.lang === "en") {
+        window.location.href = "index.html";
+    }
+});
+
 function buttonSetDisplay() {
     let platformsLayout = document.getElementById("platforms_layout");
 
