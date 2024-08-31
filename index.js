@@ -76,7 +76,7 @@ function getProcessedData(display_id) {
     json.firstStation = "None";
     json.via_stations = "None";
     json.operator = "---";
-    json.info_bar = ""//`Tor: ${display_id}`;
+    json.info_bar = "UWAGA!: Trwają testy systemu"//`Tor: ${display_id}`;
     json.delay = 0;
     json.colorbar = "#2f353d";
     json.colorfont = "#ffffff";
@@ -313,7 +313,11 @@ function updatePointsSelect(station) {
     if (pointsSelect.length === 0) {
         let option = document.createElement("option");
         option.value = "none";
-        option.innerHTML = "Nie wybrano";
+        if (document.documentElement.lang === "pl") {
+            option.innerHTML = "Nie wybrano";
+        } else if (document.documentElement.lang === "en") {
+            option.innerHTML = "None";
+        }
         pointsSelect.appendChild(option);
     }
 }
