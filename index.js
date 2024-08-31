@@ -290,8 +290,8 @@ function showDisplays(platformsConfig) { // example showDisplays("P1-1,3; P2-2,4
 // All functions for updating text fields and select options
 
 function updateTextScenery() {
-    var sceneryInput = document.getElementById("scenery");
-    var sceneryList = document.getElementById("scenery_list");
+    let sceneryInput = document.getElementById("scenery");
+    let sceneryList = document.getElementById("scenery_list");
 
     if (!sceneryList) {
         sceneryList = document.createElement("datalist");
