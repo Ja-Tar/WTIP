@@ -6,6 +6,16 @@ window.platformsData = [];
 window.checkpointData = [];
 window.platformsVersionID = "0.0.5"
 
+document.getElementById("submit").addEventListener("click", function () {
+    buttonSetDisplay();
+});
+
+function buttonSetDisplay() {
+    let platformsLayout = document.getElementById("platforms_layout");
+
+    showDisplays(platformsLayout.value);
+}
+
 function createIframe() {
     const track_display = document.getElementsByClassName('track_display');
 
@@ -78,6 +88,8 @@ function getDataFromAPI() {
 
 function showDisplays(platformsConfig) { // example showDisplays("P1-1,3; P2-2,4; ")
     let platformRow = document.getElementById("platform_row");
+
+    platformRow.innerHTML = "";
     
     platformsConfig = platformsConfig.split(";");
     platformsConfig = platformsConfig.slice(0, -1);
