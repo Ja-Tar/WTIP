@@ -290,7 +290,7 @@ function showDisplays(platformsConfig) { // example showDisplays("P1-1,3; P2-2,4
 // All functions for updating text fields and select options
 
 function updateTextScenery() {
-    let sceneryInput = document.getElementById("scenery");
+    const sceneryInput = document.getElementById("scenery");
     let sceneryList = document.getElementById("scenery_list");
 
     if (!sceneryList) {
