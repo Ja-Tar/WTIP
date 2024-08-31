@@ -188,8 +188,9 @@
             var infoBar = document.getElementById('info_bar');
             var infoBarBox = document.getElementById('info_bar_box');
             var delay = document.getElementById('delay');
+            var urlParamsEncoded = location.href.split('#')[1];
 
-            var urlParams = location.href.split('#')[1].split('&').reduce(function (urlParams, param) {
+            var urlParams = decodeURIComponent(urlParamsEncoded).split('&').reduce(function (urlParams, param) {
                 var paramKeyValue = param.split('=');
                 urlParams.set(paramKeyValue[0], decodeURIComponent(paramKeyValue[1]));
                 return urlParams;
@@ -226,6 +227,22 @@
             } else {
                 infoBar.parentElement.style.display = "none"
                 infoBarBox.style.backgroundColor = "transparent";
+            }
+
+            if (urlParams.has('empty') && urlParams.get('empty') == 'true') {
+                time.innerHTML = "     "
+                trainNumber.innerHTML = " "
+                destination.innerHTML = " "
+                viaStations.innerHTML = " "
+                operator.innerHTML = " "
+                delay.innerHTML = " "
+                
+                let labels = document.getElementsByClassName('label');
+                for (let i = 0; i < labels.length; i++) {
+                    labels[i].style.color = 'transparent';
+                }
+    
+                return;
             }
         }
 

@@ -15,9 +15,10 @@ function createIframe() {
             let blobUrl = URL.createObjectURL(blob);
 
             for (let i = 0; i < track_display.length; i++) {
-                const { time, train_number, destination, via_stations, operator, info_bar, delay, colorbar, colorfont } = getProcessedData(i);
-                const blobUrlParm = blobUrl + `#time=${time}&train_number=${train_number}&destination=${destination}&via_stations=${via_stations}&operator=${operator}&info_bar=${info_bar}&delay=${delay}&colorbar=${colorbar}&colorfont=${colorfont}`;
-
+                const { time, train_number, destination, via_stations, operator, info_bar, delay, colorbar, colorfont, empty} = getProcessedData(track_display[i].id);
+                const params = `time=${time}&train_number=${train_number}&destination=${destination}&via_stations=${via_stations}&operator=${operator}&info_bar=${info_bar}&delay=${delay}&colorbar=${colorbar}&colorfont=${colorfont}&empty=${empty}`;
+                const blobUrlParm = blobUrl + "#" + encodeURIComponent(params);
+                
                 const iframe = document.createElement('iframe');
                 iframe.src = blobUrlParm;
                 iframe.classList.add('iframe_display');
@@ -28,15 +29,16 @@ function createIframe() {
 
 function getProcessedData(display_id) {
     let json = {};
-    json.time = "12:01";
-    json.train_number = "222";
-    json.destination = "222";
-    json.via_stations = "222";
-    json.operator = "222";
-    json.info_bar = `id: ${display_id}`;
+    json.time = "221";
+    json.train_number = "22";
+    json.destination = "22";
+    json.via_stations = "22";
+    json.operator = "22";
+    json.info_bar = `Peron: ${display_id}`;
     json.delay = 0;
     json.colorbar = "#2f353d";
     json.colorfont = "#ffffff";
+    json.empty = "true";
 
     return json;
 }
@@ -74,7 +76,7 @@ function getDataFromAPI() {
     }, 60000);
 }
 
-function showDisplays(platformsConfig) {
+function showDisplays(platformsConfig) { // example showDisplays("P1-1,3; P2-2,4; ")
     let platformRow = document.getElementById("platform_row");
     
     platformsConfig = platformsConfig.split(";");
@@ -102,7 +104,7 @@ function showDisplays(platformsConfig) {
         for (let j = 0; j < trackNumbers.length; j++) {
             let trackDisplay = document.createElement("div");
             trackDisplay.className = "track_display";
-            trackDisplay.id = "track_display_" + platformNumber + "_" + trackNumbers[j];
+            trackDisplay.id = trackNumbers[j];
             platformTracks.appendChild(trackDisplay);
 
             let trackName = document.createElement("div");
