@@ -4,7 +4,7 @@ window.platformsAPI_URL = 'https://raw.githubusercontent.com/Ja-Tar/WTIP/main/pl
 window.timetablesData = [];
 window.platformsData = [];
 window.checkpointData = [];
-window.platformsVersionID = "0.0.5"
+window.platformsVersionID = "0.0.10"
 
 document.getElementById("submit").addEventListener("click", function () {
     if (window.timetablesData) {
@@ -64,17 +64,43 @@ function processTimetablesData() {
     let checkpoint = document.getElementById("point").value;
 
     let timetableData = window.timetablesData;
+    let dataToDisplay = [];
 
     for (let i = 0; i < timetableData.length; i++) {
         if (timetableData[i].region === server) {
             let timetable = timetableData[i].timetable;
+            let trainNo = timetableData[i].trainNo;      
 
             if (timetable) {
+                let route = timetable.route.split("|");
+                let firstStation = route[0];
+                let lastStation = route[1];
+                let viaStations = [];
                 let stopList = timetable.stopList;
+                let comments = timetable.comments; // search for [peron],[tor] in comments
+                comments = "sss 1,2 sss" // REMOVE: test 
 
                 for (let j = 0; j < stopList.length; j++) {
+                    if (stopList[j].mainStop === true) {
+                        viaStations.push(stopList[j].stopNameRAW);
+                    }
                     if (stopList[j].stopNameRAW === checkpoint) {
-                        console.log(stopList[j].stopNameRAW);
+                        if (stopList[j].confirmed === 0) {
+                            if (stopList[j].stopped === 0) {
+                                comments = comments.split(",");
+                                let platform = comments[0].slice(-1)[0];
+                                let track = Array.from(comments[1])[0];
+                                let delay = stopList[j].departureDelay;
+                                let arrivalTimestamp = stopList[j].arrivalTimestamp;
+                                let departureTimestamp = stopList[j].departureTimestamp;
+
+                                
+
+                                console.log(stopList[j], trainNo, platform, track, delay, viaStations);
+                            } else {
+                                console.log(stopList[j], trainNo, "Stopped");
+                            }
+                        }
                     }
                 }
             }
