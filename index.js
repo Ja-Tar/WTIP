@@ -31,12 +31,33 @@ function loadFrames() {
         oldFrames[i].remove();
     }
 
-    let URL = "https://ktip.pages.dev/template_WAW_ZACH"
+    let URL = ""
 
     for (let i = 0; i < track_display.length; i++) {
-        const { time, train_number, destination, via_stations, operator, info_bar, delay, colorbar, colorfont, empty } = getProcessedData(track_display[i].id);
-        const params = `time=${time}&train_number=${train_number}&destination=${destination}&via_stations=${via_stations}&operator=${operator}&info_bar=${info_bar}&delay=${delay}&colorbar=${colorbar}&colorfont=${colorfont}&empty=${empty}`;
-        const blobUrlParm = URL + "?" + encodeURIComponent(params);
+        let { time, train_number, destination, firstStation, via_stations, operator, info_bar, delay, colorbar, colorfont, empty, terminatesHere } = getProcessedData(track_display[i].id);
+        time = encodeURIComponent(time);
+        train_number = encodeURIComponent(train_number);
+        destination = encodeURIComponent(destination);
+        firstStation = encodeURIComponent(firstStation);
+        via_stations = encodeURIComponent(via_stations);
+        operator = encodeURIComponent(operator);
+        info_bar = encodeURIComponent(info_bar);
+        delay = encodeURIComponent(delay);
+        colorbar = encodeURIComponent(colorbar);
+        colorfont = encodeURIComponent(colorfont);
+        empty = encodeURIComponent(empty);
+
+        let params = "";
+
+        if (terminatesHere === true) {
+            URL = "https://ktip.pages.dev/template_WAW_ZACH_termination.html"
+            params = `time_of_arrival=${time}&train_number=${train_number}&starting_station=${firstStation}&via_stations=${via_stations}&operator=${operator}&info_bar=${info_bar}&delay=${delay}&colorbar=${colorbar}&colorfont=${colorfont}`;
+        } else {
+            URL = "https://ktip.pages.dev/template_WAW_ZACH.html"
+            params = `time=${time}&train_number=${train_number}&destination=${destination}&via_stations=${via_stations}&operator=${operator}&info_bar=${info_bar}&delay=${delay}&colorbar=${colorbar}&colorfont=${colorfont}&empty=${empty}`;
+        }
+        
+        const blobUrlParm = URL + "?" + params;
 
         const iframe = document.createElement('iframe');
         iframe.src = blobUrlParm;
@@ -52,6 +73,7 @@ function getProcessedData(display_id) {
     json.time = "None";
     json.train_number = "None";
     json.destination = "None";
+    json.firstStation = "None";
     json.via_stations = "None";
     json.operator = "---";
     json.info_bar = `Tor: ${display_id}`;
@@ -59,6 +81,7 @@ function getProcessedData(display_id) {
     json.colorbar = "#2f353d";
     json.colorfont = "#ffffff";
     json.empty = "true";
+    json.terminatesHere = false;
 
     let closestTrain = null;
     let closestArrivalTime = Infinity;
@@ -82,9 +105,11 @@ function getProcessedData(display_id) {
                 json.time = new Date(arrivalTimestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }); // "HH:MM"
                 json.train_number = trainNo;
                 json.destination = lastStation;
+                json.firstStation = firstStation;
                 json.via_stations = viaStations.join(", ");
                 json.delay = delay;
                 json.empty = "false";
+                json.terminatesHere = dataToDisplay[i].terminatesHere;
             } else {
                 console.log("Not closest arrival time: ", arrivalTimestamp, trainNo);
             }
@@ -144,7 +169,8 @@ function processTimetablesData() {
                                 "departureTimestamp": departureTimestamp,
                                 "stopped": stopList[j].stopped,
                                 "firstStation": firstStation,
-                                "lastStation": lastStation
+                                "lastStation": lastStation,
+                                "terminatesHere": stopList[j].terminatesHere
                             });
                             //} else {
                             //    console.log(stopList[j], trainNo, "Stopped");
@@ -183,11 +209,11 @@ function getDataFromAPI() {
     window.localStorage.setItem("version", window.platformsVersionID);
 
     setTimeout(() => {
-        //getTimetablesAPI();
-        //getPlatformsAPI();
-        //getSceneryAPI();
-        //updateTextScenery();
-    }, 60000);
+        getTimetablesAPI().then(() => {
+            processTimetablesData()
+            loadFrames();
+        });
+    }, 30000) // 1 minute for testing 300000); // 5 minutes
 }
 
 function showDisplays(platformsConfig) { // example showDisplays("P1-1,3; P2-2,4; ")
