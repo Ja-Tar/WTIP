@@ -82,6 +82,8 @@ function showDisplays(platformsConfig) {
 
     for (let i = 0; i < platformsConfig.length; i++) {
         let platformNumber = platformsConfig[i].split("-")[0].split("P")[1];
+        let trackNumbers = platformsConfig[i].split("-")[1].split(",");
+        console.log(platformNumber, trackNumbers);
 
         let platformDiv = document.createElement("div");
         platformDiv.className = "platform";
@@ -93,9 +95,24 @@ function showDisplays(platformsConfig) {
         platformName.innerHTML = "Peron " + platformNumber;
         platformDiv.appendChild(platformName);
 
-        
+        let platformTracks = document.createElement("div");
+        platformTracks.className = "platform_tracks";
+        platformDiv.appendChild(platformTracks);
+
+        for (let j = 0; j < trackNumbers.length; j++) {
+            let trackDisplay = document.createElement("div");
+            trackDisplay.className = "track_display";
+            trackDisplay.id = "track_display_" + platformNumber + "_" + trackNumbers[j];
+            platformTracks.appendChild(trackDisplay);
+
+            let trackName = document.createElement("div");
+            trackName.className = "track_name";
+            trackName.innerHTML = "Tor " + trackNumbers[j];
+            trackDisplay.appendChild(trackName);
+        }
     }
 
+    createIframe();
 }
 
 // All functions for updating text fields and select options
