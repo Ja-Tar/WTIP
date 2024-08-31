@@ -7,7 +7,10 @@ window.checkpointData = [];
 window.platformsVersionID = "0.0.5"
 
 document.getElementById("submit").addEventListener("click", function () {
-    buttonSetDisplay();
+    if (window.timetablesData) {
+        buttonSetDisplay();
+        processTimetablesData();
+    }
 });
 
 function buttonSetDisplay() {
@@ -53,6 +56,32 @@ function getProcessedData(display_id) {
     return json;
 }
 
+function processTimetablesData() {
+    // Po kliknięciu przycisku, sprawdza czy dana stacja jest w rozkładzie jazdy pociągu, 
+    //  sprawdza który peron, oraz sprawdza który pociąg najwcześniej przyjedzie na stację
+
+    let server = document.getElementById("server").value;
+    let checkpoint = document.getElementById("point").value;
+
+    let timetableData = window.timetablesData;
+
+    for (let i = 0; i < timetableData.length; i++) {
+        if (timetableData[i].region === server) {
+            let timetable = timetableData[i].timetable;
+
+            if (timetable) {
+                let stopList = timetable.stopList;
+
+                for (let j = 0; j < stopList.length; j++) {
+                    if (stopList[j].stopNameRAW === checkpoint) {
+                        console.log(stopList[j].stopNameRAW);
+                    }
+                }
+            }
+        }
+    }
+}
+
 function getDataFromAPI() {
     let saved = false;
     let sceneryInput = document.getElementById("scenery");
@@ -72,8 +101,7 @@ function getDataFromAPI() {
             updateTextScenery();
         });
     });
-    //getTimetablesAPI();
-
+    getTimetablesAPI()
 
     window.localStorage.setItem("version", window.platformsVersionID);
 
