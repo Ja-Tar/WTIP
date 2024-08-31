@@ -71,3 +71,9 @@ Trains are set to platform 1 by default. If you want to change it, enter in the 
 - [ ] Possibility to enter your own platform layout
 - [ ] Information whether the train is terminating
 - [ ] The information screen remains until the train departs
+
+# License
+
+All emojis designed by OpenMoji – the open-source emoji and icon project. License: CC BY-SA 4.0
+
+All other content is licensed under the GNU General Public License v3.0.

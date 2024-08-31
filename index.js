@@ -466,5 +466,4 @@ setTimeout(() => {
 
 */
 
-loadFrames();
 getDataFromAPI();
