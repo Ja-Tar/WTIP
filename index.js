@@ -76,7 +76,7 @@ function getProcessedData(display_id) {
     json.firstStation = "None";
     json.via_stations = "None";
     json.operator = "---";
-    json.info_bar = `Tor: ${display_id}`;
+    json.info_bar = ""//`Tor: ${display_id}`;
     json.delay = 0;
     json.colorbar = "#2f353d";
     json.colorfont = "#ffffff";
@@ -213,7 +213,7 @@ function getDataFromAPI() {
             processTimetablesData()
             loadFrames();
         });
-    }, 30000) // 1 minute for testing 300000); // 5 minutes
+    }, 60000); // 1 minute
 }
 
 function showDisplays(platformsConfig) { // example showDisplays("P1-1,3; P2-2,4; ")
