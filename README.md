@@ -1,8 +1,6 @@
 # PL 🇵🇱
 Strona do wyświetlenia tablic informacji pasażerskiej na podstawie danych z symulatora kolejowego TD2 ([Train Driver 2](https://td2.info.pl)).
 
-### W TRAKCIE PRAC (ale w większości skończone)
-
 ## Informacje
 
 Jeśli chcesz wygenerować swoje tablice informacyjne, skorzystaj z [generatora](https://ktip.pages.dev).
@@ -15,13 +13,13 @@ Pociągi domyślnie mają ustawiony tor 1. Jeśli chcesz to zmienić, wpisz w uw
  
 ## Funkcje
 
-- [ ] Możliwość wyboru serwera 
+- [x] Możliwość wyboru serwera 
     - [x] PL1
     - [x] PL2
     - [ ] DE
     - [ ] CZ
     - [ ] EN
-- [ ] Wyświetlanie info o pociągu
+- [x] Wyświetlanie info o pociągu
     - [x] Nazwa
     - [x] Numer
     - [x] Przez
@@ -33,14 +31,12 @@ Pociągi domyślnie mają ustawiony tor 1. Jeśli chcesz to zmienić, wpisz w uw
     - [x] Przykładowe stacje (Łapanów, Czermin, Hetmanice)
     - [ ] Pozostałe większe stacje
     - [ ] Wszystkie stacje
-- [ ] Możliwość wpisania własnego układu peronów
+- [x] Możliwość wpisania własnego układu peronów
 - [x] Informacja czy pociąg kończy bieg
 - [ ] Ekran informacyjny pozostaje aż do odjazdu pociągu
 
 # EN 🇬🇧
 A website to display passenger information boards based on data from the TD2 railway simulator ([Train Driver 2](https://td2.info.pl)).
-
-### IN PROGRESS (but mostly finished)
 
 ## Information
 
