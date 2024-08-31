@@ -1,10 +1,12 @@
 window.timetablesAPI_URL = 'https://stacjownik.spythere.eu/api/getActiveTrainList';
 window.sceneryAPI_URL = 'https://stacjownik.spythere.eu/api/getSceneries';
+window.nameCorrectionsAPI_URL = "https://raw.githubusercontent.com/Thundo54/tablice-td2-api/master/namesCorrections.json";
 window.platformsAPI_URL = 'https://raw.githubusercontent.com/Ja-Tar/WTIP/main/platforms_info.json'
 window.timetablesData = [];
 window.platformsData = [];
 window.checkpointData = [];
 window.dataToDisplay = [];
+window.nameCorrectionsData = {};
 window.platformsVersionID = "0.0.10"
 
 document.getElementById("submit").addEventListener("click", function () {
@@ -108,11 +110,14 @@ function getProcessedData(display_id) {
             if (arrivalTimestamp < closestArrivalTime && arrivalTimestamp > timeTimestamp) {
                 closestArrivalTime = arrivalTimestamp;
 
-                console.log("Closest arrival time: ", arrivalTimestamp, trainNo);
+                for (let j = 0; j < viaStations.length; j++) {
+                    viaStations[j] = stationTextFixes(viaStations[j]);
+                }
 
+                console.log("Closest arrival time: ", arrivalTimestamp, trainNo);
                 json.time = new Date(arrivalTimestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }); // "HH:MM"
                 json.train_number = trainNo;
-                json.destination = lastStation;
+                json.destination = stationTextFixes(lastStation);
                 json.firstStation = firstStation;
                 json.via_stations = viaStations.join(", ");
                 json.delay = delay;
@@ -128,9 +133,6 @@ function getProcessedData(display_id) {
 }
 
 function processTimetablesData() {
-    // Po kliknięciu przycisku, sprawdza czy dana stacja jest w rozkładzie jazdy pociągu, 
-    //  sprawdza który peron, oraz sprawdza który pociąg najwcześniej przyjedzie na stację
-
     let server = document.getElementById("server").value;
     let checkpoint = document.getElementById("point").value;
 
@@ -209,7 +211,9 @@ function getDataFromAPI() {
 
     getSceneryAPI(saved).then(() => {
         getPlatformsAPI(saved).then(() => {
-            updateTextScenery();
+            getNameCorrectionsAPI().then(() => {
+                updateTextScenery();
+            });
         });
     });
     getTimetablesAPI()
@@ -218,8 +222,10 @@ function getDataFromAPI() {
 
     setTimeout(() => {
         getTimetablesAPI().then(() => {
-            processTimetablesData()
-            loadFrames();
+            getNameCorrectionsAPI().then(() => {
+                processTimetablesData()
+                loadFrames();
+            });
         });
     }, 60000); // 1 minute
 }
@@ -406,6 +412,46 @@ async function getSceneryAPI(saved = false) {
                 window.localStorage.setItem("sceneryData", JSON.stringify(data));
             });
     }
+}
+
+async function getNameCorrectionsAPI() {
+    let savedData = window.localStorage.getItem("nameCorrectionsData");
+
+    if (savedData) {
+        window.nameCorrectionsData = JSON.parse(savedData);
+    } else {
+        await fetch(window.nameCorrectionsAPI_URL)
+            .then(response => response.json())
+            .then(data => {
+                window.nameCorrectionsData = data;
+                window.localStorage.setItem("nameCorrectionsData", JSON.stringify(data));
+            });
+    }
+}
+
+function stationTextFixes(station) {
+    station = capitalize(station);
+
+    // nameCorrectionsData example
+    // {"Dobrz.": "Dobrzyniec"}
+
+    // station str
+    // "Dobrz. mącice"
+
+    for (let key in window.nameCorrectionsData) {
+        if (station.includes(key)) {
+            station = station.replace(key, window.nameCorrectionsData[key]);
+        }
+    }
+
+    return station;
+}   
+
+function capitalize(str) {
+    if (!str) return str;
+    return str.toLowerCase().replace(/(^|\s)\S/g, function(letter) {
+        return letter.toUpperCase();
+    });
 }
 
 /* Testing
