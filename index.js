@@ -4,7 +4,7 @@ window.platformsAPI_URL = 'https://raw.githubusercontent.com/Ja-Tar/WTIP/main/pl
 window.timetablesData = [];
 window.platformsData = [];
 window.checkpointData = [];
-window.dataToDisplay = {};
+window.dataToDisplay = [];
 window.platformsVersionID = "0.0.10"
 
 document.getElementById("submit").addEventListener("click", function () {
@@ -53,11 +53,11 @@ function getProcessedData(display_id) {
     let dataToDisplay = window.dataToDisplay;
 
     let json = {};
-    json.time = "221";
-    json.train_number = "22";
-    json.destination = "22";
-    json.via_stations = "22";
-    json.operator = "22";
+    json.time = "None";
+    json.train_number = "None";
+    json.destination = "None";
+    json.via_stations = "None";
+    json.operator = "PKP Intercity";
     json.info_bar = `Tor: ${display_id}`;
     json.delay = 0;
     json.colorbar = "#2f353d";
@@ -67,21 +67,30 @@ function getProcessedData(display_id) {
     let closestTrain = null;
     let closestArrivalTime = Infinity;
 
-    for (let key in dataToDisplay) {
-        if (key === display_id) {
-            let trainNo = dataToDisplay[key].trainNo;
-            let delay = dataToDisplay[key].delay;
-            let viaStations = dataToDisplay[key].viaStations;
-            let arrivalTimestamp = dataToDisplay[key].arrivalTimestamp;
-            let departureTimestamp = dataToDisplay[key].departureTimestamp;
+    for (i = 0; i < dataToDisplay.length; i++) {
+        if (dataToDisplay[i].track === display_id) {
+            let trainNo = dataToDisplay[i].trainNo;
+            let delay = dataToDisplay[i].delay;
+            let viaStations = dataToDisplay[i].viaStations;
+            let arrivalTimestamp = dataToDisplay[i].arrivalTimestamp;
+            let departureTimestamp = dataToDisplay[i].departureTimestamp;
+            let firstStation = dataToDisplay[i].firstStation;
+            let lastStation = dataToDisplay[i].lastStation
             let timeTimestamp = new Date().getTime()
 
-            if (departureTimestamp < closestArrivalTime && departureTimestamp <= timeTimestamp) {
+            if (arrivalTimestamp < closestArrivalTime && arrivalTimestamp > timeTimestamp) {
                 closestArrivalTime = arrivalTimestamp;
                 
-                console.log("Closest arrival time: ", departureTimestamp);
+                console.log("Closest arrival time: ", arrivalTimestamp, trainNo);
+
+                json.time = new Date(arrivalTimestamp).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}); // "HH:MM"
+                json.train_number = trainNo;
+                json.destination = lastStation;
+                json.via_stations = viaStations.join(", ");
+                json.delay = delay;
+                json.empty = "false";
             } else {
-                console.log("Not closest arrival time: ", departureTimestamp, timeTimestamp);
+                console.log("Not closest arrival time: ", arrivalTimestamp, trainNo);
             }
         }
     }
@@ -97,7 +106,7 @@ function processTimetablesData() {
     let checkpoint = document.getElementById("point").value;
 
     let timetableData = window.timetablesData;
-    let dataToDisplay = {};
+    let dataToDisplay = []
 
     for (let i = 0; i < timetableData.length; i++) {
         if (timetableData[i].region === server) {
@@ -124,18 +133,21 @@ function processTimetablesData() {
                                 let platform = comments[0].slice(-1)[0];
                                 let track = Array.from(comments[1])[0];
                                 let delay = stopList[j].departureDelay;
-                                let arrivalTimestamp = stopList[j].arrivalTimestamp;
+                                let arrivalTimestamp = stopList[j].arrivalRealTimestamp;
                                 let departureTimestamp = stopList[j].departureTimestamp;
 
-                                dataToDisplay[track] = {
+                                dataToDisplay.push({
                                     "trainNo": trainNo,
                                     "platform": platform,
                                     "track": track,
                                     "delay": delay,
                                     "viaStations": viaStations,
                                     "arrivalTimestamp": arrivalTimestamp,
-                                    "departureTimestamp": departureTimestamp
-                                }
+                                    "departureTimestamp": departureTimestamp,
+                                    "stopped": stopList[j].stopped,
+                                    "firstStation": firstStation,
+                                    "lastStation": lastStation
+                                });
                             //} else {
                             //    console.log(stopList[j], trainNo, "Stopped");
                             //}
