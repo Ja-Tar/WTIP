@@ -243,7 +243,11 @@ function showDisplays(platformsConfig) { // example showDisplays("P1-1,3; P2-2,4
 
         let platformName = document.createElement("div");
         platformName.className = "platform_name";
-        platformName.innerHTML = "Peron " + platformNumber;
+        if (document.documentElement.lang === "pl") {
+            platformName.innerHTML = "Peron " + platformNumber;
+        } else if (document.documentElement.lang === "en") {
+            platformName.innerHTML = "Platform " + platformNumber;
+        }
         platformDiv.appendChild(platformName);
 
         let platformTracks = document.createElement("div");
@@ -258,7 +262,11 @@ function showDisplays(platformsConfig) { // example showDisplays("P1-1,3; P2-2,4
 
             let trackName = document.createElement("div");
             trackName.className = "track_name";
-            trackName.innerHTML = "Tor " + trackNumbers[j];
+            if (document.documentElement.lang === "pl") {
+                trackName.innerHTML = "Tor " + trackNumbers[j];
+            } else if (document.documentElement.lang === "en") {
+                trackName.innerHTML = "Track " + trackNumbers[j];
+            }
             trackDisplay.appendChild(trackName);
         }
     }
