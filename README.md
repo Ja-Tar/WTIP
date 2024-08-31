@@ -1,7 +1,7 @@
 # PL 🇵🇱
 Strona do wyświetlenia tablic informacji pasażerskiej na podstawie danych z symulatora kolejowego TD2 ([Train Driver 2](https://td2.info.pl)).
 
-### W TRAKCIE PRAC
+### W TRAKCIE PRAC (ale w większości skończone)
 
 ## Informacje
 
@@ -40,7 +40,7 @@ Pociągi domyślnie mają ustawiony tor 1. Jeśli chcesz to zmienić, wpisz w uw
 # EN 🇬🇧
 A website to display passenger information boards based on data from the TD2 railway simulator ([Train Driver 2](https://td2.info.pl)).
 
-### W TRAKCIE PRAC
+### IN PROGRESS (but mostly finished)
 
 ## Information
 
