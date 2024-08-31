@@ -67,13 +67,12 @@ function getDataFromAPI() {
         saved = true;
     }
 
-    getSceneryAPI().then(() => {
+    getSceneryAPI(saved).then(() => {
         getPlatformsAPI(saved).then(() => {
             updateTextScenery();
         });
     });
     //getTimetablesAPI();
-    getPlatformsAPI(saved);
 
 
     window.localStorage.setItem("version", window.platformsVersionID);
@@ -97,7 +96,6 @@ function showDisplays(platformsConfig) { // example showDisplays("P1-1,3; P2-2,4
     for (let i = 0; i < platformsConfig.length; i++) {
         let platformNumber = platformsConfig[i].split("-")[0].split("P")[1];
         let trackNumbers = platformsConfig[i].split("-")[1].split(",");
-        console.log(platformNumber, trackNumbers);
 
         let platformDiv = document.createElement("div");
         platformDiv.className = "platform";
@@ -244,12 +242,19 @@ async function getPlatformsAPI(saved = false) {
     }
 }
 
-async function getSceneryAPI() {
-    await fetch(window.sceneryAPI_URL)
-        .then(response => response.json())
-        .then(data => {
-            window.sceneryData = data;
-        });
+async function getSceneryAPI(saved = false) {
+    let savedData = window.localStorage.getItem("sceneryData");
+
+    if ((savedData) && (saved)) {
+        window.sceneryData = JSON.parse(savedData);
+    } else {
+        await fetch(window.sceneryAPI_URL)
+            .then(response => response.json())
+            .then(data => {
+                window.sceneryData = data;
+                window.localStorage.setItem("sceneryData", JSON.stringify(data));
+           });
+    }
 }
 
 /* Testing
