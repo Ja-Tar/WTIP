@@ -7,7 +7,7 @@ window.platformsData = [];
 window.checkpointData = [];
 window.dataToDisplay = [];
 window.nameCorrectionsData = {};
-window.platformsVersionID = "0.0.10"
+window.platformsVersionID = "0.0.11"
 
 document.getElementById("submit").addEventListener("click", function () {
     if (window.timetablesData) {
@@ -166,7 +166,7 @@ function processTimetablesData() {
                     if (stopList[j].mainStop === true) {
                         viaStations.push(stopList[j].stopNameRAW);
                     }
-                    if (stopList[j].stopNameRAW === checkpoint) {
+                    if (stopList[j].stopNameRAW.toLowerCase() === checkpoint.toLowerCase()) {
                         if (stopList[j].confirmed === 0) {
                             //if (stopList[j].stopped === 0) {
                             comments = comments.split(",");
