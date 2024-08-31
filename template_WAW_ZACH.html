@@ -187,7 +187,7 @@
             var infoBar = document.getElementById('info_bar');
             var infoBarBox = document.getElementById('info_bar_box');
             var delay = document.getElementById('delay');
-            var urlParamsEncoded = location.href.split('#')[1];
+            var urlParamsEncoded = location.href.split('?')[1];
 
             var urlParams = decodeURIComponent(urlParamsEncoded).split('&').reduce(function (urlParams, param) {
                 var paramKeyValue = param.split('=');

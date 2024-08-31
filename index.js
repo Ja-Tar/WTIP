@@ -31,22 +31,18 @@ function loadFrames() {
         oldFrames[i].remove();
     }
 
-    fetch('template_WAW_ZACH.html')
-        .then(response => response.blob())
-        .then(blob => {
-            let blobUrl = URL.createObjectURL(blob);
+    let URL = "https://ktip.pages.dev/template_WAW_ZACH"
 
-            for (let i = 0; i < track_display.length; i++) {
-                const { time, train_number, destination, via_stations, operator, info_bar, delay, colorbar, colorfont, empty} = getProcessedData(track_display[i].id);
-                const params = `time=${time}&train_number=${train_number}&destination=${destination}&via_stations=${via_stations}&operator=${operator}&info_bar=${info_bar}&delay=${delay}&colorbar=${colorbar}&colorfont=${colorfont}&empty=${empty}`;
-                const blobUrlParm = blobUrl + "#" + encodeURIComponent(params);
-                
-                const iframe = document.createElement('iframe');
-                iframe.src = blobUrlParm;
-                iframe.classList.add('iframe_display');
-                track_display[i].appendChild(iframe);
-            }
-        });
+    for (let i = 0; i < track_display.length; i++) {
+        const { time, train_number, destination, via_stations, operator, info_bar, delay, colorbar, colorfont, empty } = getProcessedData(track_display[i].id);
+        const params = `time=${time}&train_number=${train_number}&destination=${destination}&via_stations=${via_stations}&operator=${operator}&info_bar=${info_bar}&delay=${delay}&colorbar=${colorbar}&colorfont=${colorfont}&empty=${empty}`;
+        const blobUrlParm = URL + "?" + encodeURIComponent(params);
+
+        const iframe = document.createElement('iframe');
+        iframe.src = blobUrlParm;
+        iframe.classList.add('iframe_display');
+        track_display[i].appendChild(iframe);
+    }
 }
 
 function getProcessedData(display_id) {
@@ -57,7 +53,7 @@ function getProcessedData(display_id) {
     json.train_number = "None";
     json.destination = "None";
     json.via_stations = "None";
-    json.operator = "PKP Intercity";
+    json.operator = "---";
     json.info_bar = `Tor: ${display_id}`;
     json.delay = 0;
     json.colorbar = "#2f353d";
@@ -80,10 +76,10 @@ function getProcessedData(display_id) {
 
             if (arrivalTimestamp < closestArrivalTime && arrivalTimestamp > timeTimestamp) {
                 closestArrivalTime = arrivalTimestamp;
-                
+
                 console.log("Closest arrival time: ", arrivalTimestamp, trainNo);
 
-                json.time = new Date(arrivalTimestamp).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}); // "HH:MM"
+                json.time = new Date(arrivalTimestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }); // "HH:MM"
                 json.train_number = trainNo;
                 json.destination = lastStation;
                 json.via_stations = viaStations.join(", ");
@@ -111,7 +107,7 @@ function processTimetablesData() {
     for (let i = 0; i < timetableData.length; i++) {
         if (timetableData[i].region === server) {
             let timetable = timetableData[i].timetable;
-            let trainNo = timetableData[i].trainNo;      
+            let trainNo = timetableData[i].trainNo;
 
             if (timetable) {
                 let route = timetable.route.split("|");
@@ -120,7 +116,9 @@ function processTimetablesData() {
                 let viaStations = [];
                 let stopList = timetable.stopList;
                 let comments = timetable.comments; // search for [peron],[tor] in comments
-                comments = "sss 1,2 sss" // REMOVE: test 
+                if (!comments) {
+                    comments = "1,1";
+                }
 
                 for (let j = 0; j < stopList.length; j++) {
                     if (stopList[j].mainStop === true) {
@@ -129,25 +127,25 @@ function processTimetablesData() {
                     if (stopList[j].stopNameRAW === checkpoint) {
                         if (stopList[j].confirmed === 0) {
                             //if (stopList[j].stopped === 0) {
-                                comments = comments.split(",");
-                                let platform = comments[0].slice(-1)[0];
-                                let track = Array.from(comments[1])[0];
-                                let delay = stopList[j].departureDelay;
-                                let arrivalTimestamp = stopList[j].arrivalRealTimestamp;
-                                let departureTimestamp = stopList[j].departureTimestamp;
+                            comments = comments.split(",");
+                            let platform = comments[0].slice(-1)[0];
+                            let track = Array.from(comments[1])[0];
+                            let delay = stopList[j].departureDelay;
+                            let arrivalTimestamp = stopList[j].arrivalRealTimestamp;
+                            let departureTimestamp = stopList[j].departureTimestamp;
 
-                                dataToDisplay.push({
-                                    "trainNo": trainNo,
-                                    "platform": platform,
-                                    "track": track,
-                                    "delay": delay,
-                                    "viaStations": viaStations,
-                                    "arrivalTimestamp": arrivalTimestamp,
-                                    "departureTimestamp": departureTimestamp,
-                                    "stopped": stopList[j].stopped,
-                                    "firstStation": firstStation,
-                                    "lastStation": lastStation
-                                });
+                            dataToDisplay.push({
+                                "trainNo": trainNo,
+                                "platform": platform,
+                                "track": track,
+                                "delay": delay,
+                                "viaStations": viaStations,
+                                "arrivalTimestamp": arrivalTimestamp,
+                                "departureTimestamp": departureTimestamp,
+                                "stopped": stopList[j].stopped,
+                                "firstStation": firstStation,
+                                "lastStation": lastStation
+                            });
                             //} else {
                             //    console.log(stopList[j], trainNo, "Stopped");
                             //}
@@ -165,7 +163,7 @@ function getDataFromAPI() {
     let saved = false;
     let sceneryInput = document.getElementById("scenery");
     let platformsLayout = document.getElementById("platforms_layout");
-    
+
     sceneryInput.value = "";
     platformsLayout.value = "";
 
@@ -196,7 +194,7 @@ function showDisplays(platformsConfig) { // example showDisplays("P1-1,3; P2-2,4
     let platformRow = document.getElementById("platform_row");
 
     platformRow.innerHTML = "";
-    
+
     platformsConfig = platformsConfig.split(";");
     platformsConfig = platformsConfig.slice(0, -1);
 
@@ -360,7 +358,7 @@ async function getSceneryAPI(saved = false) {
             .then(data => {
                 window.sceneryData = data;
                 window.localStorage.setItem("sceneryData", JSON.stringify(data));
-           });
+            });
     }
 }
 
