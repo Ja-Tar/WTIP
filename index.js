@@ -125,7 +125,7 @@ function getProcessedData(display_id) {
                 json.time = new Date(arrivalTimestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }); // "HH:MM"
                 json.train_number = trainNo;
                 json.destination = stationTextFixes(lastStation);
-                json.firstStation = firstStation;
+                json.firstStation = stationTextFixes(firstStation);
                 json.via_stations = viaStations.join(", ");
                 json.delay = delay;
                 json.empty = "false";
@@ -352,8 +352,8 @@ function updatePointsSelect(station) {
 }
 
 function updatePlatformsText() {
-    let platformsLayout = document.getElementById("platforms_layout");
-    let point = document.getElementById("point").value;
+    const platformsLayout = document.getElementById("platforms_layout");
+    const point = document.getElementById("point").value;
     //let pointData = checkpointData.platforms;
 
     platformsLayout.value = "";
@@ -370,11 +370,11 @@ function updatePlatformsText() {
             continue;
         }
 
-        let _platforms = Object.keys(checkpointData[y].platforms);
+        const _platforms = Object.keys(checkpointData[y].platforms);
 
         for (let i = 0; i < _platforms.length; i++) {
-            let platformname = _platforms[i][0] + _platforms[i].split(" ")[1];
-            let tracknr = checkpointData[y].platforms[_platforms[i]];
+            const platformname = _platforms[i][0] + _platforms[i].split(" ")[1];
+            const tracknr = checkpointData[y].platforms[_platforms[i]];
             platformsLayout.value += platformname + "-" + tracknr + "; ";
         }
     }
@@ -392,7 +392,7 @@ async function getTimetablesAPI() {
 }
 
 async function getPlatformsAPI(saved = false) {
-    let savedData = window.localStorage.getItem("platformsData");
+    const savedData = window.localStorage.getItem("platformsData");
 
     if ((savedData) && (saved)) {
         window.platformsData = JSON.parse(savedData);
@@ -407,7 +407,7 @@ async function getPlatformsAPI(saved = false) {
 }
 
 async function getSceneryAPI(saved = false) {
-    let savedData = window.localStorage.getItem("sceneryData");
+    const savedData = window.localStorage.getItem("sceneryData");
 
     if ((savedData) && (saved)) {
         window.sceneryData = JSON.parse(savedData);
@@ -422,7 +422,7 @@ async function getSceneryAPI(saved = false) {
 }
 
 async function getNameCorrectionsAPI() {
-    let savedData = window.localStorage.getItem("nameCorrectionsData");
+    const savedData = window.localStorage.getItem("nameCorrectionsData");
 
     if (savedData) {
         window.nameCorrectionsData = JSON.parse(savedData);
@@ -445,7 +445,7 @@ function stationTextFixes(station) {
     // station str
     // "Dobrz. mącice"
 
-    for (let key in window.nameCorrectionsData) {
+    for (const key in window.nameCorrectionsData) {
         if (station.includes(key)) {
             station = station.replace(key, window.nameCorrectionsData[key]);
         }
