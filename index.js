@@ -4,12 +4,16 @@ window.platformsAPI_URL = 'https://raw.githubusercontent.com/Ja-Tar/WTIP/main/pl
 window.timetablesData = [];
 window.platformsData = [];
 window.checkpointData = [];
+window.dataToDisplay = {};
 window.platformsVersionID = "0.0.10"
 
 document.getElementById("submit").addEventListener("click", function () {
     if (window.timetablesData) {
         buttonSetDisplay();
         processTimetablesData();
+        setTimeout(() => {
+            loadFrames();
+        }, 1000);
     }
 });
 
@@ -19,8 +23,13 @@ function buttonSetDisplay() {
     showDisplays(platformsLayout.value);
 }
 
-function createIframe() {
+function loadFrames() {
     const track_display = document.getElementsByClassName('track_display');
+    const oldFrames = document.querySelectorAll('.iframe_display');
+
+    for (let i = 0; i < oldFrames.length; i++) {
+        oldFrames[i].remove();
+    }
 
     fetch('template_WAW_ZACH.html')
         .then(response => response.blob())
@@ -41,17 +50,41 @@ function createIframe() {
 }
 
 function getProcessedData(display_id) {
+    let dataToDisplay = window.dataToDisplay;
+
     let json = {};
     json.time = "221";
     json.train_number = "22";
     json.destination = "22";
     json.via_stations = "22";
     json.operator = "22";
-    json.info_bar = `Peron: ${display_id}`;
+    json.info_bar = `Tor: ${display_id}`;
     json.delay = 0;
     json.colorbar = "#2f353d";
     json.colorfont = "#ffffff";
     json.empty = "true";
+
+    let closestTrain = null;
+    let closestArrivalTime = Infinity;
+
+    for (let key in dataToDisplay) {
+        if (key === display_id) {
+            let trainNo = dataToDisplay[key].trainNo;
+            let delay = dataToDisplay[key].delay;
+            let viaStations = dataToDisplay[key].viaStations;
+            let arrivalTimestamp = dataToDisplay[key].arrivalTimestamp;
+            let departureTimestamp = dataToDisplay[key].departureTimestamp;
+            let timeTimestamp = new Date().getTime()
+
+            if (departureTimestamp < closestArrivalTime && departureTimestamp <= timeTimestamp) {
+                closestArrivalTime = arrivalTimestamp;
+                
+                console.log("Closest arrival time: ", departureTimestamp);
+            } else {
+                console.log("Not closest arrival time: ", departureTimestamp, timeTimestamp);
+            }
+        }
+    }
 
     return json;
 }
@@ -64,7 +97,7 @@ function processTimetablesData() {
     let checkpoint = document.getElementById("point").value;
 
     let timetableData = window.timetablesData;
-    let dataToDisplay = [];
+    let dataToDisplay = {};
 
     for (let i = 0; i < timetableData.length; i++) {
         if (timetableData[i].region === server) {
@@ -86,7 +119,7 @@ function processTimetablesData() {
                     }
                     if (stopList[j].stopNameRAW === checkpoint) {
                         if (stopList[j].confirmed === 0) {
-                            if (stopList[j].stopped === 0) {
+                            //if (stopList[j].stopped === 0) {
                                 comments = comments.split(",");
                                 let platform = comments[0].slice(-1)[0];
                                 let track = Array.from(comments[1])[0];
@@ -94,18 +127,26 @@ function processTimetablesData() {
                                 let arrivalTimestamp = stopList[j].arrivalTimestamp;
                                 let departureTimestamp = stopList[j].departureTimestamp;
 
-                                
-
-                                console.log(stopList[j], trainNo, platform, track, delay, viaStations);
-                            } else {
-                                console.log(stopList[j], trainNo, "Stopped");
-                            }
+                                dataToDisplay[track] = {
+                                    "trainNo": trainNo,
+                                    "platform": platform,
+                                    "track": track,
+                                    "delay": delay,
+                                    "viaStations": viaStations,
+                                    "arrivalTimestamp": arrivalTimestamp,
+                                    "departureTimestamp": departureTimestamp
+                                }
+                            //} else {
+                            //    console.log(stopList[j], trainNo, "Stopped");
+                            //}
                         }
                     }
                 }
             }
         }
     }
+
+    window.dataToDisplay = dataToDisplay;
 }
 
 function getDataFromAPI() {
@@ -178,7 +219,7 @@ function showDisplays(platformsConfig) { // example showDisplays("P1-1,3; P2-2,4
         }
     }
 
-    createIframe();
+    loadFrames();
 }
 
 // All functions for updating text fields and select options
@@ -323,5 +364,5 @@ setTimeout(() => {
 
 */
 
-createIframe();
+loadFrames();
 getDataFromAPI();
