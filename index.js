@@ -74,6 +74,32 @@ function getDataFromAPI() {
     }, 60000);
 }
 
+function showDisplays(platformsConfig) {
+    let platformRow = document.getElementById("platform_row");
+    
+    platformsConfig = platformsConfig.split(";");
+    platformsConfig = platformsConfig.slice(0, -1);
+
+    for (let i = 0; i < platformsConfig.length; i++) {
+        let platformNumber = platformsConfig[i].split("-")[0].split("P")[1];
+
+        let platformDiv = document.createElement("div");
+        platformDiv.className = "platform";
+        platformDiv.id = "platform_" + platformNumber;
+        platformRow.appendChild(platformDiv);
+
+        let platformName = document.createElement("div");
+        platformName.className = "platform_name";
+        platformName.innerHTML = "Peron " + platformNumber;
+        platformDiv.appendChild(platformName);
+
+        
+    }
+
+}
+
+// All functions for updating text fields and select options
+
 function updateTextScenery() {
     var sceneryInput = document.getElementById("scenery");
     var sceneryList = document.getElementById("scenery_list");
@@ -154,13 +180,15 @@ function updatePlatformsText() {
         let _platforms = Object.keys(checkpointData[y].platforms);
 
         for (let i = 0; i < _platforms.length; i++) {
-            let platformname = _platforms[i][0] + i;
+            let platformname = _platforms[i][0] + _platforms[i].split(" ")[1];
             let tracknr = checkpointData[y].platforms[_platforms[i]];
             platformsLayout.value += platformname + "-" + tracknr + "; ";
         }
     }
 
 }
+
+// All API functions
 
 async function getTimetablesAPI() {
     await fetch(window.timetablesAPI_URL)
