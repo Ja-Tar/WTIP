@@ -27,11 +27,11 @@ document.getElementById("language_switch").addEventListener("click", function ()
     }
 });
 
-document.getElementById("dark_mode_button").addEventListener("click", function () {
+document.getElementById("dark_mode_button").addEventListener("click", () => {
     document.body.classList.toggle("dark_mode");
 });
 
-document.getElementById("light_mode_button").addEventListener("click", function () {
+document.getElementById("light_mode_button").addEventListener("click", () => {
     document.body.classList.remove("dark_mode");
 });
 
@@ -101,7 +101,6 @@ function getProcessedData(display_id) {
     json.empty = "true";
     json.terminatesHere = false;
 
-    let closestTrain = null;
     let closestArrivalTime = Infinity;
 
     for (i = 0; i < dataToDisplay.length; i++) {
@@ -110,7 +109,7 @@ function getProcessedData(display_id) {
             let delay = dataToDisplay[i].delay;
             let viaStations = dataToDisplay[i].viaStations;
             let arrivalTimestamp = dataToDisplay[i].arrivalTimestamp;
-            let departureTimestamp = dataToDisplay[i].departureTimestamp;
+            //let departureTimestamp = dataToDisplay[i].departureTimestamp;
             let firstStation = dataToDisplay[i].firstStation;
             let lastStation = dataToDisplay[i].lastStation
             let timeTimestamp = new Date().getTime()
@@ -122,7 +121,7 @@ function getProcessedData(display_id) {
                     viaStations[j] = stationTextFixes(viaStations[j]);
                 }
 
-                console.log("Closest arrival time: ", arrivalTimestamp, trainNo);
+                console.log("Closest arrival time: ", arrivalTimestamp, trainNo); // skipcq: JS-0002 Used for checking if everything is working correctly
                 json.time = new Date(arrivalTimestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }); // "HH:MM"
                 json.train_number = trainNo;
                 json.destination = stationTextFixes(lastStation);
@@ -132,7 +131,7 @@ function getProcessedData(display_id) {
                 json.empty = "false";
                 json.terminatesHere = dataToDisplay[i].terminatesHere;
             } else {
-                console.log("Not closest arrival time: ", arrivalTimestamp, trainNo);
+                console.log("Not closest arrival time: ", arrivalTimestamp, trainNo); // skipcq: JS-0002 Used for checking if everything is working correctly
             }
         }
     }
@@ -355,7 +354,7 @@ function updatePointsSelect(station) {
 function updatePlatformsText() {
     let platformsLayout = document.getElementById("platforms_layout");
     let point = document.getElementById("point").value;
-    let pointData = checkpointData.platforms;
+    //let pointData = checkpointData.platforms;
 
     platformsLayout.value = "";
 
