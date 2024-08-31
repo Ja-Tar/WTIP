@@ -27,6 +27,14 @@ document.getElementById("language_switch").addEventListener("click", function ()
     }
 });
 
+document.getElementById("dark_mode_button").addEventListener("click", function () {
+    document.body.classList.toggle("dark_mode");
+});
+
+document.getElementById("light_mode_button").addEventListener("click", function () {
+    document.body.classList.remove("dark_mode");
+});
+
 function buttonSetDisplay() {
     let platformsLayout = document.getElementById("platforms_layout");
 
