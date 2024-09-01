@@ -184,15 +184,17 @@ function processTimetablesData() {
                 let lastStation = route[1];
                 let viaStations = [];
                 let stopList = timetable.stopList;
-                let comments = timetable.comments; // search for [peron],[tor] in comments
-                if (!comments) {
-                    comments = "1,1";
-                }
 
                 for (let j = 0; j < stopList.length; j++) {
+                    let comments = stopList.comments; // search for [peron],[tor] in comments
+                    if (!comments) {
+                        comments = "1,1";
+                    }
+
                     if (stopList[j].mainStop === true) {
                         viaStations.push(stopList[j].stopNameRAW);
                     }
+
                     if (stopList[j].stopNameRAW.toLowerCase() === checkpoint.toLowerCase()) {
                         if (stopList[j].confirmed === 0) {
                             //if (stopList[j].stopped === 0) {
