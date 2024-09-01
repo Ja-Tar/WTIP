@@ -2,16 +2,47 @@ window.timetablesAPI_URL = 'https://stacjownik.spythere.eu/api/getActiveTrainLis
 window.sceneryAPI_URL = 'https://stacjownik.spythere.eu/api/getSceneries';
 window.nameCorrectionsAPI_URL = "https://raw.githubusercontent.com/Thundo54/tablice-td2-api/master/namesCorrections.json";
 window.platformsAPI_URL = 'https://raw.githubusercontent.com/Ja-Tar/WTIP/main/platforms_info.json'
+
 window.timetablesData = [];
 window.platformsData = [];
 window.checkpointData = [];
 window.dataToDisplay = [];
 window.nameCorrectionsData = {};
+window.settings = {};
+
 window.refreshRoutine = null;
 window.debug = false;
 window.debugURL = ""; // example: http://127.0.0.1:5500
 window.debugTermination = false;
 window.platformsVersionID = "0.0.11"
+
+// Button event listeners
+
+document.getElementById("settings_button").addEventListener("click", function() {
+    const modal = document.getElementById("settings_modal");
+    const modalContent = document.querySelector(".modal_content");
+
+    modal.classList.remove("fade-out");
+    modalContent.classList.remove("slide-out");
+
+    modal.style.display = "block";
+    modal.classList.add("fade-in");
+    modalContent.classList.add("slide-in");
+});
+
+document.getElementsByClassName("close_button")[0].addEventListener("click", function() {
+    closeModal();
+});
+
+document.getElementById("save_settings").addEventListener("click", function() {
+    showNotification("Ustawienia zapisane!");
+
+    // Zastosuj ustawienia
+    applySettings();
+
+    // Zamknij modal
+    closeModal();
+});
 
 document.getElementById("submit").addEventListener("click", function () {
     if (window.timetablesData) {
@@ -40,6 +71,73 @@ document.getElementById("light_mode_button").addEventListener("click", () => {
     document.body.classList.remove("dark_mode");
     window.localStorage.setItem("dark_mode", "false");
 });
+
+// Rest of the event listeners
+
+window.addEventListener("click", function(event) {
+    if (event.target == document.getElementById("settings_modal")) {
+        closeModal();
+    }
+});
+
+// Functions
+
+// Settings functions
+
+function closeModal() {
+    const modal = document.getElementById("settings_modal");
+    const modalContent = document.querySelector(".modal_content");
+
+    modal.classList.remove("fade-in");
+    modalContent.classList.remove("slide-in");
+
+    modal.classList.add("fade-out");
+    modalContent.classList.add("slide-out");
+
+    setTimeout(() => {
+        modal.style.display = "none";
+    }, 300); // Czas trwania animacji
+}
+
+function applySettings() {
+    let settings = window.localStorage.getItem("settings");
+    let displayTrainsWithCargo = document.getElementById("display_train_with_cargo");
+
+    if (settings) {
+        settings = JSON.parse(settings);
+        window.settings = settings;
+    } else {
+        settings = {
+            "displayTrainsWithCargo": false
+        }
+    }
+
+    if (displayTrainsWithCargo.checked || settings.displayTrainsWithCargo) {
+        settings.displayTrainsWithCargo = true;
+        displayTrainsWithCargo.checked = true;
+    } else {
+        settings.displayTrainsWithCargo = false;
+        displayTrainsWithCargo.checked = false;
+    }
+
+    window.localStorage.setItem("settings", JSON.stringify(settings));
+}
+
+// Main functions
+
+function showNotification(message) {
+    const notification = document.getElementById("notification");
+    notification.textContent = message;
+    notification.classList.add("show");
+    notification.style.animation = "slideIn 0.3s forwards";
+
+    setTimeout(() => {
+        notification.style.animation = "slideOut 0.3s forwards";
+        setTimeout(() => {
+            notification.classList.remove("show");
+        }, 300); // Czas trwania animacji
+    }, 3000); // Powiadomienie znika po 3 sekundach
+}
 
 function buttonSetDisplay() {
     let platformsLayout = document.getElementById("platforms_layout");
@@ -311,12 +409,6 @@ function updateTextScenery() {
     let sceneryInput = document.getElementById("scenery");
     let sceneryList = document.getElementById("scenery_list");
 
-    let platformsLayout = document.getElementById("platforms_layout");
-
-    sceneryInput.value = "";
-    platformsLayout.value = "";
-    sceneryInput.setAttribute('list', 'scenery_list');
-
     if (!sceneryList) {
         sceneryList = document.createElement("datalist");
         sceneryList.id = "scenery_list";
@@ -341,6 +433,15 @@ function updateTextScenery() {
     pointsSelect.addEventListener("input", function () {
         updatePlatformsText()
     });
+}
+
+function clearFields() {
+    let sceneryInput = document.getElementById("scenery");
+    let platformsLayout = document.getElementById("platforms_layout");
+
+    sceneryInput.value = "";
+    platformsLayout.value = "";
+    sceneryInput.setAttribute('list', 'scenery_list');
 }
 
 function updatePointsSelect(station) {
@@ -499,3 +600,5 @@ setTimeout(() => {
 
 getDataFromAPI();
 darkModeCheck();
+applySettings();
+clearFields();

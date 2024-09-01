@@ -2,12 +2,77 @@
     cursor: not-allowed;
 }
 
+/* Style do elementów */
+
 body {
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
     background-color: #f0f0f0;
 }
+
+label {
+    display: block;
+    margin: 5px 0;
+}
+
+input,
+select {
+    box-sizing: border-box;
+    width: 100%;
+    padding: 5px;
+    margin: 5px 0;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+
+button {
+    width: 100%;
+    padding: 10px;
+    margin: 5px 0;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    background-color: #f0f0f0;
+    cursor: pointer;
+}
+
+button.green_button {
+    background-color: #4CAF50;
+    color: white;
+}
+
+/* Styl dla checkboxa */
+
+input[type="checkbox"] {
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    border: 2px solid #ccc;
+    border-radius: 5px;
+    outline: none;
+    cursor: pointer;
+    transition: background-color 0.3s, border-color 0.3s;
+}
+
+input[type="checkbox"]:checked {
+    background-color: #4CAF50;
+    border-color: #4CAF50;
+    position: relative;
+}
+
+input[type="checkbox"]:checked::after {
+    content: '';
+    position: absolute;
+    top: 2px;
+    left: 6px;
+    width: 6px;
+    height: 12px;
+    border: solid white;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg) translateY(-5%) translateX(-40%);
+}
+
+/* Pozostałe style */
 
 #form {
     background-color: #fff;
@@ -20,34 +85,11 @@ body {
     margin-bottom: 5px;
 }
 
-#form label {
-    display: block;
-    margin: 5px 0;
-}
-
-#form input,
-#form select {
-    box-sizing: border-box;
-    width: 100%;
-    padding: 5px;
-    margin: 5px 0;
-    border-radius: 5px;
-    border: 1px solid #ccc;
-}
-
-#form button {
-    width: 100%;
-    padding: 10px;
-    margin: 5px 0;
-    border-radius: 5px;
-    border: 1px solid #ccc;
-    background-color: #f0f0f0;
-    cursor: pointer;
-}
-
-#form button.green_button {
-    background-color: #4CAF50;
-    color: white;
+.checkbox_div {
+    display: flex;
+    justify-content: left;
+    align-items: center;
+    gap: 10px;
 }
 
 #platform_row {
@@ -139,6 +181,120 @@ body {
     transition: transform 0.5s ease;
 }
 
+/* Notifications */
+
+#notification_div {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: fixed;
+    top: 20px;
+    left: 0;
+    width: 100%;
+}
+
+.notification {
+    display: none;
+    background-color: #4CAF50;
+    color: white;
+    padding: 15px;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+}
+
+.notification.show {
+    display: block;
+    opacity: 1;
+}
+
+/* Settings Modal */
+
+.modal {
+    display: none; /* Ukryj modal domyślnie */
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.6); /* Przyciemnienie tła */
+}
+
+.modal_content {
+    background-color: #fff;
+    margin: 10% auto;
+    padding: 20px;
+    border: none;
+    width: 80%;
+    max-width: 400px;
+    border-radius: 10px; /* Zaokrąglone rogi */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Cień */
+}
+
+.close_button {
+    color: #aaa;
+    float: right;
+    font-size: 24px;
+    font-weight: bold;
+    margin-top: -10px;
+    margin-right: -10px;
+}
+
+.close_button:hover,
+.close_button:focus {
+    color: #000;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+/* Settings dark mode */
+
+.dark_mode .modal_content {
+    background-color: #333;
+    color: #fff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5); /* Mocniejszy cień w trybie ciemnym */
+}
+
+/* Animacje */
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes slideIn {
+    from { transform: translateY(-50px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes fadeOut {
+    from { opacity: 1; }
+    to { opacity: 0; }
+}
+
+@keyframes slideOut {
+    from { transform: translateY(0); opacity: 1; }
+    to { transform: translateY(-50px); opacity: 0; }
+}
+
+.modal.fade-in {
+    animation: fadeIn 0.3s forwards;
+}
+
+.modal.fade-out {
+    animation: fadeOut 0.3s forwards;
+}
+
+.modal_content.slide-in {
+    animation: slideIn 0.3s forwards;
+}
+
+.modal_content.slide-out {
+    animation: slideOut 0.3s forwards;
+}
+
 /* Dark mode */
 
 .dark_mode {
@@ -151,18 +307,18 @@ body {
     color: #fff;
 }
 
-.dark_mode #form input,
-.dark_mode #form select {
+.dark_mode input,
+.dark_mode select {
     background-color: #555;
     color: #fff;
 }
 
-.dark_mode #form button {
+.dark_mode button {
     background-color: #666;
     color: #fff;
 }
 
-.dark_mode #form button.green_button {
+.dark_mode button.green_button {
     background-color: #4CAF50;
     color: white;
 }
@@ -187,4 +343,15 @@ body {
 
 #light_mode_button {
     display: none;
+}
+
+/* Styl dla checkboxa w trybie ciemnym */
+
+.dark_mode input[type="checkbox"] {
+    border-color: #555;
+}
+
+.dark_mode input[type="checkbox"]:checked {
+    background-color: #4CAF50;
+    border-color: #4CAF50;
 }
