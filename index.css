@@ -112,13 +112,11 @@ body {
     padding-right: 20px;
 }
 
-#dark_mode_div {
+.button_div {
     display: flex;
 }
 
-#dark_mode_button,
-#light_mode_button,
-#language_switch {
+.button_div .button {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -136,9 +134,7 @@ body {
     border-radius: 10%;
 }
 
-#dark_mode_button:hover,
-#light_mode_button:hover,
-#language_switch:hover {
+.button_div .button:hover {
     transform: scale(1.3);
     transition: transform 0.5s ease;
 }

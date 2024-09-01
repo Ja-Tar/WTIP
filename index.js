@@ -7,6 +7,7 @@ window.platformsData = [];
 window.checkpointData = [];
 window.dataToDisplay = [];
 window.nameCorrectionsData = {};
+window.refreshRoutine = null;
 window.debug = false;
 window.debugURL = ""; // example: http://127.0.0.1:5500
 window.debugTermination = false;
@@ -14,11 +15,11 @@ window.platformsVersionID = "0.0.11"
 
 document.getElementById("submit").addEventListener("click", function () {
     if (window.timetablesData) {
-        buttonSetDisplay();
         processTimetablesData();
         setTimeout(() => {
-            loadFrames();
-        }, 1000);
+            buttonSetDisplay();
+            refreshDataRoutine();
+        }, 500); // 1 second
     }
 });
 
@@ -32,16 +33,34 @@ document.getElementById("language_switch").addEventListener("click", function ()
 
 document.getElementById("dark_mode_button").addEventListener("click", () => {
     document.body.classList.toggle("dark_mode");
+    window.localStorage.setItem("dark_mode", "true");
 });
 
 document.getElementById("light_mode_button").addEventListener("click", () => {
     document.body.classList.remove("dark_mode");
+    window.localStorage.setItem("dark_mode", "false");
 });
 
 function buttonSetDisplay() {
     let platformsLayout = document.getElementById("platforms_layout");
 
     showDisplays(platformsLayout.value);
+}
+
+function refreshDataRoutine() {
+    if (window.refreshRoutine) {
+        clearInterval(window.refreshRoutine);
+    }
+
+    window.refreshRoutine = setInterval(() => {
+        getDataFromAPI();
+    }, 60000); // 1 minute
+}
+
+function darkModeCheck() {
+    if (window.localStorage.getItem("dark_mode") === "true") {
+        document.body.classList.add("dark_mode");
+    }
 }
 
 function loadFrames() {
@@ -82,7 +101,7 @@ function loadFrames() {
             URL = `${domain}/template_WAW_ZACH.html`
             params = `time=${time}&train_number=${train_number}&destination=${destination}&via_stations=${via_stations}&operator=${operator}&info_bar=${info_bar}&delay=${delay}&colorbar=${colorbar}&colorfont=${colorfont}&empty=${empty}`;
         }
-        
+
         const blobUrlParm = URL + "?" + params;
 
         const iframe = document.createElement('iframe');
@@ -212,13 +231,6 @@ function processTimetablesData() {
 
 function getDataFromAPI() {
     let saved = false;
-    let sceneryInput = document.getElementById("scenery");
-    let platformsLayout = document.getElementById("platforms_layout");
-
-    sceneryInput.value = "";
-    platformsLayout.value = "";
-
-    sceneryInput.setAttribute('list', 'scenery_list');
 
     if (window.localStorage.getItem("version") === window.platformsVersionID) {
         saved = true;
@@ -231,18 +243,14 @@ function getDataFromAPI() {
             });
         });
     });
-    getTimetablesAPI()
+    getTimetablesAPI().then(() => {
+        processTimetablesData();
+        setTimeout(() => {
+            loadFrames();
+        }, 1000); // 1 second
+    });
 
     window.localStorage.setItem("version", window.platformsVersionID);
-
-    setTimeout(() => {
-        getTimetablesAPI().then(() => {
-            getNameCorrectionsAPI().then(() => {
-                processTimetablesData()
-                loadFrames();
-            });
-        });
-    }, 60000); // 1 minute
 }
 
 function showDisplays(platformsConfig) { // example showDisplays("P1-1,3; P2-2,4; ")
@@ -298,8 +306,14 @@ function showDisplays(platformsConfig) { // example showDisplays("P1-1,3; P2-2,4
 // All functions for updating text fields and select options
 
 function updateTextScenery() {
-    const sceneryInput = document.getElementById("scenery");
+    let sceneryInput = document.getElementById("scenery");
     let sceneryList = document.getElementById("scenery_list");
+
+    let platformsLayout = document.getElementById("platforms_layout");
+
+    sceneryInput.value = "";
+    platformsLayout.value = "";
+    sceneryInput.setAttribute('list', 'scenery_list');
 
     if (!sceneryList) {
         sceneryList = document.createElement("datalist");
@@ -460,11 +474,11 @@ function stationTextFixes(station) {
     }
 
     return station;
-}   
+}
 
 function capitalize(str) {
     if (!str) return str;
-    return str.toLowerCase().replace(/(^|\s)\S/g, function(letter) {
+    return str.toLowerCase().replace(/(^|\s)\S/g, function (letter) {
         return letter.toUpperCase();
     });
 }
@@ -482,3 +496,4 @@ setTimeout(() => {
 */
 
 getDataFromAPI();
+darkModeCheck();
