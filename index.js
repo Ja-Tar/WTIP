@@ -7,6 +7,9 @@ window.platformsData = [];
 window.checkpointData = [];
 window.dataToDisplay = [];
 window.nameCorrectionsData = {};
+window.debug = false;
+window.debugURL = ""; // example: http://127.0.0.1:5500
+window.debugTermination = false;
 window.platformsVersionID = "0.0.11"
 
 document.getElementById("submit").addEventListener("click", function () {
@@ -49,7 +52,12 @@ function loadFrames() {
         oldFrames[i].remove();
     }
 
-    let URL = ""
+    let domain = "https://ktip.pages.dev";
+    let URL = "";
+
+    if (window.debug === true && window.debugURL) {
+        domain = window.debugURL;
+    }
 
     for (let i = 0; i < track_display.length; i++) {
         let { time, train_number, destination, firstStation, via_stations, operator, info_bar, delay, colorbar, colorfont, empty, terminatesHere } = getProcessedData(track_display[i].id);
@@ -67,11 +75,11 @@ function loadFrames() {
 
         let params = "";
 
-        if (terminatesHere === true) {
-            URL = "https://ktip.pages.dev/template_WAW_ZACH_termination.html"
+        if (terminatesHere === true || (window.debugTermination === true && window.debug === true && empty === "false")) {
+            URL = `${domain}/template_WAW_ZACH_termination.html`
             params = `time_of_arrival=${time}&train_number=${train_number}&starting_station=${firstStation}&via_stations=${via_stations}&operator=${operator}&info_bar=${info_bar}&delay=${delay}&colorbar=${colorbar}&colorfont=${colorfont}`;
         } else {
-            URL = "https://ktip.pages.dev/template_WAW_ZACH.html"
+            URL = `${domain}/template_WAW_ZACH.html`
             params = `time=${time}&train_number=${train_number}&destination=${destination}&via_stations=${via_stations}&operator=${operator}&info_bar=${info_bar}&delay=${delay}&colorbar=${colorbar}&colorfont=${colorfont}&empty=${empty}`;
         }
         
