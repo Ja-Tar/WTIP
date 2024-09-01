@@ -34,7 +34,7 @@ Pociągi domyślnie mają ustawiony tor 1. Jeśli chcesz to zmienić, wpisz w uw
     - [x] Przykładowe stacje (Łapanów, Czermin, Hetmanice)
     - [ ] Pozostałe większe stacje
     - [ ] Wszystkie stacje
-- [x] Możliwość wpisania własnego układu peronów
+- [ ] Możliwość wpisania własnego układu peronów
 - [x] Informacja czy pociąg kończy bieg
 - [ ] Ekran informacyjny pozostaje aż do odjazdu pociągu
 
