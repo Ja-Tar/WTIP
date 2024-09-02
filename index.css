@@ -139,6 +139,7 @@ input[type="checkbox"]:checked::after {
 }
 
 /* Style do przycisków */
+
 #buttons_div {
     width: 100%;
     display: flex;
@@ -156,6 +157,12 @@ input[type="checkbox"]:checked::after {
 
 .button_div {
     display: flex;
+    align-items: center;
+}
+
+.button img {
+    height: 100%;
+    width: 100%;
 }
 
 .button_div .button {
@@ -163,13 +170,13 @@ input[type="checkbox"]:checked::after {
     justify-content: center;
     align-items: center;
     font-size: 1.5em;
-    padding: 5px;
+    padding: 0px;
     margin: 5px;
     border: none;
     background-color: transparent;
     cursor: pointer;
     width: 40px;
-    height: 30px;
+    height: 35px;
     transition: transform 0.5s ease;
     transform: scale(1);
     background-color: #b3b3b3;
