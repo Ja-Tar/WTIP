@@ -484,7 +484,7 @@ function updatePlatformsText() {
     platformsLayout.value = "";
 
     if (checkpointData.length === 0) {
-        platformsLayout.disabled = false;
+        platformsLayout.disabled = true; //TODO: change to false when custom platform layout is added
         return;
     }
 

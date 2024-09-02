@@ -26,6 +26,11 @@ select {
     border: 1px solid #ccc;
 }
 
+input:disabled,
+select:disabled {
+    background-color: #f0f0f0;
+}
+
 button {
     width: 100%;
     padding: 10px;
@@ -318,6 +323,12 @@ input[type="checkbox"]:checked::after {
 .dark_mode select {
     background-color: #555;
     color: #fff;
+}
+
+.dark_mode input:disabled,
+.dark_mode select:disabled {
+    background-color: #444;
+    color: #888;
 }
 
 .dark_mode button {
