@@ -1,9 +1,11 @@
 [
     {
-        "station": "Hetmanice",
+        "sceneryName": "Hetmanice",
+        "mainCheckpoint": "Hetmanice",
         "checkpoints": [
             {
-                "pname": "HETMANICE",
+                "name": "Hetmanice",
+                "suffix": null,
                 "platforms": {
                     "Peron 1": [1, 3],
                     "Peron 2": [2, 4]
@@ -12,24 +14,28 @@
         ]
     },
     {
-        "station": "Czermin",
+        "sceneryName": "Czermin",
+        "mainCheckpoint": "Czermin",
         "checkpoints":[
             {
-                "pname": "Czermin Południe, po",
+                "name": "Czermin Południe",
+                "suffix": ", po",
                 "platforms": {
                     "Peron 1": [1],
                     "Peron 2": [2]
                 }
             },
             {
-                "pname": "CZERMIN",
+                "name": "Czermin",
+                "suffix": null,
                 "platforms": {
                     "Peron 1": [1, 3],
                     "Peron 2": [2, 4]
                 }
             },
             {
-                "pname": "Czermin Kolonia, po",
+                "name": "Czermin Kolonia",
+                "suffix": ", po",
                 "platforms": {
                     "Peron 1": [1]
                 }
@@ -37,17 +43,20 @@
         ]
     },
     {
-        "station": "Łapanów",
+        "sceneryName": "Łapanów",
+        "mainCheckpoint": "Łapanów",
         "checkpoints": [
             {
-                "pname": "ŁAPANÓW",
+                "name": "Łapanów",
+                "suffix": null,
                 "platforms": {
                     "Peron 1": [1, 3],
                     "Peron 2": [2, 4]
                 }
             },
             {
-                "pname": "Ulanów-Bieliniec, po",
+                "name": "Ulanów-Bieliniec",
+                "suffix": ", po",
                 "platforms": {
                     "Peron 1": [1],
                     "Peron 2": [2]
@@ -56,26 +65,79 @@
         ]
     },
     {
-        "station": "Testowo",
+        "sceneryName": "Testowo",
+        "mainCheckpoint": "Testowo",
         "checkpoints": [
             {
-                "pname": "Piaski, po",
+                "name": "Piaski",
+                "suffix": ", po",
                 "platforms": {
                     "Peron 1": [1],
                     "Peron 2": [2]
                 }
             },
             {
-                "pname": "TESTOWO",
+                "name": "Testowo",
+                "suffix": null,
                 "platforms": {
                     "Peron 1": [1, 3],
                     "Peron 2": [2, 4]
                 }
             },
             {
-                "pname": "Kukułka, po",
+                "name": "Kukułka",
+                "suffix": ", po",
                 "platforms": {
                     "Peron 1": [1]
+                }
+            }
+        ]
+    },
+    {
+        "sceneryName": "LCS Byki",
+        "mainCheckpoint": "Byki Zachód",
+        "checkpoints": [
+            {
+                "name": "Byki Zachód",
+                "suffix": null,
+                "platforms": {
+                    "Peron 1": [7],
+                    "Peron 2": [4]
+                }
+            },
+            {
+                "name": "Byki Wiadukt",
+                "suffix": ", po",
+                "platforms": {
+                    "Peron 1": [2],
+                    "Peron 2": [1],
+                    "Peron 3": [2], 
+                    "Peron 4": [1]
+                },
+                "comment": "Peron 3 i 4 oryginalnie mają w grze tory 102 i 101, ale jest to realistyczne"
+            },
+            {
+                "name": "Gądów",
+                "suffix": null,
+                "platforms": {
+                    "Peron 1": [2],
+                    "Peron 2": [1, 3]
+                }
+            },
+            {
+                "name": "Stogi",
+                "suffix": null,
+                "platforms": {
+                    "Peron 1": [1],
+                    "Peron 2": [2, 6]
+                }
+            },
+            {
+                "name": "Kociewie Małe",
+                "suffix": ", po",
+                "platforms": {
+                    "Peron 1": [1],
+                    "Peron 2": [2]
                 }
             }
         ]
