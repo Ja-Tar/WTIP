@@ -5,7 +5,7 @@
         "checkpoints": [
             {
                 "name": "Hetmanice",
-                "suffix": null,
+                "suffix": "",
                 "platforms": {
                     "Peron 1": [1, 3],
                     "Peron 2": [2, 4]
@@ -27,7 +27,7 @@
             },
             {
                 "name": "Czermin",
-                "suffix": null,
+                "suffix": "",
                 "platforms": {
                     "Peron 1": [1, 3],
                     "Peron 2": [2, 4]
@@ -48,7 +48,7 @@
         "checkpoints": [
             {
                 "name": "Łapanów",
-                "suffix": null,
+                "suffix": "",
                 "platforms": {
                     "Peron 1": [1, 3],
                     "Peron 2": [2, 4]
@@ -78,7 +78,7 @@
             },
             {
                 "name": "Testowo",
-                "suffix": null,
+                "suffix": "",
                 "platforms": {
                     "Peron 1": [1, 3],
                     "Peron 2": [2, 4]
@@ -99,7 +99,7 @@
         "checkpoints": [
             {
                 "name": "Byki Zachód",
-                "suffix": null,
+                "suffix": "",
                 "platforms": {
                     "Peron 1": [7],
                     "Peron 2": [4]
@@ -118,7 +118,7 @@
             },
             {
                 "name": "Gądów",
-                "suffix": null,
+                "suffix": "",
                 "platforms": {
                     "Peron 1": [2],
                     "Peron 2": [1, 3]
@@ -126,7 +126,7 @@
             },
             {
                 "name": "Stogi",
-                "suffix": null,
+                "suffix": "",
                 "platforms": {
                     "Peron 1": [1],
                     "Peron 2": [2, 6]
