@@ -113,14 +113,17 @@ function applySettings(load = false) {
     let displayTrainsWithCargo = document.getElementById("display_train_with_cargo");
     let displayTrainWithoutTrackNr = document.getElementById("display_train_without_track_nr");
 
+    const defaultSettings = {
+        "displayTrainsWithCargo": false,
+        "displayTrainWithoutTrackNr": true,
+    };
+
     if (settings) {
         settings = JSON.parse(settings);
+        settings = { ...defaultSettings, ...settings };
         window.settings = settings;
     } else {
-        settings = {
-            "displayTrainsWithCargo": false,
-            "displayTrainWithoutTrackNr": false
-        }
+        settings = defaultSettings;
     }
 
     if (load) {
@@ -284,18 +287,18 @@ function getProcessedData(display_id, smallestDisplayId) {
                     if (station.toLowerCase() === checkpoint.toLowerCase()) {
                         viaStations.splice(0, index);
 
-                        let firstMainStation = viaStationsMain.find(station => viaStations.includes(station));
+                        let firstMainStation = viaStationsMain.find(_station => viaStations.includes(_station));
                         let indexMain = viaStationsMain.indexOf(firstMainStation);
                         viaStationsMain.splice(0, indexMain);
 
                         if (viaStationsMain.includes(station)) {
-                            let index = viaStationsMain.indexOf(station);
-                            viaStationsMain.splice(index, 1);
+                            const _index = viaStationsMain.indexOf(station);
+                            viaStationsMain.splice(_index, 1);
                         }
 
                         if (viaStations.includes(station)) {
-                            let index = viaStations.indexOf(station);
-                            viaStations.splice(index, 1);
+                            const _index = viaStations.indexOf(station);
+                            viaStations.splice(_index, 1);
                         }
                     }
                 });
