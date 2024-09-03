@@ -111,8 +111,8 @@
                 "platforms": {
                     "Peron 1": [2],
                     "Peron 2": [1],
-                    "Peron 3": [2], 
-                    "Peron 4": [1]
+                    "Peron 3": [102], 
+                    "Peron 4": [101]
                 },
                 "comment": "Peron 3 i 4 oryginalnie mają w grze tory 102 i 101, ale jest to realistyczne"
             },
