@@ -14,7 +14,7 @@ window.refreshRoutine = null;
 window.debug = false;
 window.debugURL = ""; // example: http://127.0.0.1:5500
 window.debugTermination = false;
-window.platformsVersionID = "0.0.11"
+window.platformsVersionID = "0.0.12"
 
 // Button event listeners
 
@@ -176,8 +176,16 @@ function loadFrames() {
         domain = window.debugURL;
     }
 
+    let smallestDisplayId = Infinity;
+
     for (let i = 0; i < track_display.length; i++) {
-        let { time, train_number, destination, firstStation, via_stations, operator, info_bar, delay, colorbar, colorfont, empty, terminatesHere } = getProcessedData(track_display[i].id);
+        if (parseInt(track_display[i].id) < smallestDisplayId) {
+            smallestDisplayId = parseInt(track_display[i].id);
+        }
+    }
+
+    for (let i = 0; i < track_display.length; i++) {
+        let { time, train_number, destination, firstStation, via_stations, operator, info_bar, delay, colorbar, colorfont, empty, terminatesHere } = getProcessedData(track_display[i].id, smallestDisplayId);
         time = encodeURIComponent(time);
         train_number = encodeURIComponent(train_number);
         destination = encodeURIComponent(destination);
@@ -209,7 +217,9 @@ function loadFrames() {
     }
 }
 
-function getProcessedData(display_id) {
+function getProcessedData(display_id, smallestDisplayId) {
+    const checkpoint = document.getElementById("point").value;
+
     let dataToDisplay = window.dataToDisplay;
 
     let json = {};
@@ -219,7 +229,7 @@ function getProcessedData(display_id) {
     json.firstStation = "None";
     json.via_stations = "None";
     json.operator = "---";
-    json.info_bar = "Uwaga, na stacji trwają testy systemu informacji pasażerskiej"//`Tor: ${display_id}`;
+    json.info_bar = "Uwaga, na stacji trwają testy systemu informacji pasażerskiej" //`Tor: ${display_id}`;
     json.delay = 0;
     json.colorbar = "#2f353d";
     json.colorfont = "#ffffff";
@@ -229,6 +239,11 @@ function getProcessedData(display_id) {
     let closestArrivalTime = Infinity;
 
     for (i = 0; i < dataToDisplay.length; i++) {
+
+        if (dataToDisplay[i].track === "0") {
+            dataToDisplay[i].track = smallestDisplayId.toString();
+        }
+
         if (dataToDisplay[i].track === display_id) {
             let trainNo = dataToDisplay[i].trainNo;
             let delay = dataToDisplay[i].delay;
@@ -245,6 +260,15 @@ function getProcessedData(display_id) {
                 for (let j = 0; j < viaStations.length; j++) {
                     viaStations[j] = stationTextFixes(viaStations[j]);
                 }
+
+                viaStations.pop(); // remove last station from viaStations
+
+                viaStations.forEach((station, index) => {
+                    if (station.toLowerCase() === checkpoint.toLowerCase()) {
+                        // remove all stations before checkpoint and checkpoint
+                        console.log(viaStations.splice(0, index + 1));
+                    }
+                });
 
                 console.log("Closest arrival time: ", arrivalTimestamp, trainNo); // skipcq: JS-0002 Used for checking if everything is working correctly
                 json.time = new Date(arrivalTimestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }); // "HH:MM"
@@ -290,10 +314,7 @@ function processTimetablesData() {
                 let stopList = timetable.stopList;
 
                 for (let j = 0; j < stopList.length; j++) {
-                    let comments = stopList.comments; // search for [peron],[tor] in comments
-                    if (!comments) {
-                        comments = "1,1";
-                    }
+                    let comments = stopList[j].comments; // search for [peron],[tor] in comments
 
                     if (stopList[j].mainStop === true) {
                         viaStations.push(stopList[j].stopNameRAW);
@@ -302,9 +323,13 @@ function processTimetablesData() {
                     if (stopList[j].stopNameRAW.toLowerCase() === checkpoint.toLowerCase()) {
                         if (stopList[j].confirmed === 0) {
                             //if (stopList[j].stopped === 0) {
-                            comments = comments.split(",");
-                            let platform = comments[0].slice(-1)[0];
-                            let track = Array.from(comments[1])[0];
+                            let platform = "0"
+                            let track = "0"
+                            if (comments) {
+                                comments = comments.split(",");
+                                platform = comments[0].slice(-1)[0];
+                                track = Array.from(comments[1])[0];
+                            }
                             let delay = stopList[j].departureDelay;
                             let arrivalTimestamp = stopList[j].arrivalRealTimestamp;
                             let departureTimestamp = stopList[j].departureTimestamp;
@@ -429,16 +454,21 @@ function updateTextScenery() {
         sceneryList.appendChild(option);
     }
 
-    sceneryInput.addEventListener("input", function () {
-        let station = sceneryInput.value;
-        updatePointsSelect(station);
-    });
-
     let pointsSelect = document.getElementById("point");
 
-    pointsSelect.addEventListener("input", function () {
-        updatePlatformsText()
-    });
+    if (sceneryInput.eventListeners && pointsSelect.eventListeners) {
+        console.log("Event listeners already added");
+    } else {
+
+        sceneryInput.addEventListener("input", function () {
+            let station = sceneryInput.value;
+            updatePointsSelect(station);
+        });
+
+        pointsSelect.addEventListener("input", function () {
+            updatePlatformsText()
+        });
+    }
 }
 
 function clearFields() {
@@ -457,11 +487,11 @@ function updatePointsSelect(station) {
     checkpointData = [];
 
     for (let i = 0; i < window.platformsData.length; i++) {
-        if (window.platformsData[i].station === station) {
+        if (window.platformsData[i].sceneryName === station) {
             for (let j = 0; j < window.platformsData[i].checkpoints.length; j++) {
                 let option = document.createElement("option");
-                option.value = window.platformsData[i].checkpoints[j].pname;
-                option.innerHTML = window.platformsData[i].checkpoints[j].pname;
+                option.value = window.platformsData[i].checkpoints[j].name + window.platformsData[i].checkpoints[j].suffix;
+                option.innerHTML = window.platformsData[i].checkpoints[j].name + window.platformsData[i].checkpoints[j].suffix;
                 pointsSelect.appendChild(option);
                 checkpointData.push(window.platformsData[i].checkpoints[j]);
             }
@@ -497,10 +527,10 @@ function updatePlatformsText() {
     platformsLayout.disabled = true;
 
     for (let y = 0; y < checkpointData.length; y++) {
-        if (checkpointData[y].pname !== point) {
+        const dataPoint = checkpointData[y].name.toLowerCase() + checkpointData[y].suffix.toLowerCase();
+        if (dataPoint !== point.toLowerCase()) {
             continue;
         }
-
         const _platforms = Object.keys(checkpointData[y].platforms);
 
         for (let i = 0; i < _platforms.length; i++) {
@@ -528,7 +558,7 @@ async function getPlatformsAPI(saved = false) {
     if ((savedData) && (saved)) {
         window.platformsData = JSON.parse(savedData);
     } else {
-        await fetch(window.platformsAPI_URL)
+        await fetch(window.platformsAPI_URL, { cache: "no-store" })
             .then(response => response.json())
             .then(data => {
                 window.platformsData = data;
@@ -543,7 +573,7 @@ async function getSceneryAPI(saved = false) {
     if ((savedData) && (saved)) {
         window.sceneryData = JSON.parse(savedData);
     } else {
-        await fetch(window.sceneryAPI_URL)
+        await fetch(window.sceneryAPI_URL, { cache: "no-store" })
             .then(response => response.json())
             .then(data => {
                 window.sceneryData = data;
@@ -558,7 +588,7 @@ async function getNameCorrectionsAPI() {
     if (savedData) {
         window.nameCorrectionsData = JSON.parse(savedData);
     } else {
-        await fetch(window.nameCorrectionsAPI_URL)
+        await fetch(window.nameCorrectionsAPI_URL, { cache: "no-store" })
             .then(response => response.json())
             .then(data => {
                 window.nameCorrectionsData = data;
