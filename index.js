@@ -119,8 +119,9 @@ function applySettings(load = false) {
     } else {
         settings = {
             "displayTrainsWithCargo": false,
-            "displayTrainWithoutTrackNr": false
+            "displayTrainWithoutTrackNr": true
         }
+        window.settings = settings;
     }
 
     if (load) {
