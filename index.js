@@ -287,18 +287,18 @@ function getProcessedData(display_id, smallestDisplayId) {
                     if (station.toLowerCase() === checkpoint.toLowerCase()) {
                         viaStations.splice(0, index);
 
-                        let firstMainStation = viaStationsMain.find(station => viaStations.includes(station));
+                        let firstMainStation = viaStationsMain.find(_station => viaStations.includes(_station));
                         let indexMain = viaStationsMain.indexOf(firstMainStation);
                         viaStationsMain.splice(0, indexMain);
 
                         if (viaStationsMain.includes(station)) {
-                            let index = viaStationsMain.indexOf(station);
-                            viaStationsMain.splice(index, 1);
+                            let _index = viaStationsMain.indexOf(station);
+                            viaStationsMain.splice(_index, 1);
                         }
 
                         if (viaStations.includes(station)) {
-                            let index = viaStations.indexOf(station);
-                            viaStations.splice(index, 1);
+                            let _index = viaStations.indexOf(station);
+                            viaStations.splice(_index, 1);
                         }
                     }
                 });
