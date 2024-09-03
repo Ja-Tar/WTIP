@@ -292,12 +292,12 @@ function getProcessedData(display_id, smallestDisplayId) {
                         viaStationsMain.splice(0, indexMain);
 
                         if (viaStationsMain.includes(station)) {
-                            let _index = viaStationsMain.indexOf(station);
+                            const _index = viaStationsMain.indexOf(station);
                             viaStationsMain.splice(_index, 1);
                         }
 
                         if (viaStations.includes(station)) {
-                            let _index = viaStations.indexOf(station);
+                            const _index = viaStations.indexOf(station);
                             viaStations.splice(_index, 1);
                         }
                     }
