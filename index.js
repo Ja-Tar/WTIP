@@ -9,6 +9,15 @@ window.checkpointData = [];
 window.dataToDisplay = [];
 window.nameCorrectionsData = {};
 window.settings = {};
+window.trainCategory = {
+    "E": ['EI', 'EC', 'EN'],
+    "O": ['MP', 'MH', 'MM', 'MO',
+    'RP', 'RA', 'RM', 'RO'],
+    "T":['PW', "PX",
+    'TC', 'TG', 'TR', 'TD', 'TM', 'TN', 'TK', 'TS',
+    'LP', 'LT', 'LS', 'LZ',
+    'ZG', 'ZN', 'ZU']
+};
 
 window.refreshRoutine = null;
 window.debug = false;
@@ -99,25 +108,27 @@ function closeModal() {
     }, 300); // Czas trwania animacji
 }
 
-function applySettings() {
+function applySettings(load = false) {
     let settings = window.localStorage.getItem("settings");
     let displayTrainsWithCargo = document.getElementById("display_train_with_cargo");
+    let displayTrainWithoutTrackNr = document.getElementById("display_train_without_track_nr");
 
     if (settings) {
         settings = JSON.parse(settings);
         window.settings = settings;
     } else {
         settings = {
-            "displayTrainsWithCargo": false
+            "displayTrainsWithCargo": false,
+            "displayTrainWithoutTrackNr": false
         }
     }
 
-    if (displayTrainsWithCargo.checked || settings.displayTrainsWithCargo) {
-        settings.displayTrainsWithCargo = true;
-        displayTrainsWithCargo.checked = true;
+    if (load) {
+        displayTrainsWithCargo.checked = settings.displayTrainsWithCargo;
+        displayTrainWithoutTrackNr.checked = settings.displayTrainWithoutTrackNr;
     } else {
-        settings.displayTrainsWithCargo = false;
-        displayTrainsWithCargo.checked = false;
+        settings.displayTrainsWithCargo = displayTrainsWithCargo.checked;
+        settings.displayTrainWithoutTrackNr = displayTrainWithoutTrackNr.checked;
     }
 
     window.localStorage.setItem("settings", JSON.stringify(settings));
@@ -248,6 +259,7 @@ function getProcessedData(display_id, smallestDisplayId) {
             let trainNo = dataToDisplay[i].trainNo;
             let delay = dataToDisplay[i].delay;
             let viaStations = dataToDisplay[i].viaStations;
+            let viaStationsMain = dataToDisplay[i].viaStationsMain;
             let arrivalTimestamp = dataToDisplay[i].arrivalTimestamp;
             //let departureTimestamp = dataToDisplay[i].departureTimestamp;
             let firstStation = dataToDisplay[i].firstStation;
@@ -261,12 +273,31 @@ function getProcessedData(display_id, smallestDisplayId) {
                     viaStations[j] = stationTextFixes(viaStations[j]);
                 }
 
+                for (let j = 0; j < viaStationsMain.length; j++) {
+                    viaStationsMain[j] = stationTextFixes(viaStationsMain[j]);
+                }
+
                 viaStations.pop(); // remove last station from viaStations
+                viaStationsMain.pop(); // remove last station from viaStationsMain
 
                 viaStations.forEach((station, index) => {
                     if (station.toLowerCase() === checkpoint.toLowerCase()) {
-                        // remove all stations before checkpoint and checkpoint
-                        console.log(viaStations.splice(0, index + 1));
+                        // remove all stations before checkpoint
+                        console.log(viaStations.splice(0, index));
+
+                        let firstMainStation = viaStationsMain.find(station => viaStations.includes(station));
+                        let indexMain = viaStationsMain.indexOf(firstMainStation);
+                        console.log(viaStationsMain.splice(0, indexMain));
+
+                        if (viaStationsMain.includes(station)) {
+                            let index = viaStationsMain.indexOf(station);
+                            console.log(viaStationsMain.splice(index, 1));
+                        }
+
+                        if (viaStations.includes(station)) {
+                            let index = viaStations.indexOf(station);
+                            console.log(viaStations.splice(index, 1));
+                        }
                     }
                 });
 
@@ -275,7 +306,7 @@ function getProcessedData(display_id, smallestDisplayId) {
                 json.train_number = trainNo;
                 json.destination = stationTextFixes(lastStation);
                 json.firstStation = stationTextFixes(firstStation);
-                json.via_stations = viaStations.join(", ");
+                json.via_stations = viaStationsMain.join(", ");
                 
                 if (delay < 0) {
                     json.delay = 0;
@@ -307,17 +338,25 @@ function processTimetablesData() {
             let trainNo = timetableData[i].trainNo;
 
             if (timetable) {
+                let category = timetable.category; // "EIE"
                 let route = timetable.route.split("|");
                 let firstStation = route[0];
                 let lastStation = route[1];
                 let viaStations = [];
+                let viaStationsMain = [];
                 let stopList = timetable.stopList;
+                let shortCategory = category.slice(0, 2);
+
+                if (window.settings.displayTrainsWithCargo === false && window.trainCategory["T"].includes(shortCategory)) {
+                    continue;
+                }
 
                 for (let j = 0; j < stopList.length; j++) {
                     let comments = stopList[j].comments; // search for [peron],[tor] in comments
 
+                    viaStations.push(stopList[j].stopNameRAW);
                     if (stopList[j].mainStop === true) {
-                        viaStations.push(stopList[j].stopNameRAW);
+                        viaStationsMain.push(stopList[j].stopNameRAW);
                     }
 
                     if (stopList[j].stopNameRAW.toLowerCase() === checkpoint.toLowerCase()) {
@@ -329,6 +368,8 @@ function processTimetablesData() {
                                 comments = comments.split(",");
                                 platform = comments[0].slice(-1)[0];
                                 track = Array.from(comments[1])[0];
+                            } else if (!comments && window.settings.displayTrainWithoutTrackNr === false) {
+                                continue;
                             }
                             let delay = stopList[j].departureDelay;
                             let arrivalTimestamp = stopList[j].arrivalRealTimestamp;
@@ -340,6 +381,7 @@ function processTimetablesData() {
                                 "track": track,
                                 "delay": delay,
                                 "viaStations": viaStations,
+                                "viaStationsMain": viaStationsMain,
                                 "arrivalTimestamp": arrivalTimestamp,
                                 "departureTimestamp": departureTimestamp,
                                 "stopped": stopList[j].stopped,
@@ -636,5 +678,5 @@ setTimeout(() => {
 
 getDataFromAPI();
 darkModeCheck();
-applySettings();
+applySettings(true);
 clearFields();
