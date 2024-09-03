@@ -113,15 +113,17 @@ function applySettings(load = false) {
     let displayTrainsWithCargo = document.getElementById("display_train_with_cargo");
     let displayTrainWithoutTrackNr = document.getElementById("display_train_without_track_nr");
 
+    const defaultSettings = {
+        "displayTrainsWithCargo": false,
+        "displayTrainWithoutTrackNr": true,
+    };
+
     if (settings) {
         settings = JSON.parse(settings);
+        settings = { ...defaultSettings, ...settings };
         window.settings = settings;
     } else {
-        settings = {
-            "displayTrainsWithCargo": false,
-            "displayTrainWithoutTrackNr": true
-        }
-        window.settings = settings;
+        settings = defaultSettings;
     }
 
     if (load) {
