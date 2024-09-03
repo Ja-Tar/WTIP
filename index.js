@@ -282,21 +282,20 @@ function getProcessedData(display_id, smallestDisplayId) {
 
                 viaStations.forEach((station, index) => {
                     if (station.toLowerCase() === checkpoint.toLowerCase()) {
-                        // remove all stations before checkpoint
-                        console.log(viaStations.splice(0, index));
+                        viaStations.splice(0, index);
 
                         let firstMainStation = viaStationsMain.find(station => viaStations.includes(station));
                         let indexMain = viaStationsMain.indexOf(firstMainStation);
-                        console.log(viaStationsMain.splice(0, indexMain));
+                        viaStationsMain.splice(0, indexMain);
 
                         if (viaStationsMain.includes(station)) {
                             let index = viaStationsMain.indexOf(station);
-                            console.log(viaStationsMain.splice(index, 1));
+                            viaStationsMain.splice(index, 1);
                         }
 
                         if (viaStations.includes(station)) {
                             let index = viaStations.indexOf(station);
-                            console.log(viaStations.splice(index, 1));
+                            viaStations.splice(index, 1);
                         }
                     }
                 });
@@ -499,7 +498,7 @@ function updateTextScenery() {
     let pointsSelect = document.getElementById("point");
 
     if (sceneryInput.eventListeners && pointsSelect.eventListeners) {
-        console.log("Event listeners already added");
+        console.log("Event listeners already added"); // skipcq: JS-0002 Used for checking if everything is working correctly
     } else {
 
         sceneryInput.addEventListener("input", function () {
