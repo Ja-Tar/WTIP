@@ -11,6 +11,18 @@
 </head>
 
 <body>
+    <div id="settings_modal" class="modal">
+        <div class="modal_content" id="settings_content">
+            <span class="close_button">&times;</span>
+            <h3>Ustawienia</h3>
+            <div class="checkbox_div">   
+                <label for="display_train_with_cargo">Pokaż pociągi towarowe:</label>
+                <input type="checkbox" id="display_train_with_cargo">
+            </div>
+            <br>
+            <button id="save_settings" class="green_button">Zapisz ustawienia</button>
+        </div>
+    </div>
     <div id="form">
         <label for="server">Server:</label>
         <select id="server">
