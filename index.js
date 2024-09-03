@@ -252,7 +252,13 @@ function getProcessedData(display_id) {
                 json.destination = stationTextFixes(lastStation);
                 json.firstStation = stationTextFixes(firstStation);
                 json.via_stations = viaStations.join(", ");
-                json.delay = delay;
+                
+                if (delay < 0) {
+                    json.delay = 0;
+                } else {
+                    json.delay = delay;
+                }
+                
                 json.empty = "false";
                 json.terminatesHere = dataToDisplay[i].terminatesHere;
             } else {
