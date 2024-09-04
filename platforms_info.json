@@ -141,5 +141,25 @@
                 }
             }
         ]
-    }
+    },
+    {
+        "sceneryName": "Tarkowice",
+        "mainCheckpoint": "Tarkowice",
+        "checkpoints": [
+            {
+                "name": "Tarkowice",
+                "suffix": "",
+                "platforms": {
+                    "Peron 1": [6],
+                    "Peron 2": [2, 4],
+                    "Peron 3": [1, 3]
+                }
+            },
+                "name": "Jabłowo",
+                "suffix": ", po",
+                "platforms": {
+                    "Peron 1": [1]
+                }
+            }
+        ]
 ]
