@@ -23,7 +23,7 @@ window.refreshRoutine = null;
 window.debug = false;
 window.debugURL = ""; // example: http://127.0.0.1:5500
 window.debugTermination = false;
-window.platformsVersionID = "0.0.13"
+window.platformsVersionID = "0.0.14"
 
 // Button event listeners
 
