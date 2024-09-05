@@ -289,7 +289,7 @@ function getProcessedData(display_id, smallestDisplayId) {
             let viaStations = dataToDisplay[i].viaStations;
             let viaStationsMain = dataToDisplay[i].viaStationsMain;
             let arrivalTimestamp = dataToDisplay[i].arrivalTimestamp;
-            //let departureTimestamp = dataToDisplay[i].departureTimestamp;
+            let departureTimestamp = dataToDisplay[i].departureTimestamp;
             let firstStation = dataToDisplay[i].firstStation;
             let lastStation = dataToDisplay[i].lastStation
             let timeTimestamp = new Date().getTime()
@@ -408,7 +408,7 @@ function getProcessedData(display_id, smallestDisplayId) {
                 });
 
                 console.log("Closest arrival time: ", arrivalTimestamp, trainNo); // skipcq: JS-0002 Used for checking if everything is working correctly
-                json.time = new Date(arrivalTimestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }); // "HH:MM"
+                json.time = new Date(departureTimestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }); // "HH:MM"
                 json.train_number = trainNo;
                 json.destination = stationTextFixes(lastStation);
                 json.firstStation = stationTextFixes(firstStation);
