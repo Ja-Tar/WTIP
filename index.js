@@ -1,14 +1,17 @@
 window.timetablesAPI_URL = 'https://stacjownik.spythere.eu/api/getActiveTrainList';
 window.sceneryAPI_URL = 'https://stacjownik.spythere.eu/api/getSceneries';
 window.nameCorrectionsAPI_URL = "https://raw.githubusercontent.com/Thundo54/tablice-td2-api/master/namesCorrections.json";
+window.operatorConvertAPI_URL = 'https://raw.githubusercontent.com/Thundo54/tablice-td2-api/master/operatorConvert.json';
 window.platformsAPI_URL = 'https://raw.githubusercontent.com/Ja-Tar/WTIP/main/platforms_info.json';
 
 window.timetablesData = [];
 window.platformsData = [];
 window.checkpointData = [];
 window.dataToDisplay = [];
+window.operatorConvertData = {};
 window.nameCorrectionsData = {};
 window.settings = {};
+
 window.trainCategory = {
     "E": ['EI', 'EC', 'EN'],
     "O": ['MP', 'MH', 'MM', 'MO',
@@ -18,6 +21,13 @@ window.trainCategory = {
     'LP', 'LT', 'LS', 'LZ',
     'ZG', 'ZN', 'ZU']
 };
+window.operatorFullNames = {
+    "IC": "PKP Intercity",
+    "KM": "Koleje Mazowieckie",
+    "SKMT": "SKM Trójmiasto",
+    "PR": "POLREGIO",
+    "KŚ": "Koleje Śląskie"
+}
 
 window.refreshRoutine = null;
 window.debug = false;
@@ -255,8 +265,8 @@ function getProcessedData(display_id, smallestDisplayId) {
     json.destination = "None";
     json.firstStation = "None";
     json.via_stations = "None";
-    json.operator = "---"; // TODO: Add operator data
-    json.train_name = "---"; // TODO: Add train name data
+    json.operator = "---";
+    json.train_name = ""; // TODO: Add train name data
     json.info_bar = "Uwaga, na stacji trwają testy systemu informacji pasażerskiej" //`Tor: ${display_id}`;
     json.delay = 0;
     json.colorbar = "#2f353d";
@@ -274,6 +284,7 @@ function getProcessedData(display_id, smallestDisplayId) {
 
         if (dataToDisplay[i].track === display_id) {
             let trainNo = dataToDisplay[i].trainNo;
+            let stockString = dataToDisplay[i].stockString;
             let delay = dataToDisplay[i].delay;
             let viaStations = dataToDisplay[i].viaStations;
             let viaStationsMain = dataToDisplay[i].viaStationsMain;
@@ -282,6 +293,85 @@ function getProcessedData(display_id, smallestDisplayId) {
             let firstStation = dataToDisplay[i].firstStation;
             let lastStation = dataToDisplay[i].lastStation
             let timeTimestamp = new Date().getTime()
+
+            // Operator recognition
+
+            let operatorList = [];
+
+            for (const key in window.operatorConvertData["operators"]) {
+                let splitStockString = stockString.split(";");
+
+                for (let j = 0; j < splitStockString.length; j++) {
+                    if (key === splitStockString[j]) {
+                        operatorList.push(window.operatorConvertData["operators"][key]);
+                    }
+                }
+            }
+
+            // Get most common operator 
+            if (operatorList.length > 0) {
+                // 
+                let counts = {};
+                operatorList.forEach(function (operators) {
+                    operators.forEach(function (operator) {
+                        counts[operator] = (counts[operator] || 0) + 1;
+                    });
+                });
+
+                let mostCommonOperator = Object.keys(counts).reduce(function (a, b) {
+                    return counts[a] > counts[b] ? a : b;
+                });
+
+                json.operator = window.operatorFullNames[mostCommonOperator];
+                console.log("Most common operator: ", mostCommonOperator);
+            }
+
+            // Train name recognition and operator overwrite
+
+            // {
+            //  "operator": "PR",
+            //  "operatorOverwrite": "ŁKA",
+            //  "trainNoStartsWith": ["911"],
+            //  "category": { "R": "Ł", "RP": "ŁS", "M": "ŁS", "E": "ŁS" },
+            //  "remarks": "Bajkowy"
+            // }
+
+            for (let j = 0; j < window.operatorConvertData["overwrite"].length; j++) {
+                let overwrite = window.operatorConvertData["overwrite"][j];
+
+                if (overwrite["operator"] === json.operator) {
+                    if (overwrite["trainNoStartsWith"]) {
+                        let startsWith = overwrite["trainNoStartsWith"];
+                        let trainNoStr = String(trainNo);
+
+                        for (let k = 0; k < startsWith.length; k++) {
+                            if (trainNoStr.startsWith(startsWith[k])) {
+                                let _operator = overwrite["operatorOverwrite"];
+                                json.operator = window.operatorFullNames[_operator];
+                                console.log("Operator overwritten: ", json.operator);
+                                if (overwrite["remarks"]) {
+                                    json.info_bar = overwrite["remarks"];
+                                    console.log("Remarks overwritten: ", json.info_bar);
+                                }
+                            }
+                        }
+                    }
+
+                    // TODO: Dodać prefixy dla numeru pociągu
+                    //if (overwrite["category"]) {
+                    //    let category = overwrite["category"];
+                    //
+                    //    for (const key in category) {
+                    //        if (window.trainCategory[key].includes(stockString)) {
+                    //            json.train_name = category[key];
+                    //            console.log("Train name overwritten: ", json.train_name);
+                    //        }
+                    //    }
+                    //}  
+                }
+            }
+
+            // Train time recognition
 
             if (arrivalTimestamp < closestArrivalTime && arrivalTimestamp > timeTimestamp) {
                 closestArrivalTime = arrivalTimestamp;
@@ -352,6 +442,7 @@ function processTimetablesData() {
         if (timetableData[i].region === server) {
             let timetable = timetableData[i].timetable;
             let trainNo = timetableData[i].trainNo;
+            let stockString = timetableData[i].stockString;
 
             if (timetable) {
                 let category = timetable.category; // "EIE"
@@ -393,6 +484,7 @@ function processTimetablesData() {
 
                             dataToDisplay.push({
                                 "trainNo": trainNo,
+                                "stockString": stockString,
                                 "platform": platform,
                                 "track": track,
                                 "delay": delay,
@@ -433,10 +525,12 @@ function getDataFromAPI() {
         });
     });
     getTimetablesAPI().then(() => {
-        processTimetablesData();
-        setTimeout(() => {
-            loadFrames();
-        }, 1000); // 1 second
+        getOperatorConvertAPI().then(() => {
+            processTimetablesData();
+            setTimeout(() => {
+                loadFrames();
+            }, 1000); // 1 second
+        });
     });
 
     localStorage.setItem("version", window.platformsVersionID);
@@ -651,6 +745,21 @@ async function getNameCorrectionsAPI() {
             .then(data => {
                 window.nameCorrectionsData = data;
                 localStorage.setItem("nameCorrectionsData", JSON.stringify(data));
+            });
+    }
+}
+
+async function getOperatorConvertAPI() {
+    const savedData = localStorage.getItem("operatorConvertData");
+
+    if (savedData) {
+        window.operatorConvertData = JSON.parse(savedData);
+    } else {
+        await fetch(window.operatorConvertAPI_URL, { cache: "no-store" })
+            .then(response => response.json())
+            .then(data => {
+                window.operatorConvertData = data;
+                localStorage.setItem("operatorConvertData", JSON.stringify(data));
             });
     }
 }
