@@ -15,18 +15,19 @@ window.settings = {};
 window.trainCategory = {
     "E": ['EI', 'EC', 'EN'],
     "O": ['MP', 'MH', 'MM', 'MO',
-    'RP', 'RA', 'RM', 'RO'],
-    "T":['PW', "PX",
-    'TC', 'TG', 'TR', 'TD', 'TM', 'TN', 'TK', 'TS',
-    'LP', 'LT', 'LS', 'LZ',
-    'ZG', 'ZN', 'ZU']
+        'RP', 'RA', 'RM', 'RO'],
+    "T": ['PW', "PX",
+        'TC', 'TG', 'TR', 'TD', 'TM', 'TN', 'TK', 'TS', 'TH',
+        'LP', 'LT', 'LS', 'LZ',
+        'ZG', 'ZN', 'ZU']
 };
 window.operatorFullNames = {
     "IC": "PKP Intercity",
     "KM": "Koleje Mazowieckie",
     "SKMT": "SKM Trójmiasto",
     "PR": "POLREGIO",
-    "KŚ": "Koleje Śląskie"
+    "KŚ": "Koleje Śląskie",
+    "ŁKA": "Łódzka Kolej Aglomeracyjna"
 }
 
 window.refreshRoutine = null;
@@ -37,7 +38,7 @@ window.platformsVersionID = "0.0.13"
 
 // Button event listeners
 
-document.getElementById("settings_button").addEventListener("click", function() {
+document.getElementById("settings_button").addEventListener("click", function () {
     const modal = document.getElementById("settings_modal");
     const modalContent = document.querySelector(".modal_content");
 
@@ -49,11 +50,11 @@ document.getElementById("settings_button").addEventListener("click", function() 
     modalContent.classList.add("slide-in");
 });
 
-document.getElementsByClassName("close_button")[0].addEventListener("click", function() {
+document.getElementsByClassName("close_button")[0].addEventListener("click", function () {
     closeModal();
 });
 
-document.getElementById("save_settings").addEventListener("click", function() {
+document.getElementById("save_settings").addEventListener("click", function () {
     showNotification("Ustawienia zapisane!");
 
     // Zastosuj ustawienia
@@ -63,7 +64,7 @@ document.getElementById("save_settings").addEventListener("click", function() {
     closeModal();
 });
 
-document.getElementById("reset_settings").addEventListener("click", function() {
+document.getElementById("reset_settings").addEventListener("click", function () {
     showNotification("Ustawienia zresetowane!");
 
     localStorage.clear();
@@ -105,7 +106,7 @@ document.getElementById("light_mode_button").addEventListener("click", () => {
 
 // Rest of the event listeners
 
-window.addEventListener("click", function(event) {
+window.addEventListener("click", function (event) {
     if (event.target == document.getElementById("settings_modal")) {
         closeModal();
     }
@@ -227,7 +228,7 @@ function loadFrames() {
         destination = encodeURIComponent(destination);
         firstStation = encodeURIComponent(firstStation);
         via_stations = encodeURIComponent(via_stations);
-        operator = encodeURIComponent(operator);
+        operator = encodeURIComponent(window.operatorFullNames[operator]);
         train_name = encodeURIComponent(train_name);
         info_bar = encodeURIComponent(info_bar);
         delay = encodeURIComponent(delay);
@@ -322,7 +323,7 @@ function getProcessedData(display_id, smallestDisplayId) {
                     return counts[a] > counts[b] ? a : b;
                 });
 
-                json.operator = window.operatorFullNames[mostCommonOperator];
+                json.operator = mostCommonOperator;
                 console.log("Most common operator: ", mostCommonOperator);
             }
 
@@ -339,19 +340,18 @@ function getProcessedData(display_id, smallestDisplayId) {
             for (let j = 0; j < window.operatorConvertData["overwrite"].length; j++) {
                 let overwrite = window.operatorConvertData["overwrite"][j];
 
-                if (overwrite["operator"] === json.operator) {
+
                     if (overwrite["trainNoStartsWith"]) {
                         let startsWith = overwrite["trainNoStartsWith"];
                         let trainNoStr = String(trainNo);
 
                         for (let k = 0; k < startsWith.length; k++) {
-                            if (trainNoStr.startsWith(startsWith[k])) {
-                                let _operator = overwrite["operatorOverwrite"];
-                                json.operator = window.operatorFullNames[_operator];
+                            if (trainNoStr === startsWith[k] || trainNoStr.startsWith(startsWith[k])) {
+                                json.operator = overwrite["operatorOverwrite"];
                                 console.log("Operator overwritten: ", json.operator);
                                 if (overwrite["remarks"]) {
-                                    json.info_bar = overwrite["remarks"];
-                                    console.log("Remarks overwritten: ", json.info_bar);
+                                    json.name = overwrite["remarks"];
+                                    console.log("Remarks overwritten: ", json.name);
                                 }
                             }
                         }
@@ -368,7 +368,7 @@ function getProcessedData(display_id, smallestDisplayId) {
                     //        }
                     //    }
                     //}  
-                }
+        
             }
 
             // Train time recognition
@@ -413,13 +413,13 @@ function getProcessedData(display_id, smallestDisplayId) {
                 json.destination = stationTextFixes(lastStation);
                 json.firstStation = stationTextFixes(firstStation);
                 json.via_stations = viaStationsMain.join(", ");
-                
+
                 if (delay < 0) {
                     json.delay = 0;
                 } else {
                     json.delay = delay;
                 }
-                
+
                 json.empty = "false";
                 json.terminatesHere = dataToDisplay[i].terminatesHere;
             } else {
