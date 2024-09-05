@@ -373,7 +373,7 @@ function getProcessedData(display_id, smallestDisplayId) {
 
             // Train time recognition
 
-            if (arrivalTimestamp < closestArrivalTime && arrivalTimestamp > timeTimestamp) {
+            if (arrivalTimestamp < closestArrivalTime) {
                 closestArrivalTime = arrivalTimestamp;
 
                 for (let j = 0; j < viaStations.length; j++) {
@@ -492,7 +492,8 @@ function processTimetablesData() {
                                 "viaStationsMain": viaStationsMain,
                                 "arrivalTimestamp": arrivalTimestamp,
                                 "departureTimestamp": departureTimestamp,
-                                "stopped": stopList[j].stopped,
+                                //"stopped": stopList[j].stopped, // NOT USED
+                                //"confirmed": stopList[j].confirmed, // NOT USED
                                 "firstStation": firstStation,
                                 "lastStation": lastStation,
                                 "terminatesHere": stopList[j].terminatesHere
