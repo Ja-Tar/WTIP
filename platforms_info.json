@@ -163,5 +163,19 @@
                 }
             }
         ]
+    },
+    {
+        "sceneryName": "Głęboszów",
+        "mainCheckpoint": "Głęboszów",
+        "checkpoints": [
+            {
+                "name": "Głęboszów",
+                "suffix": "",
+                "platforms": {
+                    "Peron 1": [2],
+                    "Peron 2": [1, 3]
+                }
+            }
+        ]
     }
 ]
