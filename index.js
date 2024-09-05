@@ -1,7 +1,7 @@
 window.timetablesAPI_URL = 'https://stacjownik.spythere.eu/api/getActiveTrainList';
 window.sceneryAPI_URL = 'https://stacjownik.spythere.eu/api/getSceneries';
 window.nameCorrectionsAPI_URL = "https://raw.githubusercontent.com/Thundo54/tablice-td2-api/master/namesCorrections.json";
-window.platformsAPI_URL = 'https://raw.githubusercontent.com/Ja-Tar/WTIP/main/platforms_info.json'
+window.platformsAPI_URL = 'https://raw.githubusercontent.com/Ja-Tar/WTIP/main/platforms_info.json';
 
 window.timetablesData = [];
 window.platformsData = [];
@@ -53,6 +53,18 @@ document.getElementById("save_settings").addEventListener("click", function() {
     closeModal();
 });
 
+document.getElementById("reset_settings").addEventListener("click", function() {
+    showNotification("Ustawienia zresetowane!");
+
+    localStorage.clear();
+
+    closeModal();
+
+    setTimeout(() => {
+        window.location.reload();
+    }, 500); // 1 second
+});
+
 document.getElementById("submit").addEventListener("click", function () {
     if (window.timetablesData) {
         processTimetablesData();
@@ -73,12 +85,12 @@ document.getElementById("language_switch").addEventListener("click", function ()
 
 document.getElementById("dark_mode_button").addEventListener("click", () => {
     document.body.classList.toggle("dark_mode");
-    window.localStorage.setItem("dark_mode", "true");
+    localStorage.setItem("dark_mode", "true");
 });
 
 document.getElementById("light_mode_button").addEventListener("click", () => {
     document.body.classList.remove("dark_mode");
-    window.localStorage.setItem("dark_mode", "false");
+    localStorage.setItem("dark_mode", "false");
 });
 
 // Rest of the event listeners
@@ -109,7 +121,7 @@ function closeModal() {
 }
 
 function applySettings(load = false) {
-    let settings = window.localStorage.getItem("settings");
+    let settings = localStorage.getItem("settings");
     let displayTrainsWithCargo = document.getElementById("display_train_with_cargo");
     let displayTrainWithoutTrackNr = document.getElementById("display_train_without_track_nr");
 
@@ -134,7 +146,7 @@ function applySettings(load = false) {
         settings.displayTrainWithoutTrackNr = displayTrainWithoutTrackNr.checked;
     }
 
-    window.localStorage.setItem("settings", JSON.stringify(settings));
+    localStorage.setItem("settings", JSON.stringify(settings));
 }
 
 // Main functions
@@ -170,7 +182,7 @@ function refreshDataRoutine() {
 }
 
 function darkModeCheck() {
-    if (window.localStorage.getItem("dark_mode") === "true") {
+    if (localStorage.getItem("dark_mode") === "true") {
         document.body.classList.add("dark_mode");
     }
 }
@@ -199,13 +211,14 @@ function loadFrames() {
     }
 
     for (let i = 0; i < track_display.length; i++) {
-        let { time, train_number, destination, firstStation, via_stations, operator, info_bar, delay, colorbar, colorfont, empty, terminatesHere } = getProcessedData(track_display[i].id, smallestDisplayId);
+        let { time, train_number, destination, firstStation, via_stations, operator, info_bar, train_name, delay, colorbar, colorfont, empty, terminatesHere } = getProcessedData(track_display[i].id, smallestDisplayId);
         time = encodeURIComponent(time);
         train_number = encodeURIComponent(train_number);
         destination = encodeURIComponent(destination);
         firstStation = encodeURIComponent(firstStation);
         via_stations = encodeURIComponent(via_stations);
         operator = encodeURIComponent(operator);
+        train_name = encodeURIComponent(train_name);
         info_bar = encodeURIComponent(info_bar);
         delay = encodeURIComponent(delay);
         colorbar = encodeURIComponent(colorbar);
@@ -219,7 +232,7 @@ function loadFrames() {
             params = `time_of_arrival=${time}&train_number=${train_number}&starting_station=${firstStation}&via_stations=${via_stations}&operator=${operator}&info_bar=${info_bar}&delay=${delay}&colorbar=${colorbar}&colorfont=${colorfont}`;
         } else {
             URL = `${domain}/template_WAW_ZACH.html`
-            params = `time=${time}&train_number=${train_number}&destination=${destination}&via_stations=${via_stations}&operator=${operator}&info_bar=${info_bar}&delay=${delay}&colorbar=${colorbar}&colorfont=${colorfont}&empty=${empty}`;
+            params = `time=${time}&train_number=${train_number}&destination=${destination}&via_stations=${via_stations}&operator=${operator}&info_bar=${info_bar}&train_name=${train_name}&delay=${delay}&colorbar=${colorbar}&colorfont=${colorfont}&empty=${empty}`;
         }
 
         const blobUrlParm = URL + "?" + params;
@@ -242,7 +255,8 @@ function getProcessedData(display_id, smallestDisplayId) {
     json.destination = "None";
     json.firstStation = "None";
     json.via_stations = "None";
-    json.operator = "---";
+    json.operator = "---"; // TODO: Add operator data
+    json.train_name = "---"; // TODO: Add train name data
     json.info_bar = "Uwaga, na stacji trwają testy systemu informacji pasażerskiej" //`Tor: ${display_id}`;
     json.delay = 0;
     json.colorbar = "#2f353d";
@@ -407,7 +421,7 @@ function processTimetablesData() {
 function getDataFromAPI() {
     let saved = false;
 
-    if (window.localStorage.getItem("version") === window.platformsVersionID) {
+    if (localStorage.getItem("version") === window.platformsVersionID) {
         saved = true;
     }
 
@@ -425,7 +439,7 @@ function getDataFromAPI() {
         }, 1000); // 1 second
     });
 
-    window.localStorage.setItem("version", window.platformsVersionID);
+    localStorage.setItem("version", window.platformsVersionID);
 }
 
 function showDisplays(platformsConfig) { // example showDisplays("P1-1,3; P2-2,4; ")
@@ -597,7 +611,7 @@ async function getTimetablesAPI() {
 }
 
 async function getPlatformsAPI(saved = false) {
-    const savedData = window.localStorage.getItem("platformsData");
+    const savedData = localStorage.getItem("platformsData");
 
     if ((savedData) && (saved)) {
         window.platformsData = JSON.parse(savedData);
@@ -606,13 +620,13 @@ async function getPlatformsAPI(saved = false) {
             .then(response => response.json())
             .then(data => {
                 window.platformsData = data;
-                window.localStorage.setItem("platformsData", JSON.stringify(data));
+                localStorage.setItem("platformsData", JSON.stringify(data));
             });
     }
 }
 
 async function getSceneryAPI(saved = false) {
-    const savedData = window.localStorage.getItem("sceneryData");
+    const savedData = localStorage.getItem("sceneryData");
 
     if ((savedData) && (saved)) {
         window.sceneryData = JSON.parse(savedData);
@@ -621,13 +635,13 @@ async function getSceneryAPI(saved = false) {
             .then(response => response.json())
             .then(data => {
                 window.sceneryData = data;
-                window.localStorage.setItem("sceneryData", JSON.stringify(data));
+                localStorage.setItem("sceneryData", JSON.stringify(data));
             });
     }
 }
 
 async function getNameCorrectionsAPI() {
-    const savedData = window.localStorage.getItem("nameCorrectionsData");
+    const savedData = localStorage.getItem("nameCorrectionsData");
 
     if (savedData) {
         window.nameCorrectionsData = JSON.parse(savedData);
@@ -636,7 +650,7 @@ async function getNameCorrectionsAPI() {
             .then(response => response.json())
             .then(data => {
                 window.nameCorrectionsData = data;
-                window.localStorage.setItem("nameCorrectionsData", JSON.stringify(data));
+                localStorage.setItem("nameCorrectionsData", JSON.stringify(data));
             });
     }
 }
