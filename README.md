@@ -1,8 +1,8 @@
 # PL 🇵🇱
 Strona do wyświetlenia tablic informacji pasażerskiej na podstawie danych z symulatora kolejowego TD2 ([Train Driver 2](https://td2.info.pl)).
 
-![obraz](https://github.com/user-attachments/assets/d009e0c4-ab82-4aba-a1d7-3ea84ac65d2b)
-
+![obraz](https://github.com/user-attachments/assets/d02a9c3c-e285-4293-a777-40bf74da5e2d)
+![obraz](https://github.com/user-attachments/assets/1cb31b34-3fa1-4a88-8c7b-efe7b46083e9)
 
 ## Informacje
 
@@ -41,7 +41,8 @@ Pociągi domyślnie mają ustawiony tor 1. Jeśli chcesz to zmienić, wpisz w uw
 # EN 🇬🇧
 A website to display passenger information boards based on data from the TD2 railway simulator ([Train Driver 2](https://td2.info.pl)).
 
-![obraz](https://github.com/user-attachments/assets/f618afe3-e1ba-4941-83ee-89b444fe8914)
+![obraz](https://github.com/user-attachments/assets/d02a9c3c-e285-4293-a777-40bf74da5e2d)
+![obraz](https://github.com/user-attachments/assets/1cb31b34-3fa1-4a88-8c7b-efe7b46083e9)
 
 ## Information
 
