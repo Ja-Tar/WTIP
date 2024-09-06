@@ -266,7 +266,7 @@ function getProcessedData(display_id, smallestDisplayId) {
     json.destination = "None";
     json.firstStation = "None";
     json.via_stations = "None";
-    json.operator = "---";
+    json.operator = "";
     json.train_name = ""; // TODO: Add train name data
     json.info_bar = "Uwaga, na stacji trwają testy systemu informacji pasażerskiej" //`Tor: ${display_id}`;
     json.delay = 0;
@@ -324,51 +324,39 @@ function getProcessedData(display_id, smallestDisplayId) {
                 });
 
                 json.operator = mostCommonOperator;
-                console.log("Most common operator: ", mostCommonOperator);
+                console.debug("Most common operator: ", mostCommonOperator);
             }
 
             // Train name recognition and operator overwrite
 
-            // {
-            //  "operator": "PR",
-            //  "operatorOverwrite": "ŁKA",
-            //  "trainNoStartsWith": ["911"],
-            //  "category": { "R": "Ł", "RP": "ŁS", "M": "ŁS", "E": "ŁS" },
-            //  "remarks": "Bajkowy"
-            // }
+            // "trainNames":
+            // [
+            //      {
+            //          "operator": "PR",
+            //          "operatorOverwrite": "ŁKA",
+            //          "trainNo": ["911"],
+            //          "category": { "R": "Ł", "RP": "ŁS", "M": "ŁS", "E": "ŁS" },
+            //          "remarks": "Bajkowy"
+            //      }
+            // ]
 
-            for (let j = 0; j < window.operatorConvertData["overwrite"].length; j++) {
-                let overwrite = window.operatorConvertData["overwrite"][j];
+            for (let j = 0; j < window.operatorConvertData["trainNames"].length; j++) {
+                let trainNameData = window.operatorConvertData["trainNames"][j];
+                let trainNoStartsWith = trainNameData.trainNo;
 
+                if (trainNoStartsWith) {
+                    for (let k = 0; k < trainNoStartsWith.length; k++) {
+                        if (trainNo.toString().startsWith(trainNoStartsWith[k]) || trainNoStartsWith[k] === trainNo) {
+                            let operator = trainNameData.operator;
+                            let train_name = trainNameData.trainName;
 
-                    if (overwrite["trainNoStartsWith"]) {
-                        let startsWith = overwrite["trainNoStartsWith"];
-                        let trainNoStr = String(trainNo);
-
-                        for (let k = 0; k < startsWith.length; k++) {
-                            if (trainNoStr === startsWith[k] || trainNoStr.startsWith(startsWith[k])) {
-                                json.operator = overwrite["operatorOverwrite"];
-                                console.log("Operator overwritten: ", json.operator);
-                                if (overwrite["remarks"]) {
-                                    json.name = overwrite["remarks"];
-                                    console.log("Remarks overwritten: ", json.name);
-                                }
-                            }
+                            json.train_name = train_name;
+                            json.operator = operator;
+                            console.debug(`Train name: ${train_name}, Operator: ${operator}, Train no: ${trainNo}`);
+                            break;
                         }
                     }
-
-                    // TODO: Dodać prefixy dla numeru pociągu
-                    //if (overwrite["category"]) {
-                    //    let category = overwrite["category"];
-                    //
-                    //    for (const key in category) {
-                    //        if (window.trainCategory[key].includes(stockString)) {
-                    //            json.train_name = category[key];
-                    //            console.log("Train name overwritten: ", json.train_name);
-                    //        }
-                    //    }
-                    //}  
-        
+                }
             }
 
             // Train time recognition
@@ -407,7 +395,7 @@ function getProcessedData(display_id, smallestDisplayId) {
                     }
                 });
 
-                console.log("Closest arrival time: ", arrivalTimestamp, trainNo); // skipcq: JS-0002 Used for checking if everything is working correctly
+                console.debug("Closest arrival time: ", arrivalTimestamp, trainNo);
                 json.time = new Date(departureTimestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }); // "HH:MM"
                 json.train_number = trainNo;
                 json.destination = stationTextFixes(lastStation);
@@ -423,7 +411,7 @@ function getProcessedData(display_id, smallestDisplayId) {
                 json.empty = "false";
                 json.terminatesHere = dataToDisplay[i].terminatesHere;
             } else {
-                console.log("Not closest arrival time: ", arrivalTimestamp, trainNo); // skipcq: JS-0002 Used for checking if everything is working correctly
+                console.debug("Not closest arrival time: ", arrivalTimestamp, trainNo);
             }
         }
     }
@@ -499,7 +487,7 @@ function processTimetablesData() {
                                 "terminatesHere": stopList[j].terminatesHere
                             });
                             //} else {
-                            //    console.log(stopList[j], trainNo, "Stopped");
+                            //    console.debug(stopList[j], trainNo, "Stopped");
                             //}
                         }
                     }
@@ -610,7 +598,7 @@ function updateTextScenery() {
     let pointsSelect = document.getElementById("point");
 
     if (sceneryInput.eventListeners && pointsSelect.eventListeners) {
-        console.log("Event listeners already added"); // skipcq: JS-0002 Used for checking if everything is working correctly
+        console.debug("Event listeners already added");
     } else {
 
         sceneryInput.addEventListener("input", function () {
