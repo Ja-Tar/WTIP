@@ -107,7 +107,7 @@ document.getElementById("light_mode_button").addEventListener("click", () => {
 // Rest of the event listeners
 
 window.addEventListener("click", function (event) {
-    if (event.target == document.getElementById("settings_modal")) {
+    if (event.target === document.getElementById("settings_modal")) {
         closeModal();
     }
 });
@@ -422,7 +422,7 @@ function processTimetablesData() {
         if (timetableData[i].region === server) {
             let timetable = timetableData[i].timetable;
             let trainNo = timetableData[i].trainNo;
-            let stockString = timetableData[i].stockString;
+            const stockString = timetableData[i].stockString;
 
             if (timetable) {
                 let category = timetable.category; // "EIE"
@@ -434,7 +434,7 @@ function processTimetablesData() {
                 let stopList = timetable.stopList;
                 let shortCategory = category.slice(0, 2);
 
-                if (window.settings.displayTrainsWithCargo === false && window.trainCategory["T"].includes(shortCategory)) {
+                if (window.settings.displayTrainsWithCargo === false && window.trainCategory.T.includes(shortCategory)) {
                     continue;
                 }
 
