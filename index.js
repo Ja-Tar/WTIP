@@ -292,8 +292,7 @@ function getProcessedData(display_id, smallestDisplayId) {
             let arrivalTimestamp = dataToDisplay[i].arrivalTimestamp;
             let departureTimestamp = dataToDisplay[i].departureTimestamp;
             let firstStation = dataToDisplay[i].firstStation;
-            let lastStation = dataToDisplay[i].lastStation
-            let timeTimestamp = new Date().getTime()
+            let lastStation = dataToDisplay[i].lastStation;
 
             // Operator recognition
 
@@ -329,17 +328,6 @@ function getProcessedData(display_id, smallestDisplayId) {
 
             // Train name recognition and operator overwrite
 
-            // "trainNames":
-            // [
-            //      {
-            //          "operator": "PR",
-            //          "operatorOverwrite": "ŁKA",
-            //          "trainNo": ["911"],
-            //          "category": { "R": "Ł", "RP": "ŁS", "M": "ŁS", "E": "ŁS" },
-            //          "remarks": "Bajkowy"
-            //      }
-            // ]
-
             for (let j = 0; j < window.operatorConvertData["trainNames"].length; j++) {
                 let trainNameData = window.operatorConvertData["trainNames"][j];
                 let trainNoStartsWith = trainNameData.trainNo;
@@ -358,6 +346,10 @@ function getProcessedData(display_id, smallestDisplayId) {
                     }
                 }
             }
+
+            // Train prefix recognition
+
+            // TODO: Add train prefix recognition
 
             // Train time recognition
 
