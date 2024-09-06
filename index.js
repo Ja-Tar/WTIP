@@ -308,6 +308,8 @@ function getProcessedData(display_id, smallestDisplayId) {
                 }
             }
 
+            let commonOperators = [];
+
             // Get most common operator 
             if (operatorList.length > 0) {
                 // 
@@ -318,22 +320,32 @@ function getProcessedData(display_id, smallestDisplayId) {
                     });
                 });
 
+                commonOperators = Object.keys(counts).filter(function (a) {
+                    return counts[a] >= 1;
+                });
+
                 const mostCommonOperator = Object.keys(counts).reduce(function (a, b) {
                     return counts[a] > counts[b] ? a : b;
                 });
 
                 json.operator = mostCommonOperator;
                 console.debug("Most common operator: ", mostCommonOperator);
+                console.debug("Common operators: ", commonOperators);
             }
 
             // Train name recognition and operator overwrite
 
             for (let j = 0; j < window.operatorConvertData.trainNames.length; j++) {
                 let trainNameData = window.operatorConvertData.trainNames[j];
+                const trainOperatorBefore = json.operator;
                 const trainNoStartsWith = trainNameData.trainNo;
 
                 if (trainNoStartsWith) {
                     for (let k = 0; k < trainNoStartsWith.length; k++) {
+                        if (!(trainOperatorBefore in commonOperators)) {
+                            json.operator = trainOperatorBefore;
+                            break;
+                        }
                         if (trainNo.toString().startsWith(trainNoStartsWith[k]) || trainNoStartsWith[k] === trainNo) {
                             const operator = trainNameData.operator;
                             const train_name = trainNameData.trainName;
