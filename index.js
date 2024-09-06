@@ -341,7 +341,9 @@ function getProcessedData(display_id, smallestDisplayId) {
                             json.train_name = train_name;
                             json.operator = operator;
                             console.debug(`Train name: ${train_name}, Operator: ${operator}, Train no: ${trainNo}`);
-                            break;
+                            if (trainNoStartsWith[k] === trainNo) {
+                                break;
+                            }
                         }
                     }
                 }
