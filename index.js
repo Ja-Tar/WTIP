@@ -298,12 +298,12 @@ function getProcessedData(display_id, smallestDisplayId) {
 
             let operatorList = [];
 
-            for (const key in window.operatorConvertData["operators"]) {
+            for (const key in window.operatorConvertData.operators) {
                 let splitStockString = stockString.split(";");
 
                 for (let j = 0; j < splitStockString.length; j++) {
                     if (key === splitStockString[j]) {
-                        operatorList.push(window.operatorConvertData["operators"][key]);
+                        operatorList.push(window.operatorConvertData.operators[key]);
                     }
                 }
             }
@@ -328,8 +328,8 @@ function getProcessedData(display_id, smallestDisplayId) {
 
             // Train name recognition and operator overwrite
 
-            for (let j = 0; j < window.operatorConvertData["trainNames"].length; j++) {
-                let trainNameData = window.operatorConvertData["trainNames"][j];
+            for (let j = 0; j < window.operatorConvertData.trainNames.length; j++) {
+                let trainNameData = window.operatorConvertData.trainNames[j];
                 let trainNoStartsWith = trainNameData.trainNo;
 
                 if (trainNoStartsWith) {
