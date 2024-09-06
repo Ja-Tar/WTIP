@@ -285,12 +285,12 @@ function getProcessedData(display_id, smallestDisplayId) {
 
         if (dataToDisplay[i].track === display_id) {
             let trainNo = dataToDisplay[i].trainNo;
-            let stockString = dataToDisplay[i].stockString;
+            const stockString = dataToDisplay[i].stockString;
             let delay = dataToDisplay[i].delay;
             let viaStations = dataToDisplay[i].viaStations;
             let viaStationsMain = dataToDisplay[i].viaStationsMain;
             let arrivalTimestamp = dataToDisplay[i].arrivalTimestamp;
-            let departureTimestamp = dataToDisplay[i].departureTimestamp;
+            const departureTimestamp = dataToDisplay[i].departureTimestamp;
             let firstStation = dataToDisplay[i].firstStation;
             let lastStation = dataToDisplay[i].lastStation;
 
@@ -299,7 +299,7 @@ function getProcessedData(display_id, smallestDisplayId) {
             let operatorList = [];
 
             for (const key in window.operatorConvertData.operators) {
-                let splitStockString = stockString.split(";");
+                const splitStockString = stockString.split(";");
 
                 for (let j = 0; j < splitStockString.length; j++) {
                     if (key === splitStockString[j]) {
@@ -318,7 +318,7 @@ function getProcessedData(display_id, smallestDisplayId) {
                     });
                 });
 
-                let mostCommonOperator = Object.keys(counts).reduce(function (a, b) {
+                const mostCommonOperator = Object.keys(counts).reduce(function (a, b) {
                     return counts[a] > counts[b] ? a : b;
                 });
 
@@ -330,13 +330,13 @@ function getProcessedData(display_id, smallestDisplayId) {
 
             for (let j = 0; j < window.operatorConvertData.trainNames.length; j++) {
                 let trainNameData = window.operatorConvertData.trainNames[j];
-                let trainNoStartsWith = trainNameData.trainNo;
+                const trainNoStartsWith = trainNameData.trainNo;
 
                 if (trainNoStartsWith) {
                     for (let k = 0; k < trainNoStartsWith.length; k++) {
                         if (trainNo.toString().startsWith(trainNoStartsWith[k]) || trainNoStartsWith[k] === trainNo) {
-                            let operator = trainNameData.operator;
-                            let train_name = trainNameData.trainName;
+                            const operator = trainNameData.operator;
+                            const train_name = trainNameData.trainName;
 
                             json.train_name = train_name;
                             json.operator = operator;
