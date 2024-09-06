@@ -1,23 +1,34 @@
 window.timetablesAPI_URL = 'https://stacjownik.spythere.eu/api/getActiveTrainList';
 window.sceneryAPI_URL = 'https://stacjownik.spythere.eu/api/getSceneries';
 window.nameCorrectionsAPI_URL = "https://raw.githubusercontent.com/Thundo54/tablice-td2-api/master/namesCorrections.json";
-window.platformsAPI_URL = 'https://raw.githubusercontent.com/Ja-Tar/WTIP/main/platforms_info.json'
+window.operatorConvertAPI_URL = 'https://raw.githubusercontent.com/Thundo54/tablice-td2-api/master/operatorConvert.json';
+window.platformsAPI_URL = 'https://raw.githubusercontent.com/Ja-Tar/WTIP/main/platforms_info.json';
 
 window.timetablesData = [];
 window.platformsData = [];
 window.checkpointData = [];
 window.dataToDisplay = [];
+window.operatorConvertData = {};
 window.nameCorrectionsData = {};
 window.settings = {};
+
 window.trainCategory = {
     "E": ['EI', 'EC', 'EN'],
     "O": ['MP', 'MH', 'MM', 'MO',
-    'RP', 'RA', 'RM', 'RO'],
-    "T":['PW', "PX",
-    'TC', 'TG', 'TR', 'TD', 'TM', 'TN', 'TK', 'TS',
-    'LP', 'LT', 'LS', 'LZ',
-    'ZG', 'ZN', 'ZU']
+        'RP', 'RA', 'RM', 'RO'],
+    "T": ['PW', "PX",
+        'TC', 'TG', 'TR', 'TD', 'TM', 'TN', 'TK', 'TS', 'TH',
+        'LP', 'LT', 'LS', 'LZ',
+        'ZG', 'ZN', 'ZU']
 };
+window.operatorFullNames = {
+    "IC": "PKP Intercity",
+    "KM": "Koleje Mazowieckie",
+    "SKMT": "SKM Trójmiasto",
+    "PR": "POLREGIO",
+    "KŚ": "Koleje Śląskie",
+    "ŁKA": "Łódzka Kolej Aglomeracyjna"
+}
 
 window.refreshRoutine = null;
 window.debug = false;
@@ -27,7 +38,7 @@ window.platformsVersionID = "0.0.14"
 
 // Button event listeners
 
-document.getElementById("settings_button").addEventListener("click", function() {
+document.getElementById("settings_button").addEventListener("click", function () {
     const modal = document.getElementById("settings_modal");
     const modalContent = document.querySelector(".modal_content");
 
@@ -39,11 +50,11 @@ document.getElementById("settings_button").addEventListener("click", function() 
     modalContent.classList.add("slide-in");
 });
 
-document.getElementsByClassName("close_button")[0].addEventListener("click", function() {
+document.getElementsByClassName("close_button")[0].addEventListener("click", function () {
     closeModal();
 });
 
-document.getElementById("save_settings").addEventListener("click", function() {
+document.getElementById("save_settings").addEventListener("click", function () {
     showNotification("Ustawienia zapisane!");
 
     // Zastosuj ustawienia
@@ -51,6 +62,18 @@ document.getElementById("save_settings").addEventListener("click", function() {
 
     // Zamknij modal
     closeModal();
+});
+
+document.getElementById("reset_settings").addEventListener("click", function () {
+    showNotification("Ustawienia zresetowane!");
+
+    localStorage.clear();
+
+    closeModal();
+
+    setTimeout(() => {
+        window.location.reload();
+    }, 500); // 1 second
 });
 
 document.getElementById("submit").addEventListener("click", function () {
@@ -73,18 +96,18 @@ document.getElementById("language_switch").addEventListener("click", function ()
 
 document.getElementById("dark_mode_button").addEventListener("click", () => {
     document.body.classList.toggle("dark_mode");
-    window.localStorage.setItem("dark_mode", "true");
+    localStorage.setItem("dark_mode", "true");
 });
 
 document.getElementById("light_mode_button").addEventListener("click", () => {
     document.body.classList.remove("dark_mode");
-    window.localStorage.setItem("dark_mode", "false");
+    localStorage.setItem("dark_mode", "false");
 });
 
 // Rest of the event listeners
 
-window.addEventListener("click", function(event) {
-    if (event.target == document.getElementById("settings_modal")) {
+window.addEventListener("click", function (event) {
+    if (event.target === document.getElementById("settings_modal")) {
         closeModal();
     }
 });
@@ -109,7 +132,7 @@ function closeModal() {
 }
 
 function applySettings(load = false) {
-    let settings = window.localStorage.getItem("settings");
+    let settings = localStorage.getItem("settings");
     let displayTrainsWithCargo = document.getElementById("display_train_with_cargo");
     let displayTrainWithoutTrackNr = document.getElementById("display_train_without_track_nr");
 
@@ -134,7 +157,7 @@ function applySettings(load = false) {
         settings.displayTrainWithoutTrackNr = displayTrainWithoutTrackNr.checked;
     }
 
-    window.localStorage.setItem("settings", JSON.stringify(settings));
+    localStorage.setItem("settings", JSON.stringify(settings));
 }
 
 // Main functions
@@ -170,7 +193,7 @@ function refreshDataRoutine() {
 }
 
 function darkModeCheck() {
-    if (window.localStorage.getItem("dark_mode") === "true") {
+    if (localStorage.getItem("dark_mode") === "true") {
         document.body.classList.add("dark_mode");
     }
 }
@@ -199,13 +222,14 @@ function loadFrames() {
     }
 
     for (let i = 0; i < track_display.length; i++) {
-        let { time, train_number, destination, firstStation, via_stations, operator, info_bar, delay, colorbar, colorfont, empty, terminatesHere } = getProcessedData(track_display[i].id, smallestDisplayId);
+        let { time, train_number, destination, firstStation, via_stations, operator, info_bar, train_name, delay, colorbar, colorfont, empty, terminatesHere } = getProcessedData(track_display[i].id, smallestDisplayId);
         time = encodeURIComponent(time);
         train_number = encodeURIComponent(train_number);
         destination = encodeURIComponent(destination);
         firstStation = encodeURIComponent(firstStation);
         via_stations = encodeURIComponent(via_stations);
-        operator = encodeURIComponent(operator);
+        operator = encodeURIComponent(window.operatorFullNames[operator]);
+        train_name = encodeURIComponent(train_name);
         info_bar = encodeURIComponent(info_bar);
         delay = encodeURIComponent(delay);
         colorbar = encodeURIComponent(colorbar);
@@ -219,7 +243,7 @@ function loadFrames() {
             params = `time_of_arrival=${time}&train_number=${train_number}&starting_station=${firstStation}&via_stations=${via_stations}&operator=${operator}&info_bar=${info_bar}&delay=${delay}&colorbar=${colorbar}&colorfont=${colorfont}`;
         } else {
             URL = `${domain}/template_WAW_ZACH.html`
-            params = `time=${time}&train_number=${train_number}&destination=${destination}&via_stations=${via_stations}&operator=${operator}&info_bar=${info_bar}&delay=${delay}&colorbar=${colorbar}&colorfont=${colorfont}&empty=${empty}`;
+            params = `time=${time}&train_number=${train_number}&destination=${destination}&via_stations=${via_stations}&operator=${operator}&info_bar=${info_bar}&train_name=${train_name}&delay=${delay}&colorbar=${colorbar}&colorfont=${colorfont}&empty=${empty}`;
         }
 
         const blobUrlParm = URL + "?" + params;
@@ -242,7 +266,8 @@ function getProcessedData(display_id, smallestDisplayId) {
     json.destination = "None";
     json.firstStation = "None";
     json.via_stations = "None";
-    json.operator = "---";
+    json.operator = "";
+    json.train_name = "";
     json.info_bar = "Uwaga, na stacji trwają testy systemu informacji pasażerskiej" //`Tor: ${display_id}`;
     json.delay = 0;
     json.colorbar = "#2f353d";
@@ -260,16 +285,75 @@ function getProcessedData(display_id, smallestDisplayId) {
 
         if (dataToDisplay[i].track === display_id) {
             let trainNo = dataToDisplay[i].trainNo;
+            const stockString = dataToDisplay[i].stockString;
             let delay = dataToDisplay[i].delay;
             let viaStations = dataToDisplay[i].viaStations;
             let viaStationsMain = dataToDisplay[i].viaStationsMain;
             let arrivalTimestamp = dataToDisplay[i].arrivalTimestamp;
-            //let departureTimestamp = dataToDisplay[i].departureTimestamp;
+            const departureTimestamp = dataToDisplay[i].departureTimestamp;
             let firstStation = dataToDisplay[i].firstStation;
-            let lastStation = dataToDisplay[i].lastStation
-            let timeTimestamp = new Date().getTime()
+            let lastStation = dataToDisplay[i].lastStation;
 
-            if (arrivalTimestamp < closestArrivalTime && arrivalTimestamp > timeTimestamp) {
+            // Operator recognition
+
+            let operatorList = [];
+
+            for (const key in window.operatorConvertData.operators) {
+                const splitStockString = stockString.split(";");
+
+                for (let j = 0; j < splitStockString.length; j++) {
+                    if (key === splitStockString[j]) {
+                        operatorList.push(window.operatorConvertData.operators[key]);
+                    }
+                }
+            }
+
+            // Get most common operator 
+            if (operatorList.length > 0) {
+                // 
+                let counts = {};
+                operatorList.forEach(function (operators) {
+                    operators.forEach(function (operator) {
+                        counts[operator] = (counts[operator] || 0) + 1;
+                    });
+                });
+
+                const mostCommonOperator = Object.keys(counts).reduce(function (a, b) {
+                    return counts[a] > counts[b] ? a : b;
+                });
+
+                json.operator = mostCommonOperator;
+                console.debug("Most common operator: ", mostCommonOperator);
+            }
+
+            // Train name recognition and operator overwrite
+
+            for (let j = 0; j < window.operatorConvertData.trainNames.length; j++) {
+                let trainNameData = window.operatorConvertData.trainNames[j];
+                const trainNoStartsWith = trainNameData.trainNo;
+
+                if (trainNoStartsWith) {
+                    for (let k = 0; k < trainNoStartsWith.length; k++) {
+                        if (trainNo.toString().startsWith(trainNoStartsWith[k]) || trainNoStartsWith[k] === trainNo) {
+                            const operator = trainNameData.operator;
+                            const train_name = trainNameData.trainName;
+
+                            json.train_name = train_name;
+                            json.operator = operator;
+                            console.debug(`Train name: ${train_name}, Operator: ${operator}, Train no: ${trainNo}`);
+                            break;
+                        }
+                    }
+                }
+            }
+
+            // Train prefix recognition
+
+            // TODO: Add train prefix recognition
+
+            // Train time recognition
+
+            if (arrivalTimestamp < closestArrivalTime) {
                 closestArrivalTime = arrivalTimestamp;
 
                 for (let j = 0; j < viaStations.length; j++) {
@@ -303,23 +387,23 @@ function getProcessedData(display_id, smallestDisplayId) {
                     }
                 });
 
-                console.log("Closest arrival time: ", arrivalTimestamp, trainNo); // skipcq: JS-0002 Used for checking if everything is working correctly
-                json.time = new Date(arrivalTimestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }); // "HH:MM"
+                console.debug("Closest arrival time: ", arrivalTimestamp, trainNo);
+                json.time = new Date(departureTimestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }); // "HH:MM"
                 json.train_number = trainNo;
                 json.destination = stationTextFixes(lastStation);
                 json.firstStation = stationTextFixes(firstStation);
                 json.via_stations = viaStationsMain.join(", ");
-                
+
                 if (delay < 0) {
                     json.delay = 0;
                 } else {
                     json.delay = delay;
                 }
-                
+
                 json.empty = "false";
                 json.terminatesHere = dataToDisplay[i].terminatesHere;
             } else {
-                console.log("Not closest arrival time: ", arrivalTimestamp, trainNo); // skipcq: JS-0002 Used for checking if everything is working correctly
+                console.debug("Not closest arrival time: ", arrivalTimestamp, trainNo);
             }
         }
     }
@@ -338,6 +422,7 @@ function processTimetablesData() {
         if (timetableData[i].region === server) {
             let timetable = timetableData[i].timetable;
             let trainNo = timetableData[i].trainNo;
+            const stockString = timetableData[i].stockString;
 
             if (timetable) {
                 let category = timetable.category; // "EIE"
@@ -349,7 +434,7 @@ function processTimetablesData() {
                 let stopList = timetable.stopList;
                 let shortCategory = category.slice(0, 2);
 
-                if (window.settings.displayTrainsWithCargo === false && window.trainCategory["T"].includes(shortCategory)) {
+                if (window.settings.displayTrainsWithCargo === false && window.trainCategory.T.includes(shortCategory)) {
                     continue;
                 }
 
@@ -379,6 +464,7 @@ function processTimetablesData() {
 
                             dataToDisplay.push({
                                 "trainNo": trainNo,
+                                "stockString": stockString,
                                 "platform": platform,
                                 "track": track,
                                 "delay": delay,
@@ -386,13 +472,14 @@ function processTimetablesData() {
                                 "viaStationsMain": viaStationsMain,
                                 "arrivalTimestamp": arrivalTimestamp,
                                 "departureTimestamp": departureTimestamp,
-                                "stopped": stopList[j].stopped,
+                                //"stopped": stopList[j].stopped, // NOT USED
+                                //"confirmed": stopList[j].confirmed, // NOT USED
                                 "firstStation": firstStation,
                                 "lastStation": lastStation,
                                 "terminatesHere": stopList[j].terminatesHere
                             });
                             //} else {
-                            //    console.log(stopList[j], trainNo, "Stopped");
+                            //    console.debug(stopList[j], trainNo, "Stopped");
                             //}
                         }
                     }
@@ -407,7 +494,7 @@ function processTimetablesData() {
 function getDataFromAPI() {
     let saved = false;
 
-    if (window.localStorage.getItem("version") === window.platformsVersionID) {
+    if (localStorage.getItem("version") === window.platformsVersionID) {
         saved = true;
     }
 
@@ -419,13 +506,15 @@ function getDataFromAPI() {
         });
     });
     getTimetablesAPI().then(() => {
-        processTimetablesData();
-        setTimeout(() => {
-            loadFrames();
-        }, 1000); // 1 second
+        getOperatorConvertAPI().then(() => {
+            processTimetablesData();
+            setTimeout(() => {
+                loadFrames();
+            }, 1000); // 1 second
+        });
     });
 
-    window.localStorage.setItem("version", window.platformsVersionID);
+    localStorage.setItem("version", window.platformsVersionID);
 }
 
 function showDisplays(platformsConfig) { // example showDisplays("P1-1,3; P2-2,4; ")
@@ -501,7 +590,7 @@ function updateTextScenery() {
     let pointsSelect = document.getElementById("point");
 
     if (sceneryInput.eventListeners && pointsSelect.eventListeners) {
-        console.log("Event listeners already added"); // skipcq: JS-0002 Used for checking if everything is working correctly
+        console.debug("Event listeners already added");
     } else {
 
         sceneryInput.addEventListener("input", function () {
@@ -597,7 +686,7 @@ async function getTimetablesAPI() {
 }
 
 async function getPlatformsAPI(saved = false) {
-    const savedData = window.localStorage.getItem("platformsData");
+    const savedData = localStorage.getItem("platformsData");
 
     if ((savedData) && (saved)) {
         window.platformsData = JSON.parse(savedData);
@@ -606,13 +695,13 @@ async function getPlatformsAPI(saved = false) {
             .then(response => response.json())
             .then(data => {
                 window.platformsData = data;
-                window.localStorage.setItem("platformsData", JSON.stringify(data));
+                localStorage.setItem("platformsData", JSON.stringify(data));
             });
     }
 }
 
 async function getSceneryAPI(saved = false) {
-    const savedData = window.localStorage.getItem("sceneryData");
+    const savedData = localStorage.getItem("sceneryData");
 
     if ((savedData) && (saved)) {
         window.sceneryData = JSON.parse(savedData);
@@ -621,13 +710,13 @@ async function getSceneryAPI(saved = false) {
             .then(response => response.json())
             .then(data => {
                 window.sceneryData = data;
-                window.localStorage.setItem("sceneryData", JSON.stringify(data));
+                localStorage.setItem("sceneryData", JSON.stringify(data));
             });
     }
 }
 
 async function getNameCorrectionsAPI() {
-    const savedData = window.localStorage.getItem("nameCorrectionsData");
+    const savedData = localStorage.getItem("nameCorrectionsData");
 
     if (savedData) {
         window.nameCorrectionsData = JSON.parse(savedData);
@@ -636,7 +725,22 @@ async function getNameCorrectionsAPI() {
             .then(response => response.json())
             .then(data => {
                 window.nameCorrectionsData = data;
-                window.localStorage.setItem("nameCorrectionsData", JSON.stringify(data));
+                localStorage.setItem("nameCorrectionsData", JSON.stringify(data));
+            });
+    }
+}
+
+async function getOperatorConvertAPI() {
+    const savedData = localStorage.getItem("operatorConvertData");
+
+    if (savedData) {
+        window.operatorConvertData = JSON.parse(savedData);
+    } else {
+        await fetch(window.operatorConvertAPI_URL, { cache: "no-store" })
+            .then(response => response.json())
+            .then(data => {
+                window.operatorConvertData = data;
+                localStorage.setItem("operatorConvertData", JSON.stringify(data));
             });
     }
 }

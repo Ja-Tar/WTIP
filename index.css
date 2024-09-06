@@ -31,6 +31,8 @@ select:disabled {
     background-color: #f0f0f0;
 }
 
+/* Styl dla form przycisków */
+
 button {
     width: 100%;
     padding: 10px;
@@ -44,6 +46,28 @@ button {
 button.green_button {
     background-color: #4CAF50;
     color: white;
+}
+
+button.red_button {
+    background-color: #eb4235;
+    color: white;
+}
+
+#buttons_div_settings {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    margin-bottom: 0;
+}
+
+#save_settings {
+    margin-right: 5px;
+}
+
+#reset_settings {
+    margin-left: 5px;
+    flex-shrink: 1.8;
 }
 
 /* Styl dla checkboxa */
@@ -143,7 +167,7 @@ input[type="checkbox"]:checked::after {
     border-radius: 5px;
 }
 
-/* Style do przycisków */
+/* Style do dodatkowych przycisków */
 
 #buttons_div {
     width: 100%;
@@ -338,6 +362,11 @@ input[type="checkbox"]:checked::after {
 
 .dark_mode button.green_button {
     background-color: #4CAF50;
+    color: white;
+}
+
+.dark_mode button.red_button {
+    background-color: #c7362b;
     color: white;
 }
 
