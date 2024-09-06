@@ -267,7 +267,7 @@ function getProcessedData(display_id, smallestDisplayId) {
     json.firstStation = "None";
     json.via_stations = "None";
     json.operator = "";
-    json.train_name = ""; // TODO: Add train name data
+    json.train_name = "";
     json.info_bar = "Uwaga, na stacji trwają testy systemu informacji pasażerskiej" //`Tor: ${display_id}`;
     json.delay = 0;
     json.colorbar = "#2f353d";

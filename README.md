@@ -28,10 +28,10 @@ Pociągi domyślnie mają ustawiony tor 1. Jeśli chcesz to zmienić, wpisz w uw
     - [x] Przez
     - [x] Do
     - [x] Opóźnienie
-    - [ ] Przewoźnik
-    - [ ] Nazwa handlowa (np. IC HAŃCZA)
+    - [x] Przewoźnik
+    - [x] Nazwa handlowa (np. IC HAŃCZA)
 - [ ] Możliwość wyboru dowolnej stacji
-    - [x] Przykładowe stacje (Łapanów, Czermin, Hetmanice)
+    - [x] Przykładowe stacje (np. Łapanów, Czermin, Hetmanice)
     - [ ] Pozostałe większe stacje
     - [ ] Wszystkie stacje
 - [ ] Możliwość wpisania własnego układu peronów
