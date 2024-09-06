@@ -56,26 +56,26 @@ Trains are set to platform 1 by default. If you want to change it, enter in the 
 
 ## Features
 
-- [ ] Possibility to choose a server
+- [x] Possibility to choose a server
     - [x] PL1
     - [x] PL2
     - [ ] DE
     - [ ] CZ
     - [ ] EN
-- [ ] Displaying train info
+- [x] Displaying train info
     - [x] Name
     - [x] Number
     - [x] Via
     - [x] To
     - [x] Delay
-    - [ ] Carrier
-    - [ ] Commercial name (e.g. IC HAŃCZA)
+    - [x] Carrier
+    - [x] Commercial name (e.g. IC HAŃCZA)
 - [ ] Possibility to choose any station
     - [x] Example stations (Łapanów, Czermin, Hetmanice)
     - [ ] Other major stations
     - [ ] All stations
 - [ ] Possibility to enter your own platform layout
-- [ ] Information whether the train is terminating
+- [x] Information whether the train is terminating
 - [ ] The information screen remains until the train departs
 
 # License
