@@ -28,7 +28,7 @@ window.operatorFullNames = {
     "PR": "POLREGIO",
     "KŚ": "Koleje Śląskie",
     "ŁKA": "Łódzka Kolej Aglomeracyjna",
-    "undefined": ""
+    "": ""
 }
 
 window.refreshRoutine = null;
