@@ -290,22 +290,25 @@ function getProcessedData(display_id, smallestDisplayId) {
         if (dataToDisplay[i].track === display_id) {
             let trainNo = dataToDisplay[i].trainNo;
             let stockString = dataToDisplay[i].stockString;
-            let delay = dataToDisplay[i].delay;
+            let arrivalDelay = dataToDisplay[i].arrivalDelay;
+            let departureDelay = dataToDisplay[i].departureDelay;
             let viaStations = dataToDisplay[i].viaStations;
             let viaStationsMain = dataToDisplay[i].viaStationsMain;
             let arrivalTimestamp = dataToDisplay[i].arrivalTimestamp;
+            let arrivalRealTimestamp = dataToDisplay[i].arrivalRealTimestamp;
             let departureTimestamp = dataToDisplay[i].departureTimestamp;
             let firstStation = dataToDisplay[i].firstStation;
             let lastStation = dataToDisplay[i].lastStation;
+            let terminatesHere = dataToDisplay[i].terminatesHere;
 
             // Train time recognition
 
-            if (arrivalTimestamp > closestArrivalTime) {
-                console.debug("Not closest arrival time: ", arrivalTimestamp, trainNo);
+            if (arrivalRealTimestamp > closestArrivalTime) {
+                console.debug("Not closest arrival time: ", arrivalRealTimestamp, trainNo);
                 continue;
             } else {
-                console.debug("Closest arrival time: ", arrivalTimestamp, trainNo);
-                closestArrivalTime = arrivalTimestamp;
+                console.debug("Closest arrival time: ", arrivalRealTimestamp, trainNo);
+                closestArrivalTime = arrivalRealTimestamp;
             }
 
             // Operator recognition
@@ -412,7 +415,7 @@ function getProcessedData(display_id, smallestDisplayId) {
 
             let timeTimestamp;
 
-            if (dataToDisplay[i].terminatesHere === true) {
+            if (terminatesHere === true) {
                 timeTimestamp = arrivalTimestamp;
             } else {
                 timeTimestamp = departureTimestamp;
@@ -424,14 +427,22 @@ function getProcessedData(display_id, smallestDisplayId) {
             processedData.firstStation = stationTextFixes(firstStation);
             processedData.via_stations = viaStationsMain.join(", ");
 
-            if (delay < 0) {
+            if (departureDelay < 0) {
                 processedData.delay = 0;
             } else {
-                processedData.delay = delay;
+                processedData.delay = departureDelay;
+                console.debug("Departure delay: ", departureDelay);
+            }
+
+            if (arrivalDelay < 0 && terminatesHere === true) {
+                processedData.delay = 0;
+            } else {
+                processedData.delay = arrivalDelay;
+                console.debug("Arrival delay: ", arrivalDelay);
             }
 
             processedData.empty = "false";
-            processedData.terminatesHere = dataToDisplay[i].terminatesHere;
+            processedData.terminatesHere = terminatesHere;
         }
     }
 
@@ -491,8 +502,11 @@ function processTimetablesData() {
                             } else if (!comments && window.settings.displayTrainWithoutTrackNr === false) {
                                 continue;
                             }
-                            let delay = stopList[j].departureDelay;
-                            let arrivalTimestamp = stopList[j].arrivalRealTimestamp;
+                            
+                            let arrivalDelay = stopList[j].arrivalDelay;
+                            let departureDelay = stopList[j].departureDelay;
+                            let arrivalTimestamp = stopList[j].arrivalTimestamp;
+                            let arrivalRealTimestamp = stopList[j].arrivalRealTimestamp;
                             let departureTimestamp = stopList[j].departureTimestamp;
 
                             dataToDisplay.push({
@@ -500,10 +514,12 @@ function processTimetablesData() {
                                 "stockString": stockString,
                                 "platform": platform,
                                 "track": track,
-                                "delay": delay,
+                                "arrivalDelay": arrivalDelay,
+                                "departureDelay": departureDelay,
                                 "viaStations": viaStations,
                                 "viaStationsMain": viaStationsMain,
                                 "arrivalTimestamp": arrivalTimestamp,
+                                "arrivalRealTimestamp": arrivalRealTimestamp,
                                 "departureTimestamp": departureTimestamp,
                                 //"stopped": stopList[j].stopped, // NOT USED
                                 //"confirmed": stopList[j].confirmed, // NOT USED
