@@ -402,6 +402,8 @@ function getProcessedData(display_id, smallestDisplayId) {
             if (firstCommonStation) {
                 const firstCommonIndex = viaStationsMain.indexOf(firstCommonStation);
                 viaStationsMain.splice(0, firstCommonIndex);
+            } else {
+                viaStationsMain = [];
             }
 
             for (let j = 0; j < viaStationsMain.length; j++) {
