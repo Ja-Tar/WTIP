@@ -31,10 +31,20 @@ window.operatorFullNames = {
 }
 
 window.refreshRoutine = null;
-window.debug = false;
-window.debugURL = ""; // example: http://127.0.0.1:5500
+window.debug = true;
+window.iframeDebugURL = ""; // example: http://127.0.0.1:5500
+window.platformsAPIDebugBranch = "newStations"; // example: main
 window.debugTermination = false;
-window.platformsVersionID = "0.0.14"
+window.platformsVersionID = "0.0.15"
+
+if (window.debug === true) {
+    console.warn("Debug mode enabled! Change debug to false in index.js before deployment!");
+    console.warn(`Iframe debug URL: ${window.iframeDebugURL}, 
+Platforms API debug branch: ${window.platformsAPIDebugBranch}, 
+Debug termination: ${window.debugTermination}`);
+    window.platformsAPI_URL = `https://raw.githubusercontent.com/Ja-Tar/WTIP/${window.platformsAPIDebugBranch}/platforms_info.json`;
+    localStorage.removeItem("version");
+}
 
 // Button event listeners
 
@@ -209,8 +219,8 @@ function loadFrames() {
     let domain = "https://ktip.pages.dev";
     let URL = "";
 
-    if (window.debug === true && window.debugURL) {
-        domain = window.debugURL;
+    if (window.debug === true && window.iframeDebugURL) {
+        domain = window.iframeDebugURL;
     }
 
     let smallestDisplayId = Infinity;
