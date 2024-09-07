@@ -410,7 +410,15 @@ function getProcessedData(display_id, smallestDisplayId) {
                 viaStationsMain[j] = viaStationsMain[j].split(",")[0];
             }
 
-            processedData.time = new Date(departureTimestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }); // "HH:MM"
+            let timeTimestamp;
+
+            if (dataToDisplay[i].terminatesHere === true) {
+                timeTimestamp = arrivalTimestamp;
+            } else {
+                timeTimestamp = departureTimestamp;
+            }
+
+            processedData.time = new Date(timeTimestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }); // "HH:MM"
             processedData.train_number = trainNo;
             processedData.destination = stationTextFixes(lastStation);
             processedData.firstStation = stationTextFixes(firstStation);
