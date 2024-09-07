@@ -18,20 +18,20 @@
         "mainCheckpoint": "Czermin",
         "checkpoints":[
             {
+                "name": "Czermin",
+                "suffix": "",
+                "platforms": {
+                    "Peron 1": [1, 3],
+                    "Peron 2": [2, 4]
+                }
+            },
+            {
                 "name": "Czermin Południe",
                 "suffix": ", po",
                 "platforms": {
                     "Peron 1": [1],
                     "Peron 2": [2],
                     "Peron 3": [3]
-                }
-            },
-            {
-                "name": "Czermin",
-                "suffix": "",
-                "platforms": {
-                    "Peron 1": [1, 3],
-                    "Peron 2": [2, 4]
                 }
             },
             {
@@ -78,19 +78,19 @@
         "mainCheckpoint": "Testowo",
         "checkpoints": [
             {
-                "name": "Piaski",
-                "suffix": ", po",
-                "platforms": {
-                    "Peron 1": [1],
-                    "Peron 2": [2]
-                }
-            },
-            {
                 "name": "Testowo",
                 "suffix": "",
                 "platforms": {
                     "Peron 1": [1, 3],
                     "Peron 2": [2, 4]
+                }
+            },
+            {
+                "name": "Piaski",
+                "suffix": ", po",
+                "platforms": {
+                    "Peron 1": [1],
+                    "Peron 2": [2]
                 }
             },
             {
@@ -183,6 +183,137 @@
                 "platforms": {
                     "Peron 1": [2],
                     "Peron 2": [1, 3]
+                }
+            }
+        ]
+    },
+    {
+        "sceneryName": "Biała Sudecka",
+        "mainCheckpoint": "Biała Sudecka",
+        "checkpoints": [
+            {
+                "name": "Biała Sudecka",
+                "suffix": "",
+                "platforms": {
+                    "Peron 1":[9],
+                    "Peron 2":[7, 5],
+                    "Peron 3":[3, 1],
+                    "Peron 4":[2, 4],
+                    "Peron 5":[6]
+                }
+            }, 
+            {
+                "name": "B. Sudecka Duczków",
+                "suffix": ", po",
+                "platforms": {
+                    "Peron 1": [1, 2]
+                }
+            },
+            {
+                "name": "Podkowa Polna",
+                "suffix": ", po",
+                "platforms": {
+                    "Peron 1": [3],
+                    "Peron 2": [1, 2]
+                }
+            },
+            {
+                "name": "Stare Przytuły",
+                "suffix": ", po",
+                "platforms": {
+                    "Peron 1": [1],
+                    "Peron 2": [2]
+                }
+            }
+        ]
+    },
+    {
+        "sceneryName": "Wielichowo",
+        "mainCheckpoint": "Wielichowo Główne",
+        "checkpoints": [
+            {
+                "name": "Wielichowo Główne",
+                "suffix": "",
+                "platforms": {
+                    "Peron 1": [5],
+                    "Peron 2": [3, 1],
+                    "Peron 3": [2, 4]
+                }
+            },
+            {
+                "name": "Wielichowo Wieś",
+                "suffix": "",
+                "platforms": {
+                    "Peron 1": [2],
+                    "Peron 2": [2, 1]
+                }
+            },
+            {
+                "name": "Borowiki",
+                "suffix": ", po",
+                "platforms": {
+                    "Peron 1": [2],
+                    "Peron 2": [1]
+                }
+            },
+            {
+                "name": "Żakówek",
+                "suffix": ", po",
+                "platforms": {
+                    "Peron 1": [1],
+                    "Peron 2": [2]
+                }
+            }
+        ]
+    },
+    {
+        "sceneryName": "Lisków",
+        "mainCheckpoint": "Lisków",
+        "checkpoints": [
+            {
+                "name": "Lisków",
+                "suffix": "",
+                "platforms": {
+                    "Peron 1": [2],
+                    "Peron 2": [1, 11],
+                    "Peron 3": [13, 15]
+                }
+            }, 
+            {
+                "name": "Lisków Przedmieście",
+                "suffix": ", po",
+                "platforms": {
+                    "Peron 1": [1],
+                    "Peron 2": [2]
+                }
+            }
+        ]
+    },
+    {
+        "sceneryName": "Orniki",
+        "mainCheckpoint": "Orniki",
+        "checkpoints": [
+            {
+                "name": "Orniki",
+                "suffix": "",
+                "platforms": {
+                    "Peron 1": [2, 4],
+                    "Peron 2": [1, 3]
+                }
+            },
+            {
+                "name": "Orniki Rzeka",
+                "suffix": ", po",
+                "platforms": {
+                    "Peron 1": [1],
+                    "Peron 2": [2]
+                }
+            },
+            {
+                "name": "Peplin",
+                "suffix": ", po",
+                "platforms": {
+                    "Peron 1": [1]
                 }
             }
         ]
