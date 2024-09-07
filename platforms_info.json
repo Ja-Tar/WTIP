@@ -434,5 +434,67 @@
                 }
             }
         ]
+    },
+    {
+        "sceneryName": "Zielona Góra Główna",
+        "mainCheckpoint": "Zielona Góra Główna",
+        "checkpoints": [
+            {
+                "name": "Zielona Góra Główna",
+                "suffix": "",
+                "platforms": {
+                    "Peron 1a": [8],
+                    "Peron 1": [4],
+                    "Peron 2": [1, 2],
+                    "Peron 3": [52]
+                }
+            },
+            {
+                "name": "Zielona Góra Nowy Kisielin",
+                "suffix": ", po",
+                "platforms": {
+                    "Peron 1": [1],
+                    "Peron 2": [2]
+                }
+            },
+            {
+                "name": "Zielona Góra Przylep",
+                "suffix": ", po",
+                "platforms": {
+                    "Peron 1": [1],
+                    "Peron 2": [2]
+                }
+            },
+            {
+                "name": "Zielona Góra Stary Kisielin",
+                "suffix": ", po",
+                "platforms": {
+                    "Peron 1": [2],
+                    "Peron 2": [1]
+                }
+            }
+        ]
+    },
+    {
+        "sceneryName": "Żory",
+        "mainCheckpoint": "Żory",
+        "checkpoints": [
+            {
+                "name": "Żory",
+                "suffix": "",
+                "platforms": {
+                    "Peron 1": [1],
+                    "Peron 2": [5, 9]
+                }
+            },
+            {
+                "name": "Szczejkowice",
+                "suffix": ", po",
+                "platforms": {
+                    "Peron 1": [1],
+                    "Peron 2": [2]
+                }
+            }
+        ]
     }
 ]
