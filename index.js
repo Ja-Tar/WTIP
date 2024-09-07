@@ -31,9 +31,9 @@ window.operatorFullNames = {
 }
 
 window.refreshRoutine = null;
-window.debug = true;
+window.debug = false;
 window.iframeDebugURL = ""; // example: http://127.0.0.1:5500
-window.platformsAPIDebugBranch = "newStations"; // example: main
+window.platformsAPIDebugBranch = "main"; // example: main
 window.debugTermination = false;
 window.platformsVersionID = "0.0.15"
 
