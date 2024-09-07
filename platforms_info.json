@@ -368,5 +368,36 @@
                 }
             }
         ]
+    },
+    {
+        "sceneryName": "Włoszczowa Północ",
+        "mainCheckpoint": "Włoszczowa Północ",
+        "checkpoints": [
+            {
+                "name": "Włoszczowa Północ",
+                "suffix": "",
+                "platforms": {
+                    "Peron 1": [4],
+                    "Peron 2": [3, 5]
+                }
+            },
+            {
+                "name": "Czarnca",
+                "suffix": ", po",
+                "platforms": {
+                    "Peron 1": [1],
+                    "Peron 2": [2]
+                }
+            },
+            {
+                "name": "ŻELISŁAWICE",
+                "suffix": "",
+                "platforms": {
+                    "Peron 1": [4],
+                    "Peron 2": [4, 2],
+                    "Peron 3": [1, 2]
+                }
+            }
+        ]
     }
 ]
