@@ -34,7 +34,7 @@ window.refreshRoutine = null;
 window.debug = false;
 window.debugURL = ""; // example: http://127.0.0.1:5500
 window.debugTermination = false;
-window.platformsVersionID = "0.0.14"
+window.platformsVersionID = "0.0.16"
 
 // Button event listeners
 
@@ -135,10 +135,12 @@ function applySettings(load = false) {
     let settings = localStorage.getItem("settings");
     let displayTrainsWithCargo = document.getElementById("display_train_with_cargo");
     let displayTrainWithoutTrackNr = document.getElementById("display_train_without_track_nr");
+    let displayTrainThatDoesNotStop = document.getElementById("display_train_without_stop");
 
     const defaultSettings = {
         "displayTrainsWithCargo": false,
         "displayTrainWithoutTrackNr": true,
+        "displayTrainThatDoesNotStop": true
     };
 
     if (settings) {
@@ -152,9 +154,11 @@ function applySettings(load = false) {
     if (load) {
         displayTrainsWithCargo.checked = settings.displayTrainsWithCargo;
         displayTrainWithoutTrackNr.checked = settings.displayTrainWithoutTrackNr;
+        displayTrainThatDoesNotStop.checked = settings.displayTrainThatDoesNotStop;
     } else {
         settings.displayTrainsWithCargo = displayTrainsWithCargo.checked;
         settings.displayTrainWithoutTrackNr = displayTrainWithoutTrackNr.checked;
+        settings.displayTrainThatDoesNotStop = displayTrainThatDoesNotStop.checked;
     }
 
     localStorage.setItem("settings", JSON.stringify(settings));
@@ -256,24 +260,24 @@ function loadFrames() {
 }
 
 function getProcessedData(display_id, smallestDisplayId) {
-    const checkpoint = document.getElementById("point").value;
+    let checkpoint = document.getElementById("point").value;
 
     let dataToDisplay = window.dataToDisplay;
 
-    let json = {};
-    json.time = "None";
-    json.train_number = "None";
-    json.destination = "None";
-    json.firstStation = "None";
-    json.via_stations = "None";
-    json.operator = "";
-    json.train_name = "";
-    json.info_bar = "Uwaga, na stacji trwają testy systemu informacji pasażerskiej" //`Tor: ${display_id}`;
-    json.delay = 0;
-    json.colorbar = "#2f353d";
-    json.colorfont = "#ffffff";
-    json.empty = "true";
-    json.terminatesHere = false;
+    let processedData = {};
+    processedData.time = "None";
+    processedData.train_number = "None";
+    processedData.destination = "None";
+    processedData.firstStation = "None";
+    processedData.via_stations = "None";
+    processedData.operator = "";
+    processedData.train_name = "";
+    processedData.info_bar = "Uwaga, na stacji trwają testy systemu informacji pasażerskiej" //`Tor: ${display_id}`;
+    processedData.delay = 0;
+    processedData.colorbar = "#2f353d";
+    processedData.colorfont = "#ffffff";
+    processedData.empty = "true";
+    processedData.terminatesHere = false;
 
     let closestArrivalTime = Infinity;
 
@@ -285,14 +289,24 @@ function getProcessedData(display_id, smallestDisplayId) {
 
         if (dataToDisplay[i].track === display_id) {
             let trainNo = dataToDisplay[i].trainNo;
-            const stockString = dataToDisplay[i].stockString;
+            let stockString = dataToDisplay[i].stockString;
             let delay = dataToDisplay[i].delay;
             let viaStations = dataToDisplay[i].viaStations;
             let viaStationsMain = dataToDisplay[i].viaStationsMain;
             let arrivalTimestamp = dataToDisplay[i].arrivalTimestamp;
-            const departureTimestamp = dataToDisplay[i].departureTimestamp;
+            let departureTimestamp = dataToDisplay[i].departureTimestamp;
             let firstStation = dataToDisplay[i].firstStation;
             let lastStation = dataToDisplay[i].lastStation;
+
+            // Train time recognition
+
+            if (arrivalTimestamp > closestArrivalTime) {
+                console.debug("Not closest arrival time: ", arrivalTimestamp, trainNo);
+                continue;
+            } else {
+                console.debug("Closest arrival time: ", arrivalTimestamp, trainNo);
+                closestArrivalTime = arrivalTimestamp;
+            }
 
             // Operator recognition
 
@@ -308,11 +322,8 @@ function getProcessedData(display_id, smallestDisplayId) {
                 }
             }
 
-            let commonOperators = [];
-
             // Get most common operator 
             if (operatorList.length > 0) {
-                // 
                 let counts = {};
                 operatorList.forEach(function (operators) {
                     operators.forEach(function (operator) {
@@ -320,109 +331,101 @@ function getProcessedData(display_id, smallestDisplayId) {
                     });
                 });
 
-                commonOperators = Object.keys(counts).filter(function (a) {
-                    return counts[a] >= 1;
-                });
-
                 const mostCommonOperator = Object.keys(counts).reduce(function (a, b) {
                     return counts[a] > counts[b] ? a : b;
                 });
 
-                json.operator = mostCommonOperator;
+                processedData.operator = mostCommonOperator;
                 console.debug("Most common operator: ", mostCommonOperator);
-                console.debug("Common operators: ", commonOperators);
             }
 
-            // Train name recognition and operator overwrite
+            // Train name recognition
 
             for (let j = 0; j < window.operatorConvertData.trainNames.length; j++) {
                 let trainNameData = window.operatorConvertData.trainNames[j];
-                const trainOperatorBefore = json.operator;
-                const trainNoStartsWith = trainNameData.trainNo;
+                let trainOperatorBefore = processedData.operator;
+                let trainNoIs = trainNameData.trainNo;
 
-                if (trainNoStartsWith) {
-                    for (let k = 0; k < trainNoStartsWith.length; k++) {
-                        if (!(trainOperatorBefore in commonOperators)) {
-                            json.operator = trainOperatorBefore;
-                            break;
-                        }
-                        if (trainNo.toString().startsWith(trainNoStartsWith[k]) || trainNoStartsWith[k] === trainNo) {
+                for (let k = 0; k < trainNoIs.length; k++) {
+                    if (processedData.operator === trainOperatorBefore) {
+                        if (trainNoIs[k] === trainNo.toString()) {
                             const operator = trainNameData.operator;
                             const train_name = trainNameData.trainName;
 
-                            json.train_name = train_name;
-                            json.operator = operator;
+                            processedData.train_name = train_name;
+                            processedData.operator = operator;
                             console.debug(`Train name: ${train_name}, Operator: ${operator}, Train no: ${trainNo}`);
-                            if (trainNoStartsWith[k] === trainNo) {
-                                break;
-                            }
+                            break;
                         }
+                    } else {
+                        console.debug("Operator not in common operators");
+                        break;
                     }
                 }
+
             }
 
             // Train prefix recognition
 
             // TODO: Add train prefix recognition
 
-            // Train time recognition
+            // Train name and prefix override
 
-            if (arrivalTimestamp < closestArrivalTime) {
-                closestArrivalTime = arrivalTimestamp;
+            // TODO: Add train name and prefix override
 
-                for (let j = 0; j < viaStations.length; j++) {
-                    viaStations[j] = stationTextFixes(viaStations[j]);
-                }
+            // viaStations recognition
 
-                for (let j = 0; j < viaStationsMain.length; j++) {
-                    viaStationsMain[j] = stationTextFixes(viaStationsMain[j]);
-                }
-
-                viaStations.pop(); // remove last station from viaStations
-                viaStationsMain.pop(); // remove last station from viaStationsMain
-
-                viaStations.forEach((station, index) => {
-                    if (station.toLowerCase() === checkpoint.toLowerCase()) {
-                        viaStations.splice(0, index);
-
-                        let firstMainStation = viaStationsMain.find(_station => viaStations.includes(_station));
-                        let indexMain = viaStationsMain.indexOf(firstMainStation);
-                        viaStationsMain.splice(0, indexMain);
-
-                        if (viaStationsMain.includes(station)) {
-                            const _index = viaStationsMain.indexOf(station);
-                            viaStationsMain.splice(_index, 1);
-                        }
-
-                        if (viaStations.includes(station)) {
-                            const _index = viaStations.indexOf(station);
-                            viaStations.splice(_index, 1);
-                        }
-                    }
-                });
-
-                console.debug("Closest arrival time: ", arrivalTimestamp, trainNo);
-                json.time = new Date(departureTimestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }); // "HH:MM"
-                json.train_number = trainNo;
-                json.destination = stationTextFixes(lastStation);
-                json.firstStation = stationTextFixes(firstStation);
-                json.via_stations = viaStationsMain.join(", ");
-
-                if (delay < 0) {
-                    json.delay = 0;
-                } else {
-                    json.delay = delay;
-                }
-
-                json.empty = "false";
-                json.terminatesHere = dataToDisplay[i].terminatesHere;
-            } else {
-                console.debug("Not closest arrival time: ", arrivalTimestamp, trainNo);
+            for (let j = 0; j < viaStations.length; j++) {
+                viaStations[j] = stationTextFixes(viaStations[j]);
             }
+
+            for (let j = 0; j < viaStationsMain.length; j++) {
+                viaStationsMain[j] = stationTextFixes(viaStationsMain[j]);
+            }
+
+            // Usunięcie wszystkich stacji przed oraz aktualną stację (checkpoint) w viaStations
+            const checkpointIndex = viaStations.findIndex(station => station.toLowerCase() === checkpoint.toLowerCase());
+            if (checkpointIndex !== -1) {
+                viaStations.splice(0, checkpointIndex + 1);
+            }
+
+            // Znalezienie pierwszej wspólnej stacji w viaStations i viaStationsMain
+            let firstCommonStation = null;
+            for (let station of viaStationsMain) {
+                if (viaStations.includes(station)) {
+                    firstCommonStation = station;
+                    break;
+                }
+            }
+
+            // Usunięcie wszystkich stacji w viaStationsMain do momentu znalezienia pierwszej wspólnej stacji
+            if (firstCommonStation) {
+                const firstCommonIndex = viaStationsMain.indexOf(firstCommonStation);
+                viaStationsMain.splice(0, firstCommonIndex);
+            }
+
+            for (let j = 0; j < viaStationsMain.length; j++) {
+                viaStationsMain[j] = viaStationsMain[j].split(",")[0];
+            }
+
+            processedData.time = new Date(departureTimestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }); // "HH:MM"
+            processedData.train_number = trainNo;
+            processedData.destination = stationTextFixes(lastStation);
+            processedData.firstStation = stationTextFixes(firstStation);
+            processedData.via_stations = viaStationsMain.join(", ");
+
+            if (delay < 0) {
+                processedData.delay = 0;
+            } else {
+                processedData.delay = delay;
+            }
+
+            processedData.empty = "false";
+            processedData.terminatesHere = dataToDisplay[i].terminatesHere;
         }
     }
 
-    return json;
+    return processedData;
 }
 
 function processTimetablesData() {
@@ -456,12 +459,18 @@ function processTimetablesData() {
                     let comments = stopList[j].comments; // search for [peron],[tor] in comments
 
                     viaStations.push(stopList[j].stopNameRAW);
-                    if (stopList[j].mainStop === true) {
+                    if (stopList[j].stopType.includes("ph") && stopList[j].confirmed === 0) {
                         viaStationsMain.push(stopList[j].stopNameRAW);
                     }
 
                     if (stopList[j].stopNameRAW.toLowerCase() === checkpoint.toLowerCase()) {
                         if (stopList[j].confirmed === 0) {
+                            if (window.settings.displayTrainThatDoesNotStop === false) {
+                                if (!stopList[j].stopType.includes("ph") && stopList[j].terminatesHere === false && stopList[j].beginsHere === false) {
+                                    continue;
+                                }
+                            }
+
                             //if (stopList[j].stopped === 0) {
                             let platform = "0"
                             let track = "0"
