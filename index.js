@@ -1,5 +1,5 @@
 window.timetablesAPI_URL = 'https://stacjownik.spythere.eu/api/getActiveTrainList';
-window.sceneryAPI_URL = 'https://stacjownik.spythere.eu/api/getSceneries';
+window.sceneryAPI_URL = 'https://api.td2.info.pl/?method=getStationsOnline';
 window.nameCorrectionsAPI_URL = "https://raw.githubusercontent.com/Thundo54/tablice-td2-api/master/namesCorrections.json";
 window.operatorConvertAPI_URL = 'https://raw.githubusercontent.com/Thundo54/tablice-td2-api/master/operatorConvert.json';
 window.platformsAPI_URL = 'https://raw.githubusercontent.com/Ja-Tar/WTIP/main/platforms_info.json';
@@ -559,7 +559,7 @@ function getDataFromAPI() {
         saved = true;
     }
 
-    getSceneryAPI(saved).then(() => {
+    getSceneryAPI().then(() => {
         getPlatformsAPI(saved).then(() => {
             getNameCorrectionsAPI().then(() => {
                 updateTextScenery();
@@ -644,7 +644,7 @@ function updateTextScenery() {
 
     for (let i = 0; i < window.sceneryData.length; i++) {
         let option = document.createElement("option");
-        option.value = window.sceneryData[i].name;
+        option.value = window.sceneryData[i].stationName;
         sceneryList.appendChild(option);
     }
 
@@ -761,19 +761,12 @@ async function getPlatformsAPI(saved = false) {
     }
 }
 
-async function getSceneryAPI(saved = false) {
-    const savedData = localStorage.getItem("sceneryData");
-
-    if ((savedData) && (saved)) {
-        window.sceneryData = JSON.parse(savedData);
-    } else {
-        await fetch(window.sceneryAPI_URL, { cache: "no-store" })
-            .then(response => response.json())
-            .then(data => {
-                window.sceneryData = data;
-                localStorage.setItem("sceneryData", JSON.stringify(data));
-            });
-    }
+async function getSceneryAPI() {
+    await fetch(window.sceneryAPI_URL)
+        .then(response => response.json())
+        .then(data => {
+            window.sceneryData = data.message;
+    });
 }
 
 async function getNameCorrectionsAPI() {
