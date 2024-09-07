@@ -221,8 +221,8 @@
                 "name": "Stare Przytuły",
                 "suffix": ", po",
                 "platforms": {
-                    "Peron 1": [1],
-                    "Peron 2": [2]
+                    "Peron 1": [2],
+                    "Peron 2": [1]
                 }
             }
         ]
@@ -311,6 +311,57 @@
             },
             {
                 "name": "Peplin",
+                "suffix": ", po",
+                "platforms": {
+                    "Peron 1": [1]
+                }
+            }
+        ]
+    },
+    {
+        "sceneryName": "Pszczyna",
+        "mainCheckpoint": "Pszczyna",
+        "checkpoints": [
+            {
+                "name": "Pszczyna",
+                "suffix": "",
+                "platforms": {
+                    "Peron 1": [3],
+                    "Peron 2": [1, 2]
+                }
+            },
+            {
+                "name": "Kobiór",
+                "suffix": ", po",
+                "platforms": {
+                    "Peron 1": [2],
+                    "Peron 2": [1]
+                }
+            },
+            {
+                "name": "Piasek",
+                "suffix": ", po",
+                "platforms": {
+                    "Peron 1": [2],
+                    "Peron 2": [1]
+                }
+            }
+        ]
+    },
+    {
+        "sceneryName": "Tomaszów Mazowiecki",
+        "mainCheckpoint": "Tomaszów Maz.",
+        "checkpoints": [
+            {
+                "name": "Tomaszów Maz.",
+                "suffix": "",
+                "platforms": {
+                    "Peron 1": [3],
+                    "Peron 2": [1, 2]
+                }
+            },
+            {
+                "name": "Tomaszów Maz. Białobrzegi",
                 "suffix": ", po",
                 "platforms": {
                     "Peron 1": [1]
