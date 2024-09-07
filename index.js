@@ -27,7 +27,8 @@ window.operatorFullNames = {
     "SKMT": "SKM Trójmiasto",
     "PR": "POLREGIO",
     "KŚ": "Koleje Śląskie",
-    "ŁKA": "Łódzka Kolej Aglomeracyjna"
+    "ŁKA": "Łódzka Kolej Aglomeracyjna",
+    "undefined": ""
 }
 
 window.refreshRoutine = null;
@@ -149,6 +150,7 @@ function applySettings(load = false) {
         window.settings = settings;
     } else {
         settings = defaultSettings;
+        window.settings = settings;
     }
 
     if (load) {
