@@ -415,7 +415,7 @@ function getProcessedData(display_id, smallestDisplayId) {
                 viaStationsMain[j] = viaStationsMain[j].split(",")[0];
             }
 
-            let timeTimestamp;
+            let timeTimestamp = 0;
 
             if (terminatesHere === true) {
                 timeTimestamp = arrivalTimestamp;
