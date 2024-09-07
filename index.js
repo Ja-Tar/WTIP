@@ -762,11 +762,28 @@ async function getPlatformsAPI(saved = false) {
 }
 
 async function getSceneryAPI() {
-    await fetch(window.sceneryAPI_URL)
-        .then(response => response.json())
-        .then(data => {
-            window.sceneryData = data.message;
-    });
+    const savedData = localStorage.getItem("sceneryData");
+    const lastSaved = localStorage.getItem("lastSaved");
+
+    // 5 min
+    if (parseInt(lastSaved) + 300000 > Date.now()) {
+        saved = true;
+        console.debug("Scenery data from cache");
+    } else {
+        saved = false;
+        localStorage.setItem("lastSaved", Date.now().toString());
+    }
+
+    if ((savedData) && (saved)) {
+        window.sceneryData = JSON.parse(savedData);
+    } else {
+        await fetch(window.sceneryAPI_URL, { cache: "no-store" })
+            .then(response => response.json())
+            .then(data => {
+                window.sceneryData = data.message;
+                localStorage.setItem("sceneryData", JSON.stringify(data.message));
+            });
+    }
 }
 
 async function getNameCorrectionsAPI() {
