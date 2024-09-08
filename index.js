@@ -390,7 +390,7 @@ function getProcessedData(display_id, smallestDisplayId) {
             let trainNoIs = trainNameData.trainNo;
 
             for (let k = 0; k < trainNoIs.length; k++) {
-                if (processedData.operator === trainOperatorBefore) {
+                if (trainNameData.operator === trainOperatorBefore) {
                     if (trainNoIs[k] === trainNo.toString()) {
                         const operator = trainNameData.operator;
                         const train_name = trainNameData.trainName;
