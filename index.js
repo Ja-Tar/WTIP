@@ -372,8 +372,6 @@ function getProcessedData(display_id, smallestDisplayId) {
 
         // Train prefix recognition
 
-        debugger;
-
         for (let j = 0; j < window.operatorConvertData.categories.length; j++) {
             let prefixData = window.operatorConvertData.categories[j];
             let trainOperator = processedData.operator;
@@ -388,8 +386,6 @@ function getProcessedData(display_id, smallestDisplayId) {
                 }
             }
         }
-
-        debugger;
 
         // Train name recognition
 
@@ -416,8 +412,6 @@ function getProcessedData(display_id, smallestDisplayId) {
             }
 
         }
-
-        debugger;
 
         // Train name and prefix override
 
