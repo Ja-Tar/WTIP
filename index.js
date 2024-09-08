@@ -722,7 +722,7 @@ function updatePointsSelect(station) {
     }
 
     if (checkpointData.length === 0) {
-        scenerySupport.setAttribute("src", "emoji/274c.svg");
+        scenerySupport.setAttribute("src", "emoji/274C.svg");
         scenerySupport.setAttribute("alt", "❌");
     } else {
         scenerySupport.setAttribute("src", "emoji/2714.svg");
