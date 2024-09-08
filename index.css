@@ -103,6 +103,21 @@ input[type="checkbox"]:checked::after {
 
 /* Pozostałe style */
 
+#supported_icon {
+    position: relative;
+    display: flex;
+    justify-content: right;
+    height: 0px;
+    z-index: 1000;
+    transform: translateY(5px) translateX(-5px);
+    margin: -1px;
+}
+
+#supported_icon img {
+    width: 25px;
+    height: 25px;
+}
+
 #form {
     background-color: #fff;
     padding: 10px;
