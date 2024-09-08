@@ -294,7 +294,7 @@ function getProcessedData(display_id, smallestDisplayId) {
 
     let closestArrivalTime = Infinity;
     let trainNumberPrefix = "";
-    let catIndex = 0; // Closest arrival time index
+    let catIndex = -1; // Closest arrival time index
 
     for (i = 0; i < dataToDisplay.length; i++) {
         let arrivalRealTimestamp = dataToDisplay[i].arrivalRealTimestamp;
@@ -306,10 +306,19 @@ function getProcessedData(display_id, smallestDisplayId) {
             console.debug("Not closest arrival time: ", arrivalRealTimestamp, trainNo);
             continue;
         } else {
+            if (checkpoint.includes(", po") && arrivalRealTimestamp < Date.now()) {
+                console.debug("Train has already arrived: ", arrivalRealTimestamp, trainNo);
+                continue;
+            }
             console.debug("Closest arrival time: ", arrivalRealTimestamp, trainNo);
-            closestArrivalTimeIndex = i;
+            catIndex = i;
             closestArrivalTime = arrivalRealTimestamp;
         }
+    }
+
+    if (catIndex === -1) {
+        console.debug("No closest arrival time found");
+        return processedData;
     }
 
     if (dataToDisplay[catIndex].track === "0") {
@@ -402,7 +411,6 @@ function getProcessedData(display_id, smallestDisplayId) {
                         break;
                     }
                 } else {
-                    console.debug("Operator not in common operators");
                     break;
                 }
             }
@@ -489,6 +497,8 @@ function getProcessedData(display_id, smallestDisplayId) {
 }
 
 function processTimetablesData() {
+    console.debug("==== Processing timetables data ====");
+
     let server = document.getElementById("server").value;
     let checkpoint = document.getElementById("point").value;
 
