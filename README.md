@@ -25,6 +25,7 @@ Pociągi domyślnie mają ustawiony tor 1. Jeśli chcesz to zmienić, wpisz w uw
 - [x] Wyświetlanie info o pociągu
     - [x] Nazwa
     - [x] Numer
+    - [x] Prefix numeru (np. IC, TLK)
     - [x] Przez
     - [x] Do
     - [x] Opóźnienie
@@ -33,10 +34,9 @@ Pociągi domyślnie mają ustawiony tor 1. Jeśli chcesz to zmienić, wpisz w uw
 - [ ] Możliwość wyboru dowolnej stacji
     - [x] Przykładowe stacje (np. Łapanów, Czermin, Hetmanice)
     - [ ] Pozostałe większe stacje
-    - [ ] Wszystkie stacje
-- [ ] Możliwość wpisania własnego układu peronów
+    - [ ] Możliwość wpisania własnego układu peronów
 - [x] Informacja czy pociąg kończy bieg
-- [ ] Ekran informacyjny pozostaje aż do odjazdu pociągu
+- [x] Ekran informacyjny pozostaje aż do odjazdu pociągu
 
 # EN 🇬🇧
 A website to display passenger information boards based on data from the TD2 railway simulator ([Train Driver 2](https://td2.info.pl)).
@@ -65,6 +65,7 @@ Trains are set to platform 1 by default. If you want to change it, enter in the 
 - [x] Displaying train info
     - [x] Name
     - [x] Number
+    - [x] Number prefix (e.g. IC, TLK)
     - [x] Via
     - [x] To
     - [x] Delay
@@ -73,10 +74,9 @@ Trains are set to platform 1 by default. If you want to change it, enter in the 
 - [ ] Possibility to choose any station
     - [x] Example stations (Łapanów, Czermin, Hetmanice)
     - [ ] Other major stations
-    - [ ] All stations
-- [ ] Possibility to enter your own platform layout
+    - [ ] Possibility to enter your own platform layout
 - [x] Information whether the train is terminating
-- [ ] The information screen remains until the train departs
+- [x] The information screen remains until the train departs
 
 # License
 
