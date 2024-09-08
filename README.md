@@ -1,3 +1,5 @@
+## [Lista dodanych scenerii / List of added sceneries](https://github.com/Ja-Tar/WTIP/wiki/Jakie-stacj%C4%99-s%C4%85-dodane-do-WTIP%3F#lista-stacji)
+
 # PL 🇵🇱
 Strona do wyświetlenia tablic informacji pasażerskiej na podstawie danych z symulatora kolejowego TD2 ([Train Driver 2](https://td2.info.pl)).
 
