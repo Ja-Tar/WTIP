@@ -292,6 +292,7 @@ function getProcessedData(display_id, smallestDisplayId) {
     processedData.terminatesHere = false;
 
     let closestArrivalTime = Infinity;
+    let trainNumberPrefix = "";
 
     for (i = 0; i < dataToDisplay.length; i++) {
 
@@ -301,6 +302,7 @@ function getProcessedData(display_id, smallestDisplayId) {
 
         if (dataToDisplay[i].track === display_id) {
             let trainNo = dataToDisplay[i].trainNo;
+            let trainCategory = dataToDisplay[i].category;
             let stockString = dataToDisplay[i].stockString;
             let arrivalDelay = dataToDisplay[i].arrivalDelay;
             let departureDelay = dataToDisplay[i].departureDelay;
@@ -354,6 +356,23 @@ function getProcessedData(display_id, smallestDisplayId) {
                 console.debug("Most common operator: ", mostCommonOperator);
             }
 
+            // Train prefix recognition
+
+            for (let j = 0; j < window.operatorConvertData.categories.length; j++) {
+                let prefixData = window.operatorConvertData.categories[j];
+                let trainOperator = processedData.operator;
+                let prefixObject = prefixData.category;
+
+                if (prefixData.operator === trainOperator) {
+                    for (let key in prefixObject) {
+                        if (trainCategory[0] === key) {
+                            trainNumberPrefix = prefixObject[key];
+                            console.debug(`Train with prefix: ${trainNumberPrefix} ${trainNo}`);
+                        }
+                    }
+                }
+            }
+
             // Train name recognition
 
             for (let j = 0; j < window.operatorConvertData.trainNames.length; j++) {
@@ -366,10 +385,11 @@ function getProcessedData(display_id, smallestDisplayId) {
                         if (trainNoIs[k] === trainNo.toString()) {
                             const operator = trainNameData.operator;
                             const train_name = trainNameData.trainName;
+                            trainNumberPrefix = trainNameData.categoryOverwrite;
 
                             processedData.train_name = train_name;
                             processedData.operator = operator;
-                            console.debug(`Train name: ${train_name}, Operator: ${operator}, Train no: ${trainNo}`);
+                            console.debug(`Name: ${train_name}, Operator: ${operator}, Number: ${trainNumberPrefix} ${trainNo}`);
                             break;
                         }
                     } else {
@@ -379,10 +399,6 @@ function getProcessedData(display_id, smallestDisplayId) {
                 }
 
             }
-
-            // Train prefix recognition
-
-            // TODO: Add train prefix recognition
 
             // Train name and prefix override
 
@@ -434,7 +450,7 @@ function getProcessedData(display_id, smallestDisplayId) {
             }
 
             processedData.time = new Date(timeTimestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }); // "HH:MM"
-            processedData.train_number = trainNo;
+            processedData.train_number = `${trainNumberPrefix} ${trainNo}`;
             processedData.destination = stationTextFixes(lastStation);
             processedData.firstStation = stationTextFixes(firstStation);
             processedData.via_stations = viaStationsMain.join(", ");
@@ -523,6 +539,7 @@ function processTimetablesData() {
 
                             dataToDisplay.push({
                                 "trainNo": trainNo,
+                                "category": category,
                                 "stockString": stockString,
                                 "platform": platform,
                                 "track": track,
