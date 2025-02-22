@@ -474,17 +474,13 @@ function getProcessedData(display_id, smallestDisplayId) {
     processedData.destination = stationTextFixes(lastStation);
     processedData.firstStation = stationTextFixes(firstStation);
     processedData.via_stations = viaStationsMain.join(", ");
-
+    
     if (departureDelay < 0) {
         processedData.delay = 0;
+    } else if (terminatesHere === true) {
+        processedData.delay = arrivalDelay;
     } else {
         processedData.delay = departureDelay;
-    }
-
-    if (arrivalDelay < 0) {
-        processedData.delay = 0;
-    } else {
-        processedData.delay = arrivalDelay;
     }
 
     processedData.empty = "false";
