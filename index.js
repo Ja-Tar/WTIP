@@ -322,10 +322,6 @@ function getProcessedData(display_id, smallestDisplayId) {
         return processedData;
     }
 
-    if (dataToDisplay[catIndex].track === "0") {
-        dataToDisplay[catIndex].track = smallestDisplayId.toString();
-    }
-
     if (dataToDisplay[catIndex].track === display_id) {
         let trainNo = dataToDisplay[catIndex].trainNo;
         let trainCategory = dataToDisplay[catIndex].category;
@@ -486,6 +482,8 @@ function getProcessedData(display_id, smallestDisplayId) {
         processedData.empty = "false";
         processedData.terminatesHere = terminatesHere;
 
+    } else {
+        dataToDisplay[catIndex].track = smallestDisplayId.toString();
     }
 
     return processedData;
