@@ -29,7 +29,7 @@ window.operatorFullNames = {
     "KŚ": "Koleje Śląskie",
     "ŁKA": "Łódzka Kolej Aglomeracyjna",
     "KD": "Koleje Dolnośląskie",
-    "": " "
+    "PKP": "PKP",
 }
 
 window.refreshRoutine = null;
@@ -240,12 +240,13 @@ function loadFrames() {
 
     for (let i = 0; i < track_display.length; i++) {
         let { time, train_number, destination, firstStation, via_stations, operator, info_bar, train_name, delay, colorbar, colorfont, empty, terminatesHere } = getProcessedData(track_display[i].id, smallestDisplayId);
+        let _operator = window.operatorFullNames[operator]
         time = encodeURIComponent(time);
         train_number = encodeURIComponent(train_number);
         destination = encodeURIComponent(destination);
         firstStation = encodeURIComponent(firstStation);
         via_stations = encodeURIComponent(via_stations);
-        operator = encodeURIComponent(window.operatorFullNames[operator]);
+        operator = encodeURIComponent(_operator === undefined ? " " : _operator);
         train_name = encodeURIComponent(train_name);
         info_bar = encodeURIComponent(info_bar);
         delay = encodeURIComponent(delay);
@@ -475,7 +476,7 @@ function getProcessedData(display_id, smallestDisplayId) {
             console.debug("Departure delay: ", departureDelay);
         }
 
-        if (arrivalDelay < 0 && terminatesHere === true) {
+        if (arrivalDelay < 0) {
             processedData.delay = 0;
         } else {
             processedData.delay = arrivalDelay;
