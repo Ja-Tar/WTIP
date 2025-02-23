@@ -542,7 +542,9 @@ function processTimetablesData() {
                             if (comments) {
                                 comments = comments.split(",");
                                 platform = comments[0].slice(-1)[0];
-                                track = Array.from(comments[1])[0];
+                                // can be "2,1" or "2,1 some text" (we need to remove rest of text)
+                                track = Array.from(comments[1]);
+                                track = track[0].split(" ")[0]; 
                             } else if (!comments && window.settings.displayTrainWithoutTrackNr === false) {
                                 continue;
                             }
