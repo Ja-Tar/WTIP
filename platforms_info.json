@@ -496,5 +496,45 @@
                 }
             }
         ]
+    },
+    {
+        "sceneryName": "Dobrzyniec",
+        "mainCheckpoint": "Dobrzyniec",
+        "checkpoints": [
+            {
+                "name": "Dobrzyniec",
+                "suffix": "",
+                "platforms": {
+                    "Peron 1": [7, 5],
+                    "Peron 2": [3, 1],
+                    "Peron 3": [2, 4],
+                    "Peron 4": [8, 10]
+                }
+            },
+            {
+                "name": "Dobrzyniec Mącice",
+                "suffix": "",
+                "platforms": {
+                    "Peron 1": [2],
+                    "Peron 2": [1, 3]
+                }
+            },
+            {
+                "name": "Kruszki",
+                "suffix": ", po",
+                "platforms": {
+                    "Peron 1": [1],
+                    "Peron 2": [2]
+                }
+            }, 
+            {
+                "name": "Kościerzyn Mały",
+                "suffix": ", po",
+                "platforms": {
+                    "Peron 1": [1],
+                    "Peron 2": [2]
+                }
+            }
+        ]
     }
 ]
