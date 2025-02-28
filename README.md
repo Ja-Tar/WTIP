@@ -14,7 +14,7 @@ Jeśli chcesz wygenerować swoje tablice informacyjne, skorzystaj z [generatora]
 
 ### Dlaczego pociągi pojawiają się tylko przy jednym peronie?
 
-Pociągi domyślnie mają ustawiony tor 1. Jeśli chcesz to zmienić, wpisz w uwagi exploatacyjne w TD2: [peron],[tor] (np. 2,3).
+Pociągi domyślnie mają ustawiony tor 1. Jeśli chcesz to zmienić, wpisz w uwagi eksploatacyjne w TD2: [peron],[tor] (np. 2,3).
  
 ## Funkcje
 
@@ -84,4 +84,4 @@ Trains are set to platform 1 by default. If you want to change it, enter in the 
 
 All emojis designed by OpenMoji – the open-source emoji and icon project. License: CC BY-SA 4.0
 
-All other content is licensed under the GNU General Public License v3.0.
+All other content is licensed under the GNU Affero General Public License v3.0. For more information, see the [LICENSE](https://github.com/Ja-Tar/WTIP/blob/main/LICENSE) file.
