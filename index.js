@@ -537,14 +537,14 @@ function processTimetablesData() {
                             }
 
                             //if (stopList[j].stopped === 0) {
-                            let platform = "0"
-                            let track = "0"
+                            let platform = "0";
+                            let track = "0";
                             if (comments) {
-                                comments = comments.split(",");
-                                platform = comments[0].slice(-1)[0];
-                                // can be "2,1" or "2,1 some text" (we need to remove rest of text)
-                                track = Array.from(comments[1]);
-                                track = track[0].split(" ")[0]; 
+                                const match = comments.match(/(\d+),(\d+)/);
+                                if (match) {
+                                    platform = match[1];
+                                    track = match[2];
+                                }
                             } else if (!comments && window.settings.displayTrainWithoutTrackNr === false) {
                                 continue;
                             }
