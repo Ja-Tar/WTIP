@@ -7,4 +7,4 @@ name = "javascript"
   environment = ["browser"]
 
 [[transformers]]
-name = "prettier"
+name = "standardjs"
