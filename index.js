@@ -422,7 +422,36 @@ function getProcessedData(display_id, smallestDisplayId) {
 
     // Train name and prefix override
 
-    // TODO: Add train name and prefix override
+    // "overwrite":
+    //{
+    //  "operator": "PR",
+    //  "operatorOverwrite": "ŁKA",
+    //  "trainNoStartsWith": ["911"],
+    //  "category": { "R": "Ł", "RP": "ŁS", "M": "ŁS", "E": "ŁS" },
+    //  "remarks": "Bajkowy"
+    //}
+
+    //for (let j = 0; j < window.operatorConvertData.overwrite.length; j++) {
+    //    let overwriteData = window.operatorConvertData.overwrite[j];
+    //    let trainOperatorBefore = processedData.operator;
+    //    let trainNoIs = overwriteData.trainNoStartsWith;
+
+    //    for (let k = 0; k < trainNoIs.length; k++) {
+    //        if (overwriteData.operator === trainOperatorBefore) {
+    //            if (trainNo.toString().startsWith(trainNoIs[k])) {
+    //                const operator = overwriteData.operatorOverwrite;
+    //                const train_name = overwriteData.remarks;
+    //                trainNumberPrefix = overwriteData.category[trainCategory];
+    //                processedData.train_name = train_name;
+    //                processedData.operator = operator;
+    //                console.log(`Overwrite -> Name: ${train_name}, Operator: ${operator}, Number: ${trainNumberPrefix} ${trainNo}`);
+    //                break;
+    //            }
+    //        } else {
+    //            break;
+    //        }
+    //    }
+    //}
 
     // viaStations recognition
 
