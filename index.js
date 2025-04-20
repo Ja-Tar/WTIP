@@ -33,6 +33,7 @@ window.operatorFullNames = {
 }
 
 window.refreshRoutine = null;
+window.currentPlatformsLayout = "";
 window.debug = false;
 window.iframeDebugURL = ""; // example: http://127.0.0.1:5500
 window.platformsAPIDebugBranch = "main"; // example: main
@@ -224,11 +225,6 @@ function darkModeCheck() {
 
 function loadFrames() {
     const track_display = document.getElementsByClassName('track_display');
-    const oldFrames = document.querySelectorAll('.iframe_display');
-
-    for (let i = 0; i < oldFrames.length; i++) {
-        oldFrames[i].remove();
-    }
 
     let domain = "https://ktip.pages.dev";
     let URL = "";
@@ -273,9 +269,19 @@ function loadFrames() {
 
         const blobUrlParm = URL + "?" + params;
 
+        // Remove old iframe if change needed
+        const oldIframe = document.getElementById("iframe_" + track_display[i].id);
+        if (oldIframe) {
+            if (oldIframe.src === blobUrlParm) {
+                continue;
+            }
+            oldIframe.remove();
+        }
+
         const iframe = document.createElement('iframe');
         iframe.src = blobUrlParm;
         iframe.classList.add('iframe_display');
+        iframe.id = "iframe_" + track_display[i].id;
         track_display[i].appendChild(iframe);
     }
 }
@@ -660,7 +666,16 @@ function getDataFromAPI() {
 function showDisplays(platformsConfig) { // example showDisplays("P1-1,3; P2-2,4; ")
     let platformRow = document.getElementById("platform_row");
 
+    if (currentPlatformsLayout === platformsConfig) {
+        console.debug("No changes in platforms layout");
+
+        loadFrames();
+        return;
+    }
+
     platformRow.innerHTML = "";
+
+    currentPlatformsLayout = platformsConfig;
 
     platformsConfig = platformsConfig.split(";");
     platformsConfig = platformsConfig.slice(0, -1);
