@@ -385,7 +385,11 @@ function getProcessedData(display_id, smallestDisplayId) {
         });
 
         const mostCommonOperator = Object.keys(counts).reduce(function (a, b) {
-            return counts[a] > counts[b] ? a : b;
+            if (counts[a] !== counts[b]) {
+                return counts[a] > counts[b] ? a : b;
+            }
+            // If counts are equal, return the first one
+            return a;
         });
 
         processedData.operator = mostCommonOperator;
@@ -439,32 +443,32 @@ function getProcessedData(display_id, smallestDisplayId) {
     //{
     //  "operator": "PR",
     //  "operatorOverwrite": "ŁKA",
-    //  "trainNoStartsWith": ["911"],
+    //  "trainNoStartsWith": ["911"], // number can start or be all the numbers
     //  "category": { "R": "Ł", "RP": "ŁS", "M": "ŁS", "E": "ŁS" },
     //  "remarks": "Bajkowy"
     //}
 
-    //for (let j = 0; j < window.operatorConvertData.overwrite.length; j++) {
-    //    let overwriteData = window.operatorConvertData.overwrite[j];
-    //    let trainOperatorBefore = processedData.operator;
-    //    let trainNoIs = overwriteData.trainNoStartsWith;
+    for (let j = 0; j < window.operatorConvertData.overwrite.length; j++) {
+        let overwriteData = window.operatorConvertData.overwrite[j];
+        let trainOperatorBefore = processedData.operator;
+        let trainNoIs = overwriteData.trainNoStartsWith;
 
-    //    for (let k = 0; k < trainNoIs.length; k++) {
-    //        if (overwriteData.operator === trainOperatorBefore) {
-    //            if (trainNo.toString().startsWith(trainNoIs[k])) {
-    //                const operator = overwriteData.operatorOverwrite;
-    //                const train_name = overwriteData.remarks;
-    //                trainNumberPrefix = overwriteData.category[trainCategory];
-    //                processedData.train_name = train_name;
-    //                processedData.operator = operator;
-    //                console.log(`Overwrite -> Name: ${train_name}, Operator: ${operator}, Number: ${trainNumberPrefix} ${trainNo}`);
-    //                break;
-    //            }
-    //        } else {
-    //            break;
-    //        }
-    //    }
-    //}
+        for (let k = 0; k < trainNoIs.length; k++) {
+            if (overwriteData.operator === trainOperatorBefore) {
+                if (trainNo.toString().startsWith(trainNoIs[k])) {
+                    const operator = overwriteData.operatorOverwrite;
+                    const train_name = overwriteData.remarks;
+                    trainNumberPrefix = overwriteData.category[trainCategory];
+                    processedData.train_name = train_name;
+                    processedData.operator = operator;
+                    console.log(`Overwrite -> Name: ${train_name}, Operator: ${operator}, Number: ${trainNumberPrefix} ${trainNo}`);
+                    break;
+                }
+            } else {
+                break;
+            }
+        }
+    }
 
     // viaStations recognition
 
