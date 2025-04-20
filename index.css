@@ -108,7 +108,7 @@ input[type="checkbox"]:checked::after {
     display: flex;
     justify-content: right;
     height: 0px;
-    z-index: 1000;
+    z-index: 1;
     transform: translateY(5px) translateX(-5px);
     margin: -1px;
 }
@@ -265,7 +265,7 @@ input[type="checkbox"]:checked::after {
 .modal {
     display: none; /* Ukryj modal domyślnie */
     position: fixed;
-    z-index: 1;
+    z-index: 5;
     left: 0;
     top: 0;
     width: 100%;
