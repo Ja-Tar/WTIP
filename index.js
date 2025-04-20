@@ -267,7 +267,7 @@ function loadFrames() {
         const blobUrlParm = URL + "?" + params;
 
         // Remove old iframe if change needed
-        const oldIframe = document.getElementById("iframe_" + track_display[i].id);
+        const oldIframe = document.getElementById(`iframe_${track_display[i].id}`);
         if (oldIframe) {
             if (oldIframe.src === blobUrlParm) {
                 continue;
@@ -278,7 +278,7 @@ function loadFrames() {
         const iframe = document.createElement('iframe');
         iframe.src = blobUrlParm;
         iframe.classList.add('iframe_display');
-        iframe.id = "iframe_" + track_display[i].id;
+        iframe.id = `iframe_${track_display[i].id}`;
         track_display[i].appendChild(iframe);
     }
 }
