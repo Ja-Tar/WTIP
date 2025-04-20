@@ -461,7 +461,7 @@ function getProcessedData(display_id, smallestDisplayId) {
                     trainNumberPrefix = overwriteData.category[trainCategory];
                     processedData.train_name = train_name;
                     processedData.operator = operator;
-                    console.log(`Overwrite -> Name: ${train_name}, Operator: ${operator}, Number: ${trainNumberPrefix} ${trainNo}`);
+                    console.warn(`Overwrite -> Name: ${train_name}, Operator: ${operator}, Number: ${trainNumberPrefix} ${trainNo}`);
                     break;
                 }
             } else {
@@ -540,7 +540,7 @@ function getProcessedData(display_id, smallestDisplayId) {
     processedData.empty = "false";
     processedData.terminatesHere = terminatesHere;
 
-    console.debug(`Processed data for track ${display_id}:`, processedData);
+    //console.debug(`Processed data for track ${display_id}:`, processedData);
 
     return processedData;
 }
