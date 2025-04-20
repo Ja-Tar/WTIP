@@ -148,11 +148,13 @@ function applySettings(load = false) {
     let displayTrainsWithCargo = document.getElementById("display_train_with_cargo");
     let displayTrainWithoutTrackNr = document.getElementById("display_train_without_track_nr");
     let displayTrainThatDoesNotStop = document.getElementById("display_train_without_stop");
+    let roundingDelay = document.getElementById("rounding_delay");
 
     const defaultSettings = {
         "displayTrainsWithCargo": false,
         "displayTrainWithoutTrackNr": true,
-        "displayTrainThatDoesNotStop": true
+        "displayTrainThatDoesNotStop": true,
+        "roundingDelay": true,
     };
 
     if (settings) {
@@ -164,15 +166,20 @@ function applySettings(load = false) {
         window.settings = settings;
     }
 
-    if (load) {
-        displayTrainsWithCargo.checked = settings.displayTrainsWithCargo;
-        displayTrainWithoutTrackNr.checked = settings.displayTrainWithoutTrackNr;
-        displayTrainThatDoesNotStop.checked = settings.displayTrainThatDoesNotStop;
-    } else {
-        settings.displayTrainsWithCargo = displayTrainsWithCargo.checked;
-        settings.displayTrainWithoutTrackNr = displayTrainWithoutTrackNr.checked;
-        settings.displayTrainThatDoesNotStop = displayTrainThatDoesNotStop.checked;
-    }
+    const settingsMapping = {
+        displayTrainsWithCargo: displayTrainsWithCargo,
+        displayTrainWithoutTrackNr: displayTrainWithoutTrackNr,
+        displayTrainThatDoesNotStop: displayTrainThatDoesNotStop,
+        roundingDelay: roundingDelay
+    };
+
+    Object.keys(settingsMapping).forEach(key => {
+        if (load) {
+            settingsMapping[key].checked = settings[key];
+        } else {
+            settings[key] = settingsMapping[key].checked;
+        }
+    });
 
     localStorage.setItem("settings", JSON.stringify(settings));
 }
@@ -510,6 +517,14 @@ function getProcessedData(display_id, smallestDisplayId) {
         processedData.delay = arrivalDelay;
     } else {
         processedData.delay = 0;
+    }
+
+    // processedData.delay is in minutes
+    if (window.settings.roundingDelay === true) {
+        processedData.delay = Math.round(processedData.delay / 5) * 5;
+        if (processedData.delay < 0) {
+            processedData.delay = 0;
+        }
     }
 
     processedData.empty = "false";
