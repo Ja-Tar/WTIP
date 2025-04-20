@@ -450,8 +450,8 @@ function getProcessedData(display_id, smallestDisplayId) {
         let trainOperatorBefore = processedData.operator;
         let trainNoIs = overwriteData.trainNoStartsWith;
 
-        for (let k = 0; k < trainNoIs.length; k++) {
-            if (overwriteData.operator === trainOperatorBefore) {
+        if (overwriteData.operator === trainOperatorBefore) {
+            for (let k = 0; k < trainNoIs.length; k++) {
                 if (trainNo.toString().startsWith(trainNoIs[k])) {
                     const operator = overwriteData.operatorOverwrite;
                     const train_name = overwriteData.remarks;
@@ -461,8 +461,6 @@ function getProcessedData(display_id, smallestDisplayId) {
                     console.warn(`Overwrite -> Name: ${train_name}, Operator: ${operator}, Number: ${trainNumberPrefix} ${trainNo}`);
                     break;
                 }
-            } else {
-                break;
             }
         }
     }
