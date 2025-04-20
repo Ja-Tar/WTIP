@@ -146,10 +146,6 @@ function closeModal() {
 
 function applySettings(load = false) {
     let settings = localStorage.getItem("settings");
-    let displayTrainsWithCargo = document.getElementById("display_train_with_cargo");
-    let displayTrainWithoutTrackNr = document.getElementById("display_train_without_track_nr");
-    let displayTrainThatDoesNotStop = document.getElementById("display_train_without_stop");
-    let roundingDelay = document.getElementById("rounding_delay");
 
     const defaultSettings = {
         "displayTrainsWithCargo": false,
@@ -168,17 +164,18 @@ function applySettings(load = false) {
     }
 
     const settingsMapping = {
-        displayTrainsWithCargo: displayTrainsWithCargo,
-        displayTrainWithoutTrackNr: displayTrainWithoutTrackNr,
-        displayTrainThatDoesNotStop: displayTrainThatDoesNotStop,
-        roundingDelay: roundingDelay
+        displayTrainsWithCargo: "display_train_with_cargo",
+        displayTrainWithoutTrackNr: "display_train_without_track_nr",
+        displayTrainThatDoesNotStop: "display_train_without_stop",
+        roundingDelay: "rounding_delay",
     };
 
     Object.keys(settingsMapping).forEach(key => {
+        const element = document.getElementById(settingsMapping[key]);
         if (load) {
-            settingsMapping[key].checked = settings[key];
+            element.checked = settings[key];
         } else {
-            settings[key] = settingsMapping[key].checked;
+            settings[key] = element.checked;
         }
     });
 
