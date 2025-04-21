@@ -408,32 +408,6 @@ function getProcessedData(display_id, smallestDisplayId) {
         }
     }
 
-    // Train name recognition
-
-    for (let j = 0; j < window.operatorConvertData.trainNames.length; j++) {
-        let trainNameData = window.operatorConvertData.trainNames[j];
-        let trainOperatorBefore = processedData.operator;
-        let trainNoIs = trainNameData.trainNo;
-
-        for (let k = 0; k < trainNoIs.length; k++) {
-            if (trainNameData.operator === trainOperatorBefore) {
-                if (trainNoIs[k] === trainNo.toString()) {
-                    const operator = trainNameData.operator;
-                    const train_name = trainNameData.trainName;
-                    trainNumberPrefix = trainNameData.categoryOverwrite;
-
-                    processedData.train_name = train_name;
-                    processedData.operator = operator;
-                    console.debug(`Name: ${train_name}, Operator: ${operator}, Number: ${trainNumberPrefix} ${trainNo}`);
-                    break;
-                }
-            } else {
-                break;
-            }
-        }
-
-    }
-
     // Train name and prefix override
 
     // "overwrite":
@@ -463,6 +437,33 @@ function getProcessedData(display_id, smallestDisplayId) {
                 }
             }
         }
+    }
+
+
+    // Train name recognition
+
+    for (let j = 0; j < window.operatorConvertData.trainNames.length; j++) {
+        let trainNameData = window.operatorConvertData.trainNames[j];
+        let trainOperatorBefore = processedData.operator;
+        let trainNoIs = trainNameData.trainNo;
+
+        for (let k = 0; k < trainNoIs.length; k++) {
+            if (trainNameData.operator === trainOperatorBefore) {
+                if (trainNoIs[k] === trainNo.toString()) {
+                    const operator = trainNameData.operator;
+                    const train_name = trainNameData.trainName;
+                    trainNumberPrefix = trainNameData.categoryOverwrite;
+
+                    processedData.train_name = train_name;
+                    processedData.operator = operator;
+                    console.debug(`Name: ${train_name}, Operator: ${operator}, Number: ${trainNumberPrefix} ${trainNo}`);
+                    break;
+                }
+            } else {
+                break;
+            }
+        }
+
     }
 
     // viaStations recognition
