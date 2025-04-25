@@ -11,6 +11,10 @@
 </head>
 
 <body>
+    <!-- tytuł buttona przetłumaczony na angielski -->
+    <div id="show_menu_div" class="button_div" title="Show menu">
+        <button id="show_menu_button" class="button"><img src="emoji/E259.svg" alt="❌"></button>
+    </div>
     <div id="settings_modal" class="modal">
         <div class="modal_content" id="settings_content">
             <span class="close_button">&times;</span>
@@ -19,7 +23,7 @@
                 <label for="display_train_with_cargo">Display cargo trains:</label>
                 <input type="checkbox" id="display_train_with_cargo">
             </div>
-            <div class="checkbox_div"></div>
+            <div class="checkbox_div">
                 <label for="display_train_without_stop">Display trains that do not stop at the selected stop/station: </label>
                 <input type="checkbox" id="display_train_without_stop">
             </div>
@@ -47,6 +51,7 @@
             <option value="" disabled>CZ</option>
         </select><br>
         <label for="scenery">Scenery:</label>
+        <div id="supported_icon"><img src="emoji/274C.svg" alt="✅"></div>
         <input type="text" id="scenery" placeholder='Scenery name'></input>
         <br>
         <label for="point">Stop / Station</label>
@@ -54,19 +59,24 @@
             <option value="none">None</option>
         </select><br>
         <label for="platforms_layout">Platforms layout</label>
-        <input type="text" id="platforms_layout"><br>
+        <input type="text" id="platforms_layout" disabled><br> <!-- TODO: remove disabled when custom layout is ready -->
         <button id="submit" class="green_button">Show boards</button>
     </div>
     <div id="buttons_div">
-        <div id="dark_mode_div" class="button_div">
+        <div id="dark_mode_div" class="button_div" title="Dark/Light mode">
             <button id="dark_mode_button" class="button"><img src="emoji/1F319.svg" alt="🌒"></button>
             <button id="light_mode_button" class="button"><img src="emoji/2600.svg" alt="☀️"></button>
         </div>
-        <div id="settings_button_div" class="button_div">
+        <div id="settings_button_div" class="button_div" title="Settings">
             <button id="settings_button" class="button"><img src="emoji/1F9F0.svg" alt="⚙️"></button>
         </div>
-        <div id="language_div" class="button_div">
+        <div id="language_div" class="button_div" title="Language">
             <button id="language_switch" class="button"><img id="flag" src="emoji/1F1F5-1F1F1.svg" alt="PL"></button>
+        </div>
+        <div id="hide_menu_div" class="button_div" title="Hide menu">
+            <button id="hide_menu_button" class="button combine">
+                <img src="emoji/E259.svg" alt="🔵"><img src="emoji/274C.svg" alt="❌">
+            </button>
         </div>
     </div>
     <div id="platform_row">
@@ -80,6 +90,10 @@
         </div>
         -->
         <script src="index.js" async defer></script>
+    </div>
+    <div id="notification_div">
+        <div id="notification" class="notification"></div>
+    </div>
 </body>
 
 </html>
