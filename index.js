@@ -49,112 +49,6 @@ Debug termination: ${window.debugTermination}`);
     localStorage.removeItem("version");
 }
 
-// Button event listeners
-
-document.getElementById("settings_button").addEventListener("click", function () {
-    const modal = document.getElementById("settings_modal");
-    const modalContent = document.querySelector(".modal_content");
-
-    modal.classList.remove("fade-out");
-    modalContent.classList.remove("slide-out");
-
-    modal.style.display = "block";
-    modal.classList.add("fade-in");
-    modalContent.classList.add("slide-in");
-});
-
-document.getElementsByClassName("close_button")[0].addEventListener("click", function () {
-    closeModal();
-});
-
-document.getElementById("save_settings").addEventListener("click", function () {
-    showNotification("Ustawienia zapisane!");
-
-    // Zastosuj ustawienia
-    applySettings();
-
-    // Zamknij modal
-    closeModal();
-});
-
-document.getElementById("reset_settings").addEventListener("click", function () {
-    showNotification("Ustawienia zresetowane!");
-
-    localStorage.clear();
-
-    closeModal();
-
-    setTimeout(() => {
-        window.location.reload();
-    }, 500); // 1 second
-});
-
-document.getElementById("submit").addEventListener("click", function () {
-    if (window.timetablesData) {
-        processTimetablesData();
-        setTimeout(() => {
-            buttonSetDisplay();
-            refreshDataRoutine();
-        }, 500); // 1 second
-    }
-});
-
-document.getElementById("language_switch").addEventListener("click", function () {
-    if (document.documentElement.lang === "pl") {
-        window.location.href = "index_en.html";
-    } else if (document.documentElement.lang === "en") {
-        window.location.href = "index.html";
-    }
-});
-
-document.getElementById("dark_mode_button").addEventListener("click", () => {
-    document.body.classList.toggle("dark_mode");
-    localStorage.setItem("dark_mode", "true");
-});
-
-document.getElementById("light_mode_button").addEventListener("click", () => {
-    document.body.classList.remove("dark_mode");
-    localStorage.setItem("dark_mode", "false");
-});
-
-const form = document.getElementById("form");
-const menuButtonDiv = document.getElementById("hide_menu_div");
-const exitButtonDiv = document.getElementById("show_menu_div");
-const buttonsDiv = document.getElementById("buttons_div");
-const platformRow = document.getElementById("platform_row");
-
-document.getElementById("hide_menu_button").addEventListener("click", () => {
-    if (form.style.display !== "none") {
-        form.style.display = "none";
-        menuButtonDiv.style.display = "none";
-        exitButtonDiv.style.display = "block";
-    }
-    if (buttonsDiv.style.display !== "none") {
-        buttonsDiv.style.display = "none";
-    }
-    platformRow.classList.toggle("center");
-});
-
-document.getElementById("show_menu_button").addEventListener("click", () => {
-    if (form.style.display === "none") {
-        form.style.display = "block";
-        menuButtonDiv.style.display = "block";
-        exitButtonDiv.style.display = "none";
-    }
-    if (buttonsDiv.style.display === "none") {
-        buttonsDiv.style.display = "flex";
-    }
-    platformRow.classList.remove("center");
-});
-
-// Rest of the event listeners
-
-window.addEventListener("click", function (event) {
-    if (event.target === document.getElementById("settings_modal")) {
-        closeModal();
-    }
-});
-
 // Functions
 
 // Settings functions
@@ -990,3 +884,108 @@ getDataFromAPI();
 darkModeCheck();
 applySettings(true);
 clearFields();
+
+// Button event listeners
+
+const form = document.getElementById("form");
+const menuButtonDiv = document.getElementById("hide_menu_div");
+const exitButtonDiv = document.getElementById("show_menu_div");
+const buttonsDiv = document.getElementById("buttons_div");
+const platformRow = document.getElementById("platform_row");
+const modal = document.getElementById("settings_modal");
+const modalContent = document.querySelector(".modal_content");
+
+document.getElementById("settings_button").addEventListener("click", function () {
+    modal.classList.remove("fade-out");
+    modalContent.classList.remove("slide-out");
+
+    modal.style.display = "block";
+    modal.classList.add("fade-in");
+    modalContent.classList.add("slide-in");
+});
+
+document.getElementsByClassName("close_button")[0].addEventListener("click", function () {
+    closeModal();
+});
+
+document.getElementById("save_settings").addEventListener("click", function () {
+    showNotification("Ustawienia zapisane!");
+
+    // Zastosuj ustawienia
+    applySettings();
+
+    // Zamknij modal
+    closeModal();
+});
+
+document.getElementById("reset_settings").addEventListener("click", function () {
+    showNotification("Ustawienia zresetowane!");
+
+    localStorage.clear();
+
+    closeModal();
+
+    setTimeout(() => {
+        window.location.reload();
+    }, 500); // 1 second
+});
+
+document.getElementById("submit").addEventListener("click", function () {
+    if (window.timetablesData) {
+        processTimetablesData();
+        setTimeout(() => {
+            buttonSetDisplay();
+            refreshDataRoutine();
+        }, 500); // 1 second
+    }
+});
+
+document.getElementById("language_switch").addEventListener("click", function () {
+    if (document.documentElement.lang === "pl") {
+        window.location.href = "index_en.html";
+    } else if (document.documentElement.lang === "en") {
+        window.location.href = "index.html";
+    }
+});
+
+document.getElementById("dark_mode_button").addEventListener("click", () => {
+    document.body.classList.toggle("dark_mode");
+    localStorage.setItem("dark_mode", "true");
+});
+
+document.getElementById("light_mode_button").addEventListener("click", () => {
+    document.body.classList.remove("dark_mode");
+    localStorage.setItem("dark_mode", "false");
+});
+
+document.getElementById("hide_menu_button").addEventListener("click", () => {
+    if (form.style.display !== "none") {
+        form.style.display = "none";
+        menuButtonDiv.style.display = "none";
+        exitButtonDiv.style.display = "block";
+    }
+    if (buttonsDiv.style.display !== "none") {
+        buttonsDiv.style.display = "none";
+    }
+    platformRow.classList.toggle("center");
+});
+
+document.getElementById("show_menu_button").addEventListener("click", () => {
+    if (form.style.display === "none") {
+        form.style.display = "block";
+        menuButtonDiv.style.display = "block";
+        exitButtonDiv.style.display = "none";
+    }
+    if (buttonsDiv.style.display === "none") {
+        buttonsDiv.style.display = "flex";
+    }
+    platformRow.classList.remove("center");
+});
+
+// Rest of the event listeners
+
+window.addEventListener("click", function (event) {
+    if (event.target === document.getElementById("settings_modal")) {
+        closeModal();
+    }
+});
