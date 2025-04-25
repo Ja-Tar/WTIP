@@ -117,6 +117,36 @@ document.getElementById("light_mode_button").addEventListener("click", () => {
     localStorage.setItem("dark_mode", "false");
 });
 
+const form = document.getElementById("form");
+const menuButtonDiv = document.getElementById("hide_menu_div");
+const exitButtonDiv = document.getElementById("show_menu_div");
+const buttonsDiv = document.getElementById("buttons_div");
+const platformRow = document.getElementById("platform_row");
+
+document.getElementById("hide_menu_button").addEventListener("click", () => {
+    if (form.style.display !== "none") {
+        form.style.display = "none";
+        menuButtonDiv.style.display = "none";
+        exitButtonDiv.style.display = "block";
+    }
+    if (buttonsDiv.style.display !== "none") {
+        buttonsDiv.style.display = "none";
+    }
+    platformRow.classList.toggle("center");
+});
+
+document.getElementById("show_menu_button").addEventListener("click", () => {
+    if (form.style.display === "none") {
+        form.style.display = "block";
+        menuButtonDiv.style.display = "block";
+        exitButtonDiv.style.display = "none";
+    }
+    if (buttonsDiv.style.display === "none") {
+        buttonsDiv.style.display = "flex";
+    }
+    platformRow.classList.remove("center");
+});
+
 // Rest of the event listeners
 
 window.addEventListener("click", function (event) {
