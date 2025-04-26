@@ -68,6 +68,16 @@ function closeModal() {
     }, 300); // Czas trwania animacji
 }
 
+/**
+ * Zastosowuje ustawienia użytkownika, ładując je z localStorage lub używając wartości domyślnych.
+ * Aktualizuje elementy interfejsu użytkownika na podstawie ustawień, gdy `load` jest ustawione na true,
+ * lub aktualizuje ustawienia na podstawie elementów interfejsu użytkownika, gdy `load` jest ustawione na false.
+ * Zapisuje zaktualizowane ustawienia z powrotem do localStorage.
+ *
+ * @param {boolean} [load=false] - Określa kierunek operacji:
+ *                                 `true` aby załadować ustawienia do interfejsu użytkownika,
+ *                                 `false` aby zapisać ustawienia z interfejsu użytkownika.
+ */
 function applySettings(load = false) {
     let settings = localStorage.getItem("settings");
 
