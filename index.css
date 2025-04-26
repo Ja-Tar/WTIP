@@ -108,7 +108,7 @@ input[type="checkbox"]:checked::after {
     display: flex;
     justify-content: right;
     height: 0px;
-    z-index: 1000;
+    z-index: 1;
     transform: translateY(5px) translateX(-5px);
     margin: -1px;
 }
@@ -144,6 +144,12 @@ input[type="checkbox"]:checked::after {
     margin-top: -5px;
 }
 
+#platform_row.center {
+    align-items: center;
+    height: 99vh;
+    justify-content: center;
+}
+
 .platform {
     background-color: #fff;
     padding: 10px;
@@ -173,13 +179,14 @@ input[type="checkbox"]:checked::after {
     text-align: center;
 }
 
-.iframe_display { /* TODO: zmienić na coś lepiej wyglądającego */
+.iframe_display { 
     overflow: hidden; 
     position: relative;
-    width: 100%;
-    height: 85%;
+    width: 400px;
+    height: 200px;
     border: black 1px solid;
     border-radius: 5px;
+    background-color: #283c65;
 }
 
 /* Style do dodatkowych przycisków */
@@ -193,15 +200,16 @@ input[type="checkbox"]:checked::after {
     margin-bottom: 0;
 }
 
-#dark_mode_div,
-#language_div {
-    padding-left: 20px;
-    padding-right: 20px;
-}
-
 .button_div {
     display: flex;
     align-items: center;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+.button.combine img {
+    /* combine two SVGs */
+    position: fixed;
 }
 
 .button img {
@@ -230,6 +238,16 @@ input[type="checkbox"]:checked::after {
 .button_div .button:hover {
     transform: scale(1.3);
     transition: transform 0.5s ease;
+}
+
+#show_menu_div {
+    display: none;
+    position: absolute;
+    padding: 0px;
+    top: 12px;
+    right: 15px;
+    scale: 1.4;
+    z-index: 1;;
 }
 
 /* Notifications */
@@ -264,7 +282,7 @@ input[type="checkbox"]:checked::after {
 .modal {
     display: none; /* Ukryj modal domyślnie */
     position: fixed;
-    z-index: 1;
+    z-index: 5;
     left: 0;
     top: 0;
     width: 100%;

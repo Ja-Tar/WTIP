@@ -33,6 +33,7 @@ window.operatorFullNames = {
 }
 
 window.refreshRoutine = null;
+window.currentPlatformsLayout = "";
 window.debug = false;
 window.iframeDebugURL = ""; // example: http://127.0.0.1:5500
 window.platformsAPIDebugBranch = "main"; // example: main
@@ -47,82 +48,6 @@ Debug termination: ${window.debugTermination}`);
     window.platformsAPI_URL = `https://raw.githubusercontent.com/Ja-Tar/WTIP/${window.platformsAPIDebugBranch}/platforms_info.json`;
     localStorage.removeItem("version");
 }
-
-// Button event listeners
-
-document.getElementById("settings_button").addEventListener("click", function () {
-    const modal = document.getElementById("settings_modal");
-    const modalContent = document.querySelector(".modal_content");
-
-    modal.classList.remove("fade-out");
-    modalContent.classList.remove("slide-out");
-
-    modal.style.display = "block";
-    modal.classList.add("fade-in");
-    modalContent.classList.add("slide-in");
-});
-
-document.getElementsByClassName("close_button")[0].addEventListener("click", function () {
-    closeModal();
-});
-
-document.getElementById("save_settings").addEventListener("click", function () {
-    showNotification("Ustawienia zapisane!");
-
-    // Zastosuj ustawienia
-    applySettings();
-
-    // Zamknij modal
-    closeModal();
-});
-
-document.getElementById("reset_settings").addEventListener("click", function () {
-    showNotification("Ustawienia zresetowane!");
-
-    localStorage.clear();
-
-    closeModal();
-
-    setTimeout(() => {
-        window.location.reload();
-    }, 500); // 1 second
-});
-
-document.getElementById("submit").addEventListener("click", function () {
-    if (window.timetablesData) {
-        processTimetablesData();
-        setTimeout(() => {
-            buttonSetDisplay();
-            refreshDataRoutine();
-        }, 500); // 1 second
-    }
-});
-
-document.getElementById("language_switch").addEventListener("click", function () {
-    if (document.documentElement.lang === "pl") {
-        window.location.href = "index_en.html";
-    } else if (document.documentElement.lang === "en") {
-        window.location.href = "index.html";
-    }
-});
-
-document.getElementById("dark_mode_button").addEventListener("click", () => {
-    document.body.classList.toggle("dark_mode");
-    localStorage.setItem("dark_mode", "true");
-});
-
-document.getElementById("light_mode_button").addEventListener("click", () => {
-    document.body.classList.remove("dark_mode");
-    localStorage.setItem("dark_mode", "false");
-});
-
-// Rest of the event listeners
-
-window.addEventListener("click", function (event) {
-    if (event.target === document.getElementById("settings_modal")) {
-        closeModal();
-    }
-});
 
 // Functions
 
@@ -145,14 +70,12 @@ function closeModal() {
 
 function applySettings(load = false) {
     let settings = localStorage.getItem("settings");
-    let displayTrainsWithCargo = document.getElementById("display_train_with_cargo");
-    let displayTrainWithoutTrackNr = document.getElementById("display_train_without_track_nr");
-    let displayTrainThatDoesNotStop = document.getElementById("display_train_without_stop");
 
     const defaultSettings = {
         "displayTrainsWithCargo": false,
         "displayTrainWithoutTrackNr": true,
-        "displayTrainThatDoesNotStop": true
+        "displayTrainThatDoesNotStop": true,
+        "roundingDelay": true,
     };
 
     if (settings) {
@@ -164,15 +87,21 @@ function applySettings(load = false) {
         window.settings = settings;
     }
 
-    if (load) {
-        displayTrainsWithCargo.checked = settings.displayTrainsWithCargo;
-        displayTrainWithoutTrackNr.checked = settings.displayTrainWithoutTrackNr;
-        displayTrainThatDoesNotStop.checked = settings.displayTrainThatDoesNotStop;
-    } else {
-        settings.displayTrainsWithCargo = displayTrainsWithCargo.checked;
-        settings.displayTrainWithoutTrackNr = displayTrainWithoutTrackNr.checked;
-        settings.displayTrainThatDoesNotStop = displayTrainThatDoesNotStop.checked;
-    }
+    const settingsMapping = {
+        displayTrainsWithCargo: "display_train_with_cargo",
+        displayTrainWithoutTrackNr: "display_train_without_track_nr",
+        displayTrainThatDoesNotStop: "display_train_without_stop",
+        roundingDelay: "rounding_delay",
+    };
+
+    Object.keys(settingsMapping).forEach(key => {
+        const element = document.getElementById(settingsMapping[key]);
+        if (load) {
+            element.checked = settings[key];
+        } else {
+            settings[key] = element.checked;
+        }
+    });
 
     localStorage.setItem("settings", JSON.stringify(settings));
 }
@@ -217,11 +146,6 @@ function darkModeCheck() {
 
 function loadFrames() {
     const track_display = document.getElementsByClassName('track_display');
-    const oldFrames = document.querySelectorAll('.iframe_display');
-
-    for (let i = 0; i < oldFrames.length; i++) {
-        oldFrames[i].remove();
-    }
 
     let domain = "https://ktip.pages.dev";
     let URL = "";
@@ -266,9 +190,19 @@ function loadFrames() {
 
         const blobUrlParm = URL + "?" + params;
 
+        // Remove old iframe if change needed
+        const oldIframe = document.getElementById(`iframe_${track_display[i].id}`);
+        if (oldIframe) {
+            if (oldIframe.src === blobUrlParm) {
+                continue;
+            }
+            oldIframe.remove();
+        }
+
         const iframe = document.createElement('iframe');
         iframe.src = blobUrlParm;
         iframe.classList.add('iframe_display');
+        iframe.id = `iframe_${track_display[i].id}`;
         track_display[i].appendChild(iframe);
     }
 }
@@ -372,7 +306,11 @@ function getProcessedData(display_id, smallestDisplayId) {
         });
 
         const mostCommonOperator = Object.keys(counts).reduce(function (a, b) {
-            return counts[a] > counts[b] ? a : b;
+            if (counts[a] !== counts[b]) {
+                return counts[a] > counts[b] ? a : b;
+            }
+            // If counts are equal, return the first one
+            return a;
         });
 
         processedData.operator = mostCommonOperator;
@@ -393,6 +331,38 @@ function getProcessedData(display_id, smallestDisplayId) {
             }
         }
     }
+
+    // Train name and prefix override
+
+    // "overwrite":
+    //{
+    //  "operator": "PR",
+    //  "operatorOverwrite": "ŁKA",
+    //  "trainNoStartsWith": ["911"], // number can start or be all the numbers
+    //  "category": { "R": "Ł", "RP": "ŁS", "M": "ŁS", "E": "ŁS" },
+    //  "remarks": "Bajkowy"
+    //}
+
+    for (let j = 0; j < window.operatorConvertData.overwrite.length; j++) {
+        let overwriteData = window.operatorConvertData.overwrite[j];
+        let trainOperatorBefore = processedData.operator;
+        let trainNoIs = overwriteData.trainNoStartsWith;
+
+        if (overwriteData.operator === trainOperatorBefore) {
+            for (let k = 0; k < trainNoIs.length; k++) {
+                if (trainNo.toString().startsWith(trainNoIs[k])) {
+                    const operator = overwriteData.operatorOverwrite;
+                    const train_name = overwriteData.remarks;
+                    trainNumberPrefix = overwriteData.category[trainCategory];
+                    processedData.train_name = train_name;
+                    processedData.operator = operator;
+                    console.warn(`Overwrite -> Name: ${train_name}, Operator: ${operator}, Number: ${trainNumberPrefix} ${trainNo}`);
+                    break;
+                }
+            }
+        }
+    }
+
 
     // Train name recognition
 
@@ -419,10 +389,6 @@ function getProcessedData(display_id, smallestDisplayId) {
         }
 
     }
-
-    // Train name and prefix override
-
-    // TODO: Add train name and prefix override
 
     // viaStations recognition
 
@@ -483,10 +449,18 @@ function getProcessedData(display_id, smallestDisplayId) {
         processedData.delay = 0;
     }
 
+    // processedData.delay is in minutes
+    if (window.settings.roundingDelay === true) {
+        processedData.delay = Math.round(processedData.delay / 5) * 5;
+        if (processedData.delay < 0) {
+            processedData.delay = 0;
+        }
+    }
+
     processedData.empty = "false";
     processedData.terminatesHere = terminatesHere;
 
-    console.debug(`Processed data for track ${display_id}:`, processedData);
+    //console.debug(`Processed data for track ${display_id}:`, processedData);
 
     return processedData;
 }
@@ -616,7 +590,16 @@ function getDataFromAPI() {
 function showDisplays(platformsConfig) { // example showDisplays("P1-1,3; P2-2,4; ")
     let platformRow = document.getElementById("platform_row");
 
+    if (currentPlatformsLayout === platformsConfig) {
+        console.debug("No changes in platforms layout");
+
+        loadFrames();
+        return;
+    }
+
     platformRow.innerHTML = "";
+
+    currentPlatformsLayout = platformsConfig;
 
     platformsConfig = platformsConfig.split(";");
     platformsConfig = platformsConfig.slice(0, -1);
@@ -901,3 +884,108 @@ getDataFromAPI();
 darkModeCheck();
 applySettings(true);
 clearFields();
+
+// Button event listeners
+
+const form = document.getElementById("form");
+const menuButtonDiv = document.getElementById("hide_menu_div");
+const exitButtonDiv = document.getElementById("show_menu_div");
+const buttonsDiv = document.getElementById("buttons_div");
+const platformRow = document.getElementById("platform_row");
+const modal = document.getElementById("settings_modal");
+const modalContent = document.querySelector(".modal_content");
+
+document.getElementById("settings_button").addEventListener("click", function () {
+    modal.classList.remove("fade-out");
+    modalContent.classList.remove("slide-out");
+
+    modal.style.display = "block";
+    modal.classList.add("fade-in");
+    modalContent.classList.add("slide-in");
+});
+
+document.getElementsByClassName("close_button")[0].addEventListener("click", function () {
+    closeModal();
+});
+
+document.getElementById("save_settings").addEventListener("click", function () {
+    showNotification("Ustawienia zapisane!");
+
+    // Zastosuj ustawienia
+    applySettings();
+
+    // Zamknij modal
+    closeModal();
+});
+
+document.getElementById("reset_settings").addEventListener("click", function () {
+    showNotification("Ustawienia zresetowane!");
+
+    localStorage.clear();
+
+    closeModal();
+
+    setTimeout(() => {
+        window.location.reload();
+    }, 500); // 1 second
+});
+
+document.getElementById("submit").addEventListener("click", function () {
+    if (window.timetablesData) {
+        processTimetablesData();
+        setTimeout(() => {
+            buttonSetDisplay();
+            refreshDataRoutine();
+        }, 500); // 1 second
+    }
+});
+
+document.getElementById("language_switch").addEventListener("click", function () {
+    if (document.documentElement.lang === "pl") {
+        window.location.href = "index_en.html";
+    } else if (document.documentElement.lang === "en") {
+        window.location.href = "index.html";
+    }
+});
+
+document.getElementById("dark_mode_button").addEventListener("click", () => {
+    document.body.classList.toggle("dark_mode");
+    localStorage.setItem("dark_mode", "true");
+});
+
+document.getElementById("light_mode_button").addEventListener("click", () => {
+    document.body.classList.remove("dark_mode");
+    localStorage.setItem("dark_mode", "false");
+});
+
+document.getElementById("hide_menu_button").addEventListener("click", () => {
+    if (form.style.display !== "none") {
+        form.style.display = "none";
+        menuButtonDiv.style.display = "none";
+        exitButtonDiv.style.display = "block";
+    }
+    if (buttonsDiv.style.display !== "none") {
+        buttonsDiv.style.display = "none";
+    }
+    platformRow.classList.toggle("center");
+});
+
+document.getElementById("show_menu_button").addEventListener("click", () => {
+    if (form.style.display === "none") {
+        form.style.display = "block";
+        menuButtonDiv.style.display = "block";
+        exitButtonDiv.style.display = "none";
+    }
+    if (buttonsDiv.style.display === "none") {
+        buttonsDiv.style.display = "flex";
+    }
+    platformRow.classList.remove("center");
+});
+
+// Rest of the event listeners
+
+window.addEventListener("click", function (event) {
+    if (event.target === document.getElementById("settings_modal")) {
+        closeModal();
+    }
+});
