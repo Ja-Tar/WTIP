@@ -35,6 +35,14 @@
                 <label for="rounding_delay">Rounding delay to 5 (5m, 10m, 15m): </label>
                 <input type="checkbox" id="rounding_delay">
             </div>
+            <div class="checkbox_div">
+                <label for="display_screen_size">Display screen size: </label>
+                <div id="size_div">
+                    <button id="size_minus" class="button">−</button>
+                    <input type="text" id="display_screen_size" min="1" max="200" value="100" disabled>
+                    <button id="size_plus" class="button">+</button>
+                </div>
+            </div>
             <br>
             <div id="buttons_div_settings">
                 <button id="save_settings" class="green_button">Save settings</button>
