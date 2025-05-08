@@ -68,6 +68,36 @@ function closeModal() {
     }, 300); // Czas trwania animacji
 }
 
+
+/**
+ * Zastosowuje lub pobiera wartości lub stany zaznaczenia między obiektem ustawień a elementami DOM.
+ *
+ * @param {Object} mapping - Obiekt mapujący klucze w obiekcie ustawień na identyfikatory elementów DOM.
+ * @param {Object} settings - Obiekt zawierający ustawienia do zastosowania lub zaktualizowania.
+ * @param {boolean} load - Jeśli `true`, ładuje wartości z obiektu ustawień do elementów DOM.
+ *                         Jeśli `false`, aktualizuje obiekt ustawień wartościami z elementów DOM.
+ * @param {boolean} [useChecked=false] - Jeśli `true`, operuje na właściwości `checked` elementów (np. checkboxy).
+ *                                       Jeśli `false`, operuje na właściwości `value` elementów.
+ */
+function applySettingValueOrChecked(mapping, settings, load, useChecked = false) {
+    Object.keys(mapping).forEach(key => {
+        const element = document.getElementById(mapping[key]);
+        if (load) {
+            if (useChecked) {
+                element.checked = settings[key];
+            } else {
+                element.value = settings[key];
+            }
+        } else {
+            if (useChecked) {
+                settings[key] = element.checked;
+            } else {
+                settings[key] = element.value;
+            }
+        }
+    });
+}
+
 /**
  * Zastosowuje ustawienia użytkownika, ładując je z localStorage lub używając wartości domyślnych.
  * Aktualizuje elementy interfejsu użytkownika na podstawie ustawień, gdy `load` jest ustawione na true,
@@ -77,8 +107,10 @@ function closeModal() {
  * @param {boolean} [load=false] - Określa kierunek operacji:
  *                                 `true` aby załadować ustawienia do interfejsu użytkownika,
  *                                 `false` aby zapisać ustawienia z interfejsu użytkownika.
+ * @param {Object|null} [custom=null] - Opcjonalne konkretne ustawienia do zastosowania.
+ * @param {boolean} [customChecked=false] - Określa, czy używać właściwości `checked` dla elementów (np. checkboxy).
  */
-function applySettings(load = false) {
+function applySettings(load = false, custom = null, customChecked = false) {
     let settings = localStorage.getItem("settings");
 
     const defaultSettings = {
@@ -86,6 +118,7 @@ function applySettings(load = false) {
         "displayTrainWithoutTrackNr": true,
         "displayTrainThatDoesNotStop": true,
         "roundingDelay": true,
+        "displayScreenSize": "100",
     };
 
     if (settings) {
@@ -97,23 +130,27 @@ function applySettings(load = false) {
         window.settings = settings;
     }
 
-    const settingsMapping = {
-        displayTrainsWithCargo: "display_train_with_cargo",
-        displayTrainWithoutTrackNr: "display_train_without_track_nr",
-        displayTrainThatDoesNotStop: "display_train_without_stop",
-        roundingDelay: "rounding_delay",
-    };
+    if (!custom) {
+        const boolSettingsMapping = {
+            displayTrainsWithCargo: "display_train_with_cargo",
+            displayTrainWithoutTrackNr: "display_train_without_track_nr",
+            displayTrainThatDoesNotStop: "display_train_without_stop",
+            roundingDelay: "rounding_delay",
+        };
 
-    Object.keys(settingsMapping).forEach(key => {
-        const element = document.getElementById(settingsMapping[key]);
-        if (load) {
-            element.checked = settings[key];
-        } else {
-            settings[key] = element.checked;
+        applySettingValueOrChecked(boolSettingsMapping, settings, load, true);
+
+        const valueSettingsMapping = {
+            displayScreenSize: "display_screen_size",
         }
-    });
+
+        applySettingValueOrChecked(valueSettingsMapping, settings, load);
+    } else {
+        applySettingValueOrChecked(custom, settings, load, customChecked);
+    }
 
     localStorage.setItem("settings", JSON.stringify(settings));
+    changeScreenSize();
 }
 
 // Main functions
@@ -209,10 +246,14 @@ function loadFrames() {
             oldIframe.remove();
         }
 
+        const displayScreenSize = document.getElementById("display_screen_size").value;
+
         const iframe = document.createElement('iframe');
         iframe.src = blobUrlParm;
         iframe.classList.add('iframe_display');
         iframe.id = `iframe_${track_display[i].id}`;
+        iframe.style.width = `${400 * (displayScreenSize / 100)}px`;
+        iframe.style.height = `${200 * (displayScreenSize / 100)}px`;
         track_display[i].appendChild(iframe);
     }
 }
@@ -773,6 +814,20 @@ function updatePlatformsText() {
 
 }
 
+function changeScreenSize() {
+    const displayScreenSize = document.getElementById("display_screen_size").value;
+    const iframes = document.getElementsByClassName("iframe_display");
+    // Normal:
+    // width: 400px;
+    // height: 200px;
+
+    for (let i = 0; i < iframes.length; i++) {
+        // add % to normal size
+        iframes[i].style.width = `${400 * (displayScreenSize / 100)}px`;
+        iframes[i].style.height = `${200 * (displayScreenSize / 100)}px`;
+    }
+}
+
 // All API functions
 
 async function getTimetablesAPI() {
@@ -992,10 +1047,62 @@ document.getElementById("show_menu_button").addEventListener("click", () => {
     platformRow.classList.remove("center");
 });
 
+function sizeMinus() {
+    const displayScreenSize = document.getElementById("display_screen_size");
+    let displayScreenSizeValue = parseInt(displayScreenSize.value);
+    if (displayScreenSizeValue > 50) {
+        displayScreenSizeValue -= 5;
+        displayScreenSize.value = displayScreenSizeValue;
+    }
+}
+
+document.getElementById("size_minus").addEventListener("click", () => {
+    sizeMinus();
+});
+
+function sizePlus() {
+    const displayScreenSize = document.getElementById("display_screen_size");
+    let displayScreenSizeValue = parseInt(displayScreenSize.value);
+    if (displayScreenSizeValue < 230) {
+        displayScreenSizeValue += 5;
+        displayScreenSize.value = displayScreenSizeValue;
+    }
+}
+
+document.getElementById("size_plus").addEventListener("click", () => {
+    sizePlus();
+});
+
 // Rest of the event listeners
 
 window.addEventListener("click", function (event) {
     if (event.target === document.getElementById("settings_modal")) {
         closeModal();
+    }
+});
+
+// Keyboard Shortcuts
+
+document.addEventListener("keydown", function (event) {
+    if (event.key === "Escape") {
+        closeModal();
+    }
+    if (event.key === "F5") {
+        event.preventDefault();
+        window.location.reload();
+    }
+    if (event.key === "+") {
+        sizePlus();
+        if (modal.style.display !== "block") {
+            applySettings(false, { displayScreenSize: "display_screen_size" });
+            //showNotification(`Rozmiar: ${document.getElementById("display_screen_size").value}`);
+        }
+    }
+    if (event.key === "-") {
+        sizeMinus();
+        if (modal.style.display !== "block") {
+            applySettings(false, { displayScreenSize: "display_screen_size" });
+            //showNotification(`Rozmiar: ${document.getElementById("display_screen_size").value}`);
+        }
     }
 });

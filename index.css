@@ -136,6 +136,37 @@ input[type="checkbox"]:checked::after {
     gap: 10px;
 }
 
+#size_div {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+}
+
+#size_div button {
+    box-sizing: border-box;
+    margin: 0;
+    height: 100%;
+    width: fit-content;
+    text-align: center;
+    line-height: 0.1;
+    padding: 14px;
+}
+
+#size_div input {
+    box-sizing: border-box;
+    font-size: 1.2em;
+    padding: 0.15em;
+    width: 2.4em;
+    margin: 0;
+    text-align: center;
+    color: #000;
+}
+
+.dark_mode #size_div input {
+    color: #fff;
+}
+
 #platform_row {
     display: flex;
     flex-wrap: wrap;
