@@ -1048,7 +1048,7 @@ document.getElementById("show_menu_button").addEventListener("click", () => {
 });
 
 function sizeMinus() {
-    let displayScreenSize = document.getElementById("display_screen_size");
+    const displayScreenSize = document.getElementById("display_screen_size");
     let displayScreenSizeValue = parseInt(displayScreenSize.value);
     if (displayScreenSizeValue > 50) {
         displayScreenSizeValue -= 5;
@@ -1061,7 +1061,7 @@ document.getElementById("size_minus").addEventListener("click", () => {
 });
 
 function sizePlus() {
-    let displayScreenSize = document.getElementById("display_screen_size");
+    const displayScreenSize = document.getElementById("display_screen_size");
     let displayScreenSizeValue = parseInt(displayScreenSize.value);
     if (displayScreenSizeValue < 230) {
         displayScreenSizeValue += 5;
@@ -1091,18 +1091,16 @@ document.addEventListener("keydown", function (event) {
         event.preventDefault();
         window.location.reload();
     }
-    if (event.key === "=" || event.key === "+") {
-        const modal = document.getElementById("settings_modal");
-
+    if (event.key === "+") {
         sizePlus();
-        if (modal.style.display != "block") {
+        if (modal.style.display !== "block") {
             applySettings(false, { displayScreenSize: "display_screen_size" });
             //showNotification(`Rozmiar: ${document.getElementById("display_screen_size").value}`);
         }
     }
-    if (event.key === "-" || event.key === "_") {
+    if (event.key === "-") {
         sizeMinus();
-        if (modal.style.display != "block") {
+        if (modal.style.display !== "block") {
             applySettings(false, { displayScreenSize: "display_screen_size" });
             //showNotification(`Rozmiar: ${document.getElementById("display_screen_size").value}`);
         }
