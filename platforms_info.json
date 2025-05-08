@@ -536,5 +536,35 @@
                 }
             }
         ]
+    },
+    {
+        "sceneryName": "LCS Kleszczów",
+        "mainCheckpoint": "Kleszczów",
+        "checkpoints": [
+            {
+                "name": "Kleszczów",
+                "suffix": "",
+                "platforms": {
+                    "Peron 1": [1, 3],
+                    "Peron 2": [2, 4]
+                }
+            },
+            {
+                "name": "Straszków",
+                "suffix": ", po",
+                "platforms": {
+                    "Peron 1": [1],
+                    "Peron 2": [2]
+                }
+            },
+            {
+                "name": "Bronowice",
+                "suffix": "",
+                "platforms": {
+                    "Peron 1": [4],
+                    "Peron 2": [5]
+                }
+            }
+        ]
     }
 ]

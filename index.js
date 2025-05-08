@@ -38,7 +38,7 @@ window.debug = false;
 window.iframeDebugURL = ""; // example: http://127.0.0.1:5500
 window.platformsAPIDebugBranch = "main"; // example: main
 window.debugTermination = false;
-window.platformsVersionID = "0.0.16";
+window.platformsVersionID = "0.0.17";
 
 if (window.debug === true) {
     console.warn("Debug mode enabled! Change debug to false in index.js before deployment!");
