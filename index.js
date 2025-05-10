@@ -1085,11 +1085,9 @@ window.addEventListener("click", function (event) {
 
 document.addEventListener("keydown", function (event) {
     if (event.key === "Escape") {
-        closeModal();
-    }
-    if (event.key === "F5") {
-        event.preventDefault();
-        window.location.reload();
+        if (document.getElementById("settings_modal").style.display !== "none") {
+            closeModal();
+        }
     }
     if (event.key === "+") {
         sizePlus();
