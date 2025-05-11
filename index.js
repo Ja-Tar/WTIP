@@ -1089,14 +1089,14 @@ document.addEventListener("keydown", function (event) {
             closeModal();
         }
     }
-    if (event.key === "+") {
+    if (event.key === "+" || event.key === "=") {
         sizePlus();
         if (modal.style.display !== "block") {
             applySettings(false, { displayScreenSize: "display_screen_size" });
             //showNotification(`Rozmiar: ${document.getElementById("display_screen_size").value}`);
         }
     }
-    if (event.key === "-") {
+    if (event.key === "-" || event.key === "_") {
         sizeMinus();
         if (modal.style.display !== "block") {
             applySettings(false, { displayScreenSize: "display_screen_size" });
