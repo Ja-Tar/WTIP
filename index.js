@@ -14,8 +14,8 @@ window.settings = {};
 
 window.trainCategory = {
     "E": ['EI', 'EC', 'EN'],
-    "O": ['MP', 'MH', 'MM', 'MO',
-        'RP', 'RA', 'RM', 'RO'],
+    "M": ['MP', 'MH', 'MM', 'MO'],
+    "R": ['RP', 'RA', 'RM', 'RO'],
     "T": ['PW', "PX",
         'TC', 'TG', 'TR', 'TD', 'TM', 'TN', 'TK', 'TS', 'TH',
         'LP', 'LT', 'LS', 'LZ',
@@ -189,6 +189,10 @@ function darkModeCheck() {
     if (localStorage.getItem("dark_mode") === "true") {
         document.body.classList.add("dark_mode");
     }
+}
+
+function getObjectKeyList(obj, value) {
+    return Object.keys(obj).find(key => obj[key].includes(value));
 }
 
 function loadFrames() {
@@ -404,7 +408,11 @@ function getProcessedData(display_id, smallestDisplayId) {
                 if (trainNo.toString().startsWith(trainNoIs[k])) {
                     const operator = overwriteData.operatorOverwrite;
                     const train_name = overwriteData.remarks;
-                    trainNumberPrefix = overwriteData.category[trainCategory];
+                    let trainType = trainCategory.slice(0, 2);
+                    if (trainType in overwriteData.category === false) {
+                        trainType = getObjectKeyList(window.trainCategory, trainCategory.slice(0, 2));
+                    }
+                    trainNumberPrefix = overwriteData.category[trainType];
                     processedData.train_name = train_name;
                     processedData.operator = operator;
                     console.warn(`Overwrite -> Name: ${train_name}, Operator: ${operator}, Number: ${trainNumberPrefix} ${trainNo}`);
