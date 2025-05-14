@@ -12,7 +12,7 @@ Jeśli chcesz wygenerować swoje tablice informacyjne, skorzystaj z [generatora]
 
 ## Najczęściej zadawane pytania
 
-### Dlaczego pociągi pojawiają się tylko przy jednym peronie?
+### Dlaczego pociągi pojawiają się tylko przy jednym torze?
 
 Pociągi domyślnie mają ustawiony tor 1. Jeśli chcesz to zmienić, wpisz w uwagi eksploatacyjne w TD2: [peron],[tor] (np. 2,3).
  
