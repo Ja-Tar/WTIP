@@ -52,9 +52,9 @@ If you want to generate your own information boards, use the [generator](https:/
 
 ## Frequently Asked Questions
 
-### Why do trains only appear at one platform?
+### Why do trains only appear at one track?
 
-Trains are set to platform 1 by default. If you want to change it, enter in the operational notes in TD2: [platform],[track] (e.g. 2,3).
+Trains are set to track 1 by default. If you want to change it, enter in the operational notes in TD2: [platform],[track] (e.g. 2,3).
 
 ## Features
 
